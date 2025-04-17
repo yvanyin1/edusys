@@ -19,7 +19,7 @@ class CourseProfile(object):
             self.__profile_status = profile_status
 
     def __eq__(self, other):
-        if not isinstance(other, Course):
+        if not isinstance(other, CourseProfile):
             return False
         return self.__course_id == other.__course_id
 
