@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from course import Course
 from course_request import CourseRequest
 from datetime import datetime
 

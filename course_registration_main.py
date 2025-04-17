@@ -1,5 +1,6 @@
+from profile_status import ProfileStatus
 from user import Administrator, AcademicStaff
-from course import Course
+from course_profile import CourseProfile
 from course_request import CourseRequest
 from course_catalog import CourseCatalog
 from audience_type import AudienceType
@@ -11,10 +12,10 @@ admin = Administrator("Bob", "Anderson",
                       "bob.anderson", "bob.anderson@mail.mcgill.ca",
                       "23456")
 
-course_1 = Course("Introduction to Computer Science", "COMP 250", "Stacks, queues, etc.",
-                  AudienceType.ADULT, 15, 3.0)
-course_2 = Course("Software Design", "COMP 303", "Design patterns",
-                  AudienceType.ADULT, 15, 3.0)
+course_1 = CourseProfile(250, "Introduction to Computer Science", "COMP 250", "Stacks, queues, etc.",
+                  AudienceType.ADULT, 15, 3.0, ProfileStatus.ACTIVE)
+course_2 = CourseProfile(303, "Software Design", "COMP 303", "Design patterns",
+                  AudienceType.ADULT, 15, 3.0, ProfileStatus.ACTIVE)
 
 # Fetch from DB
 course_catalog = CourseCatalog([course_1])

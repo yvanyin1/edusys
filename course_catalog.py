@@ -1,5 +1,5 @@
 from audience_type import AudienceType
-from course import Course
+from course_profile import Course
 
 class CourseCatalog(object):
 
