@@ -30,18 +30,11 @@ class User(ABC):
 
 class AcademicStaff(User):
 
-    def request_course(self, course, catalog):
-        if course.get_code() in [c.get_code() for c in catalog.get_courses()]:
-            raise Exception("Course code already exists in catalog")
-        # have another conditional for course code format
-
-        return CourseRequest(123, self, course, datetime.now())
+    def request_course(self, course):
+        pass
 
 
 class Administrator(User):
 
     def set_course_request_status(self, request, request_status):
         pass
-
-    def register_course(self, course, catalog):
-        catalog.add_course(course)
