@@ -2,8 +2,6 @@ USE education_management;
 
 -- Assuming that course_profile already exists
 
-SELECT * FROM course_profile;
-
 -- CREATE
 
 INSERT INTO course_profile(course_name, course_code, course_desc,
