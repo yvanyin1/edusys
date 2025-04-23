@@ -5,8 +5,7 @@ import mysql.connector
 from dotenv import load_dotenv
 import os
 
-env_file = ".env.test" if os.getenv("ENV") == "test" else ".env"
-load_dotenv(dotenv_path=env_file)
+load_dotenv(dotenv_path='.env_test')
 
 @pytest.fixture(scope="session")
 def db_connection():
