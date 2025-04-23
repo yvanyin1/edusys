@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Course List</h1>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Course Code</th>
+                    <th>Description</th>
+                    <th>Target Audience</th>
+                    <th>Duration (Weeks)</th>
+                    <th>Credit Hours</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                    <tr>
+                        <td>{{ course['course_name'] }}</td>
+                        <td>{{ course['course_code'] }}</td>
+                        <td>{{ course['course_desc'] }}</td>
+                        <td>{{ course['target_audience'] }}</td>
+                        <td>{{ course['duration_in_weeks'] }}</td>
+                        <td>{{ course['credit_hours'] }}</td>
+                        <td>{{ course['profile_status'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
