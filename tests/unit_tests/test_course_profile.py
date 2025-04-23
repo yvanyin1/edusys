@@ -1,6 +1,5 @@
 import pytest
-import mysql
-from mysql.connector.errors import IntegrityError, DataError
+from mysql.connector.errors import IntegrityError, DataError, DatabaseError
 
 
 def test_course_profile_count(db_connection):
@@ -56,7 +55,7 @@ def test_insert_duplicate_course_code_raises_error(db_connection):
 
 
 def test_insert_null_course_name_raises_error(db_connection):
-    """Test that inserting a duplicate course_code raises an IntegrityError"""
+    """Test that inserting a NULL course_name raises an IntegrityError"""
     cursor = db_connection.cursor()
 
     # Attempt to insert a duplicate course_code
@@ -71,7 +70,7 @@ def test_insert_null_course_name_raises_error(db_connection):
 
 
 def test_insert_long_course_name_raises_error(db_connection):
-    """Test that inserting a duplicate course_code raises an IntegrityError"""
+    """Test that inserting a course_course name that exceeds character limit raises a DataError"""
     cursor = db_connection.cursor()
 
     cursor.execute("""
@@ -89,6 +88,24 @@ def test_insert_long_course_name_raises_error(db_connection):
     values = (long_course_name, "COMP 249", "Some Description", 1)
 
     with pytest.raises(DataError):
+        cursor.execute(sql, values)
+        db_connection.commit()
+
+    cursor.close()
+
+
+def test_insert_invalid_enum_value_raises_error(db_connection):
+    """Test that inserting an out-of-range enum-like value raises an IntegrityError"""
+    cursor = db_connection.cursor()
+
+    # Valid values for target_audience are 1 and 2 — we try inserting 3
+    sql = """
+    INSERT INTO course_profile (course_name, course_code, course_desc, target_audience)
+    VALUES (%s, %s, %s, %s)
+    """
+    values = ("Valid Name", "COMP 999", "Testing enum constraint", 3)
+
+    with pytest.raises(DatabaseError):
         cursor.execute(sql, values)
         db_connection.commit()
 
