@@ -45,8 +45,23 @@ def test_insert_duplicate_course_code_raises_error(db_connection):
     cursor = db_connection.cursor()
 
     # Attempt to insert a duplicate course_code
-    sql = "INSERT INTO course_profile (course_name, course_code, course_desc) VALUES (%s, %s, %s)"
-    values = ("Some Course", "COMP 250", "Some Description")
+    sql = "INSERT INTO course_profile (course_name, course_code, course_desc, target_audience) VALUES (%s, %s, %s, %s)"
+    values = ("Some Course", "COMP 250", "Some Description", 1)
+
+    with pytest.raises(mysql.connector.IntegrityError):
+        cursor.execute(sql, values)
+        db_connection.commit()
+
+    cursor.close()
+
+
+def test_insert_null_course_name_raises_error(db_connection):
+    """Test that inserting a duplicate course_code raises an IntegrityError"""
+    cursor = db_connection.cursor()
+
+    # Attempt to insert a duplicate course_code
+    sql = "INSERT INTO course_profile (course_name, course_code, course_desc, target_audience) VALUES (%s, %s, %s, %s)"
+    values = (None, "COMP 249", "Some Description", 1)
 
     with pytest.raises(mysql.connector.IntegrityError):
         cursor.execute(sql, values)
