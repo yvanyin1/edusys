@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Course Management{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Course Management</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
+
+        <!-- Create -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Create Course Profile</a>
+            <p style="margin-top: 8px;">
+                Register a new course by entering its details such as
+                course name, course code, course description, etc.
+            </p>
+        </div>
+
+        <!-- Read -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Read Course Profiles</a>
+            <p style="margin-top: 8px;">
+                Browse the complete list of registered courses along with their details.
+                Use this view to search or filter courses.
+            </p>
+        </div>
+
+        <!-- Update -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Update Course Profiles</a>
+            <p style="margin-top: 8px;">
+                Modify existing course information such as
+                course name, course code, course description, etc.
+            </p>
+        </div>
+
+        <!-- Delete -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Delete Course Profiles</a>
+            <p style="margin-top: 8px;">Remove a course profile that's no longer needed.</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

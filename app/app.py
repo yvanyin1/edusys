@@ -1,12 +1,17 @@
-from flask import Flask
+from flask import Flask, render_template
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates'))
 
 
 @app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
+def home():
+    return "Hello, World!"
+
+@app.route('/course-management')
+def course_management():
+    return render_template("index.html", username="dluo")
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
