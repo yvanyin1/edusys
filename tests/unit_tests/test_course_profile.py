@@ -1,3 +1,8 @@
+import pytest
+import mysql
+from mysql.connector import errors
+
+
 def test_course_profile_count(db_connection):
     """Test that the number of course profiles is exactly 3"""
     cursor = db_connection.cursor()
@@ -31,6 +36,21 @@ def test_create_course_profile_distinct(db_connection):
     # Check if new row is here
     new_row = rows[-1]
     assert new_row[0] == 4 and new_row[1] == "Numerical Computing" and new_row[2] == "COMP 350"
+
+    cursor.close()
+
+
+def test_insert_duplicate_course_code_raises_error(db_connection):
+    """Test that inserting a duplicate course_code raises an IntegrityError"""
+    cursor = db_connection.cursor()
+
+    # Attempt to insert a duplicate course_code
+    sql = "INSERT INTO course_profile (course_name, course_code, course_desc) VALUES (%s, %s, %s)"
+    values = ("Some Course", "COMP 250", "Some Description")
+
+    with pytest.raises(mysql.connector.IntegrityError):
+        cursor.execute(sql, values)
+        db_connection.commit()
 
     cursor.close()
 
