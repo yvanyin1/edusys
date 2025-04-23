@@ -4,8 +4,14 @@ from dotenv import load_dotenv
 import mysql.connector
 import os
 
-load_dotenv(dotenv_path='../.env_test')
-app = Flask(__name__, template_folder=os.path.join(os.getcwd(), 'templates'))
+load_dotenv(dotenv_path='.env_test')
+
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+template_dir = os.path.join(basedir, 'templates')
+
+app = Flask(__name__, template_folder=template_dir)
+
+print("Template folder being used:", app.template_folder)
 
 # Configure SQLAlchemy with MySQL
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/education_management_test"
