@@ -3,6 +3,20 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import mysql.connector
 import os
+from app.models.course_profile import CourseProfile
+from app.enums.audience_type import AudienceType
+from app.enums.profile_status import ProfileStatus
+from app.dao.course_profile_dao import CourseProfileDAO
+
+audience_type_map = {
+    "Adult": AudienceType.ADULT,
+    "Youth": AudienceType.YOUTH
+}
+
+profile_status_map = {
+    "Active": ProfileStatus.ACTIVE,
+    "Inactive": ProfileStatus.INACTIVE
+}
 
 load_dotenv(dotenv_path='.env_test')
 
@@ -17,6 +31,15 @@ print("Template folder being used:", app.template_folder)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/education_management_test"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+
+def get_connection():
+    return mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database="education_management_test",
+        )
 
 # TODO for testing purposes
 def load_initial_data():
@@ -81,16 +104,35 @@ def create_course_profile():
 
 @app.route('/course-created', methods=['POST'])
 def course_profile_created():
+
+    course_name = request.form['course_name']
+    course_code = request.form['course_code']
+    course_desc = request.form['course_desc']
+    target_audience_string = request.form['target_audience']
+    target_audience = audience_type_map[target_audience_string]
+    duration_in_weeks = request.form['duration_in_weeks']
+    prerequisites = request.form['prerequisites']  # will handle that logic later
+    corequisites = request.form['corequisites']
+    credit_hours = request.form['credit_hours']
+
+    # Add course profile to database
+    connection = get_connection()
+    dao = CourseProfileDAO(connection)
+    dao.create_course_profile(CourseProfile(0, course_name, course_code,
+                                            course_desc, target_audience, int(duration_in_weeks),
+                                            float(credit_hours), ProfileStatus.INACTIVE))
+
     course_data = {
-        'course_name': request.form['course_name'],
-        'course_code': request.form['course_code'],
-        'course_desc': request.form['course_desc'],
-        'target_audience': request.form['target_audience'],
-        'duration_in_weeks': request.form['duration_in_weeks'],
-        'prerequisites': request.form['prerequisites'],
-        'corequisites': request.form['corequisites'],
-        'credit_hours': request.form['credit_hours']
+        'course_name': course_name,
+        'course_code': course_code,
+        'course_desc': course_desc,
+        'target_audience': target_audience_string,
+        'duration_in_weeks': duration_in_weeks,
+        'prerequisites': prerequisites,
+        'corequisites': corequisites,
+        'credit_hours': credit_hours
     }
+
     return render_template("create_course_profile_success.html", course=course_data)
 
 
@@ -107,6 +149,11 @@ def view_courses():
         cursor = connection.cursor(dictionary=True)  # Enable fetching data as a dictionary
         cursor.execute("SELECT * FROM course_profile")
         courses = cursor.fetchall()  # Get all rows as a list of dictionaries
+
+        # Convert Enum integer values to Enum name
+        for course in courses:
+            course["target_audience"] = AudienceType(course["target_audience"]).name.title()
+            course["profile_status"] = ProfileStatus(course["profile_status"]).name.title()
 
         cursor.close()
         connection.close()
