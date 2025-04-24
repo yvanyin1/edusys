@@ -5,6 +5,8 @@ from app.enums.profile_status import ProfileStatus
 
 class CourseProfileDAO:
 
+    __table_name = "course_profile"
+
     def __init__(self, connection):
         self.__connection = connection
 
@@ -28,6 +30,23 @@ class CourseProfileDAO:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM course_profile")
         return cursor.fetchall()
+
+    def get_varchar_max_length(self, column_name, schema_name):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        query = """
+                SELECT CHARACTER_MAXIMUM_LENGTH
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = %s
+                  AND TABLE_NAME = %s
+                  AND COLUMN_NAME = %s \
+                """
+        cursor.execute(query, (schema_name, self.__table_name, column_name))
+        result = cursor.fetchone()
+        if result:
+            return result[0]
+        else:
+            raise ValueError(f"No such column '{column_name}' in table '{self.__table_name}' in schema '{schema_name}'")
 
     def create_course_profile(self, course_profile: CourseProfile):
         # course
