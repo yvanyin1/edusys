@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{os.getenv('DB_
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-
+# TODO for testing purposes
 def load_initial_data():
     """Function to load initial data from SQL query."""
     try:
@@ -32,6 +32,18 @@ def load_initial_data():
         cursor = connection.cursor()
 
         # SQL query to insert initial data
+        cursor.execute("DROP TABLE IF EXISTS course_profile")
+        cursor.execute("""CREATE TABLE course_profile (
+            course_id INT NOT NULL AUTO_INCREMENT,  -- for some reason adding NOT NULL removes an error
+            course_name VARCHAR(50) NOT NULL UNIQUE,
+            course_code VARCHAR(10) NOT NULL UNIQUE,
+            course_desc TEXT,
+            target_audience TINYINT DEFAULT 1 CHECK (target_audience IN (1, 2)),
+            duration_in_weeks TINYINT,
+            credit_hours FLOAT,
+            profile_status TINYINT NOT NULL DEFAULT 0 CHECK (profile_status IN (0, 1)),
+            PRIMARY KEY (course_id)
+        );""")
         sql_insert = """
             INSERT INTO course_profile(course_name, course_code, course_desc, target_audience, duration_in_weeks, credit_hours, profile_status)
             VALUES ('Introduction to Computer Science', 'COMP 250', 'Searching/sorting algorithms, data structures', 2, 15, 3.0, 1),
@@ -48,7 +60,7 @@ def load_initial_data():
     except Exception as e:
         print(f"Error loading initial data: {e}")
 
-
+# TODO for testing purposes
 load_initial_data()
 
 
