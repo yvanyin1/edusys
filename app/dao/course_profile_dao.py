@@ -80,6 +80,26 @@ class CourseProfileDAO:
             return self.build_course_object(result)
         return None
 
+    def get_course_by_name(self, course_name: str) -> CourseProfile | None:
+        query = "SELECT * FROM course_profile WHERE course_name = %s"
+        conn = self.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(query, (course_name,))
+        result = cursor.fetchone()
+        if result:
+            return self.build_course_object(result)
+        return None
+
+    def get_course_by_code(self, course_code: str) -> CourseProfile | None:
+        query = "SELECT * FROM course_profile WHERE course_code = %s"
+        conn = self.get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(query, (course_code,))
+        result = cursor.fetchone()
+        if result:
+            return self.build_course_object(result)
+        return None
+
     def update_course(self, course_profile: CourseProfile):
         query = """
         UPDATE course_profile SET

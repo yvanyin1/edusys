@@ -140,7 +140,7 @@ def course_profile_created():
 def read_course_profiles():
     try:
         # Query all courses from the 'course_profile' table
-        connection = mysql.connector.connect(
+        connection = mysql.connector.connect(  # Will move this to DAO
             host=os.getenv("DB_HOST"),
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD"),
@@ -163,26 +163,19 @@ def read_course_profiles():
     except Exception as e:
         return f"Error fetching courses: {e}"
 
-@app.route('/update-course-profiles/search')
+@app.route('/update-course-profiles/search', methods=["GET"])
 def update_course_profiles_search():
     return render_template("update_course_profile_search.html", username="dluo")
 
 
-# @app.route('/update-course-profiles/edit-course', methods=['POST']))
-# def edit_course(course_id):
-#     connection = mysql.connector.connect(
-#         host=os.getenv("DB_HOST"),
-#         user=os.getenv("DB_USER"),
-#         password=os.getenv("DB_PASSWORD"),
-#         database=os.getenv("DB_NAME"),
-#     )
-#     cursor = connection.cursor(dictionary=True)
-#     cursor.execute("SELECT * FROM course_profile WHERE course_name = %s", (course_id,))
-#     course = cursor.fetchone()
-#     cursor.close()
-#     connection.close()
-#
-#     return render_template("edit_course_profile.html", course=course)
+@app.route('/update-course-profiles/edit-course', methods=['GET'])
+def edit_course_profile():
+    course_name_or_code = request.args.get('course_name_or_code')
+
+    connection = get_connection()
+    dao = CourseProfileDAO(connection)
+    course_profile = dao.get_course_by_name(course_name_or_code) if dao.get_course_by_name(course_name_or_code) else dao.get_course_by_code(course_name_or_code)
+    return render_template("update_course_profile_edit.html", course=course_profile, username="dluo")
 
 if __name__ == '__main__':
     app.run(debug=True)
