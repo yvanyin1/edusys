@@ -133,7 +133,7 @@ def course_profile_created():
         'credit_hours': credit_hours
     }
 
-    return render_template("create_course_profile_success.html", course=course_data)
+    return render_template("create_course_profile_success.html", course=course_data, username="dluo")
 
 
 @app.route('/read-course-profiles')
@@ -159,10 +159,30 @@ def read_course_profiles():
         connection.close()
 
         # Pass the courses data to the template
-        return render_template("read_course_profiles.html", courses=courses)
+        return render_template("read_course_profiles.html", courses=courses, username="dluo")
     except Exception as e:
         return f"Error fetching courses: {e}"
 
+@app.route('/update-course-profiles/search')
+def update_course_profiles_search():
+    return render_template("update_course_profile_search.html", username="dluo")
+
+
+# @app.route('/update-course-profiles/edit-course', methods=['POST']))
+# def edit_course(course_id):
+#     connection = mysql.connector.connect(
+#         host=os.getenv("DB_HOST"),
+#         user=os.getenv("DB_USER"),
+#         password=os.getenv("DB_PASSWORD"),
+#         database=os.getenv("DB_NAME"),
+#     )
+#     cursor = connection.cursor(dictionary=True)
+#     cursor.execute("SELECT * FROM course_profile WHERE course_name = %s", (course_id,))
+#     course = cursor.fetchone()
+#     cursor.close()
+#     connection.close()
+#
+#     return render_template("edit_course_profile.html", course=course)
 
 if __name__ == '__main__':
     app.run(debug=True)

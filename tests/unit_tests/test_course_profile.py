@@ -32,7 +32,7 @@ def test_create_course_profile_distinct(db_connection):
     assert new_row[0] == 4 and new_row[1] == "Numerical Computing" and new_row[2] == "COMP 350"
 
 
-def test_insert_duplicate_course_code_raises_error(db_connection):
+def test_create_duplicate_course_code_raises_error(db_connection):
     """Test that inserting a duplicate course_code raises an IntegrityError"""
 
     dao = CourseProfileDAO(db_connection)
@@ -54,7 +54,7 @@ def test_insert_duplicate_course_code_raises_error(db_connection):
 
 
 
-def test_insert_null_course_name_raises_error(db_connection):
+def test_create_null_course_name_raises_error(db_connection):
     """Test that inserting a NULL course_name raises an IntegrityError"""
     dao = CourseProfileDAO(db_connection)
 
@@ -74,7 +74,7 @@ def test_insert_null_course_name_raises_error(db_connection):
         dao.create_course_profile(null_name_course)
 
 
-def test_insert_long_course_name_raises_error(db_connection):
+def test_create_long_course_name_raises_error(db_connection):
     """Test that inserting a course_course name that exceeds character limit raises a DataError"""
     dao = CourseProfileDAO(db_connection)
     max_course_name_length = dao.get_varchar_max_length("course_name",
@@ -95,21 +95,31 @@ def test_insert_long_course_name_raises_error(db_connection):
         dao.create_course_profile(null_name_course)
 
 
-# # CREATE
-# cursor = connection.cursor()
-# sql = "INSERT INTO course_profile (course_name, course_code) VALUES (%s, %s)"
-# values = ("Numerical Computing", "COMP 350")
-# cursor.execute(sql, values)
-# connection.commit()
-# print(f"{cursor.rowcount} record inserted.")
-#
+def test_update_course(db_connection):
+    """Test that updating a course profile does not change the number of rows and check for modified row values"""
+    dao = CourseProfileDAO(db_connection)
+    initial_count_rows = dao.count_course_profiles()
+    initial_last_row_id = dao.get_max_course_id()
+    last_row_id = dao.create_course_profile(CourseProfile(-1, "Numerical Computing", "COMP 350",
+                                            "", AudienceType.ADULT, 13,
+                                            3.0, ProfileStatus.ACTIVE))  # -1 is a dummy course_id
+
+    assert last_row_id == initial_last_row_id + 1
+    assert dao.count_course_profiles() == initial_count_rows + 1
+
+    rows = dao.get_rows()
+    # Check if new row is here
+    new_row = rows[-1]
+
+    assert new_row[0] == 4 and new_row[1] == "Numerical Computing" and new_row[2] == "COMP 350"
+
 # # READ
 # cursor = connection.cursor()
 # cursor.execute("SELECT * FROM course_profile")
 # results = cursor.fetchall()
 # for row in results:
 #     print(row)
-#
+
 # # UPDATE
 # cursor = connection.cursor()
 # sql = "UPDATE course_profile SET course_desc = %s WHERE course_name = %s"
