@@ -76,27 +76,23 @@ def test_insert_null_course_name_raises_error(db_connection):
 
 def test_insert_long_course_name_raises_error(db_connection):
     """Test that inserting a course_course name that exceeds character limit raises a DataError"""
-    cursor = db_connection.cursor()
+    dao = CourseProfileDAO(db_connection)
+    max_course_name_length = dao.get_varchar_max_length("course_name",
+                                                        "education_management_test")
 
-    cursor.execute("""
-                   SELECT CHARACTER_MAXIMUM_LENGTH
-                   FROM INFORMATION_SCHEMA.COLUMNS
-                   WHERE TABLE_SCHEMA = %s
-                     AND TABLE_NAME = %s
-                     AND COLUMN_NAME = %s
-                   """, ("education_management_test", "course_profile", "course_name"))
-    max_course_name_length = cursor.fetchone()[0]
-
-    # Attempt to insert a duplicate course_code
-    sql = "INSERT INTO course_profile (course_name, course_code, course_desc, target_audience) VALUES (%s, %s, %s, %s)"
-    long_course_name = (max_course_name_length + 1) * "A"  # course_name is of type VARCHAR(50)
-    values = (long_course_name, "COMP 249", "Some Description", 1)
+    null_name_course = CourseProfile(
+        course_id=1,
+        course_name=(max_course_name_length + 1) * "A",  # Overly long course name
+        course_code="AAAA 444",
+        course_desc="Some Description",
+        target_audience=AudienceType.ADULT,
+        duration_in_weeks=None,
+        credit_hours=None,
+        profile_status=ProfileStatus.ACTIVE
+    )
 
     with pytest.raises(DataError):
-        cursor.execute(sql, values)
-        db_connection.commit()
-
-    cursor.close()
+        dao.create_course_profile(null_name_course)
 
 
 def test_insert_invalid_enum_value_raises_error(db_connection):
