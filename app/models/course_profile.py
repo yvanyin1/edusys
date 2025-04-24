@@ -1,5 +1,5 @@
-from audience_type import AudienceType
-from profile_status import ProfileStatus
+from app.enums.audience_type import AudienceType
+from app.enums.profile_status import ProfileStatus
 
 class CourseProfile(object):
 

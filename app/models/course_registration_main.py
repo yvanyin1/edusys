@@ -1,8 +1,7 @@
-from profile_status import ProfileStatus
+from app.enums.profile_status import ProfileStatus
 from user import Administrator, AcademicStaff
 from course_profile import CourseProfile
-from course_request import CourseRequest
-from audience_type import AudienceType
+from app.enums.audience_type import AudienceType
 
 academic_staff = AcademicStaff("John", "Smith",
                                "john.smith", "john.smith@mail.mcgill.ca",

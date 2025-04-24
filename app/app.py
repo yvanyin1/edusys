@@ -6,7 +6,7 @@ import os
 
 load_dotenv(dotenv_path='.env_test')
 
-basedir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+basedir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 template_dir = os.path.join(basedir, 'templates')
 
 app = Flask(__name__, template_folder=template_dir)

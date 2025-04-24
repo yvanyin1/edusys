@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from request_status import RequestStatus
+from app.enums.request_status import RequestStatus
 
 class CourseRequest(object):
 
