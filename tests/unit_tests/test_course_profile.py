@@ -34,32 +34,44 @@ def test_create_course_profile_distinct(db_connection):
 
 def test_insert_duplicate_course_code_raises_error(db_connection):
     """Test that inserting a duplicate course_code raises an IntegrityError"""
-    cursor = db_connection.cursor()
 
-    # Attempt to insert a duplicate course_code
-    sql = "INSERT INTO course_profile (course_name, course_code, course_desc, target_audience) VALUES (%s, %s, %s, %s)"
-    values = ("Some Course", "COMP 250", "Some Description", 1)
+    dao = CourseProfileDAO(db_connection)
+
+    # A row with course_code = "COMP 250" already exists in the table
+    duplicate_course = CourseProfile(
+        course_id=None,
+        course_name="Duplicate Course",
+        course_code="COMP 250",  # same code triggers UNIQUE constraint
+        course_desc="Some Description",
+        target_audience=AudienceType.ADULT,
+        duration_in_weeks=None,
+        credit_hours=None,
+        profile_status=ProfileStatus.ACTIVE
+    )
 
     with pytest.raises(IntegrityError):
-        cursor.execute(sql, values)
-        db_connection.commit()
+        dao.create_course_profile(duplicate_course)
 
-    cursor.close()
 
 
 def test_insert_null_course_name_raises_error(db_connection):
     """Test that inserting a NULL course_name raises an IntegrityError"""
-    cursor = db_connection.cursor()
+    dao = CourseProfileDAO(db_connection)
 
-    # Attempt to insert a duplicate course_code
-    sql = "INSERT INTO course_profile (course_name, course_code, course_desc, target_audience) VALUES (%s, %s, %s, %s)"
-    values = (None, "COMP 249", "Some Description", 1)
+    # A row with course_code = "COMP 250" already exists in the table
+    null_name_course = CourseProfile(
+        course_id=1,
+        course_name=None,
+        course_code="COMP 249",  # same code triggers UNIQUE constraint
+        course_desc="Some Description",
+        target_audience=AudienceType.ADULT,
+        duration_in_weeks=None,
+        credit_hours=None,
+        profile_status=ProfileStatus.ACTIVE
+    )
 
     with pytest.raises(IntegrityError):
-        cursor.execute(sql, values)
-        db_connection.commit()
-
-    cursor.close()
+        dao.create_course_profile(null_name_course)
 
 
 def test_insert_long_course_name_raises_error(db_connection):
