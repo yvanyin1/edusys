@@ -136,8 +136,8 @@ def course_profile_created():
     return render_template("create_course_profile_success.html", course=course_data)
 
 
-@app.route('/view-course-profiles')
-def view_courses():
+@app.route('/read-course-profiles')
+def read_course_profiles():
     try:
         # Query all courses from the 'course_profile' table
         connection = mysql.connector.connect(
@@ -159,7 +159,7 @@ def view_courses():
         connection.close()
 
         # Pass the courses data to the template
-        return render_template("view_course-profiles.html", courses=courses)
+        return render_template("read_course_profiles.html", courses=courses)
     except Exception as e:
         return f"Error fetching courses: {e}"
 
