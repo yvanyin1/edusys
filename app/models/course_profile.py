@@ -81,12 +81,3 @@ class CourseProfile(object):
 
     def set_profile_status(self, profile_status):
         self.__profile_status = profile_status
-
-
-if __name__ == '__main__':
-    course_1 = CourseProfile(250, "Introduction to Computer Science", "COMP 250", "Stacks, queues, etc.",
-                      AudienceType.ADULT, 15, 3.0, ProfileStatus.ACTIVE)
-    course_2 = CourseProfile(250, "Introduction to Computer Science", "COMP 250", "Recurrences",
-                      AudienceType.YOUTH, 15, 3.0, ProfileStatus.INACTIVE)
-    print(course_1.__dict__)
-    print(course_1 == course_2)
