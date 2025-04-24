@@ -34,6 +34,9 @@ class CourseProfile(object):
     def __str__(self):
         return f"{self.__course_code}: {self.__course_name}"
 
+    def get_course_id(self):
+        return self.__course_id
+
     def get_name(self):
         return self.__course_name
 
@@ -67,11 +70,17 @@ class CourseProfile(object):
     def set_duration_in_weeks(self, duration_in_weeks):
         self.__duration_in_weeks = duration_in_weeks
 
-    def get_credits(self):
+    def get_credit_hours(self):
         return self.__credit_hours
 
-    def set_credits(self, credit_hours):
+    def set_credit_hours(self, credit_hours):
         self.__credit_hours = credit_hours
+
+    def get_profile_status(self):
+        return self.__profile_status
+
+    def set_profile_status(self, profile_status):
+        self.__profile_status = profile_status
 
 
 if __name__ == '__main__':
