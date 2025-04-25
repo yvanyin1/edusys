@@ -131,7 +131,7 @@ def test_delete_course_profile(db_connection):
     course_profile_to_delete = dao.get_course_by_name("Sampling Theory and Applications")
     course_id = course_profile_to_delete.get_course_id()
     dao.delete_course_profile(course_id)
-    assert dao.count_course_profiles() == initial_count_rows - 1  # should remain unchanged
+    assert dao.count_course_profiles() == initial_count_rows - 1
     assert dao.get_course_by_name("Sampling Theory and Applications") is None
 
 # # DELETE
