@@ -17,6 +17,8 @@ class CourseProfile(object):
         self.__credit_hours = credit_hours
         if isinstance(profile_status, ProfileStatus):
             self.__profile_status = profile_status
+        else:
+            raise Exception("profile_status must be of type ProfileStatus")
 
     def __eq__(self, other):
         if not isinstance(other, CourseProfile):

@@ -5,7 +5,9 @@
 <div style="max-width: 600px; margin: 40px auto; padding: 20px;">
     <h2 style="text-align: center; color: #007BFF;">Edit Course Profile</h2>
 
-    <form action="#" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+    <form action=" {{ url_for('update_course_profiles_success') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        <input type="hidden" name="course_id" value="{{ course.get_course_id() }}">
 
         <label>Course Name*:
             <input type="text" name="course_name" required value="{{ course.get_name() }}" style="width: 100%;">
@@ -43,6 +45,8 @@
         <label>Number of Credits:
             <input type="number" step="0.1" name="credit_hours" value="{{ course.get_credit_hours() }}" style="width: 100%;">
         </label>
+
+        <input type="hidden" name="profile_status" value="{{ course.get_profile_status() }}">
 
         <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
             Update Course

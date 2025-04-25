@@ -48,28 +48,6 @@ class CourseProfileDAO:
         else:
             raise ValueError(f"No such column '{column_name}' in table '{self.__table_name}' in schema '{schema_name}'")
 
-    def create_course_profile(self, course_profile: CourseProfile):
-        # course
-        query = """
-        INSERT INTO course_profile 
-        (course_name, course_code, course_desc, target_audience, duration_in_weeks, credit_hours, profile_status)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """
-        values = (
-            course_profile.get_name(),
-            course_profile.get_code(),
-            course_profile.get_description(),
-            course_profile.get_target_audience().value,
-            course_profile.get_duration_in_weeks(),
-            course_profile.get_credit_hours(),
-            course_profile.get_profile_status().value
-        )
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        cursor.execute(query, values)
-        conn.commit()
-        return cursor.lastrowid
-
     def get_course_by_id(self, course_id: int) -> CourseProfile | None:
         query = "SELECT * FROM course_profile WHERE course_id = %s"
         conn = self.get_connection()
@@ -100,7 +78,29 @@ class CourseProfileDAO:
             return self.build_course_object(result)
         return None
 
-    def update_course(self, course_profile: CourseProfile):
+    def create_course_profile(self, course_profile: CourseProfile):
+        # course
+        query = """
+        INSERT INTO course_profile 
+        (course_name, course_code, course_desc, target_audience, duration_in_weeks, credit_hours, profile_status)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        values = (
+            course_profile.get_name(),
+            course_profile.get_code(),
+            course_profile.get_description(),
+            course_profile.get_target_audience().value,
+            course_profile.get_duration_in_weeks(),
+            course_profile.get_credit_hours(),
+            course_profile.get_profile_status().value
+        )
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+        return cursor.lastrowid
+
+    def update_course_profile(self, course_profile: CourseProfile):
         query = """
         UPDATE course_profile SET
             course_name = %s,

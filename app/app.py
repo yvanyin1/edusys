@@ -177,5 +177,43 @@ def edit_course_profile():
     course_profile = dao.get_course_by_name(course_name_or_code) if dao.get_course_by_name(course_name_or_code) else dao.get_course_by_code(course_name_or_code)
     return render_template("update_course_profile_edit.html", course=course_profile, username="dluo")
 
+
+@app.route('/update-course-profiles/success', methods=['POST'])
+def update_course_profiles_success():
+
+    course_id = request.form['course_id']
+    course_name = request.form['course_name']
+    course_code = request.form['course_code']
+    course_desc = request.form['course_desc']
+    target_audience_string = request.form['target_audience']
+    target_audience = audience_type_map[target_audience_string]
+    duration_in_weeks = request.form['duration_in_weeks']
+    prerequisites = request.form['prerequisites']  # will handle that logic later
+    corequisites = request.form['corequisites']
+    credit_hours = request.form['credit_hours']
+    profile_status_string = request.form['profile_status']
+    profile_status_name = profile_status_string.split('.')[-1].title()
+    profile_status = profile_status_map[profile_status_name]
+
+    # Update course profile in database
+    connection = get_connection()
+    dao = CourseProfileDAO(connection)
+    dao.update_course_profile(CourseProfile(course_id, course_name, course_code,
+                                            course_desc, target_audience, int(duration_in_weeks),
+                                            float(credit_hours), profile_status))
+
+    course_data = {
+        'course_name': course_name,
+        'course_code': course_code,
+        'course_desc': course_desc,
+        'target_audience': target_audience_string,
+        'duration_in_weeks': duration_in_weeks,
+        'prerequisites': prerequisites,
+        'corequisites': corequisites,
+        'credit_hours': credit_hours
+    }
+
+    return render_template("update_course_profile_success.html", course=course_data, username="dluo")
+
 if __name__ == '__main__':
     app.run(debug=True)
