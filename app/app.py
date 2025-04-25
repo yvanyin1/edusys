@@ -25,8 +25,6 @@ template_dir = os.path.join(basedir, 'templates')
 
 app = Flask(__name__, template_folder=template_dir)
 
-print("Template folder being used:", app.template_folder)
-
 # Configure SQLAlchemy with MySQL
 app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/education_management_test"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -214,6 +212,12 @@ def update_course_profiles_success():
     }
 
     return render_template("update_course_profile_success.html", course=course_data, username="dluo")
+
+
+@app.route('/delete-course-profile/search', methods=['GET'])
+def delete_course_profile_search():
+    return render_template("delete_course_profile_search.html", username="dluo")
+
 
 if __name__ == '__main__':
     app.run(debug=True)
