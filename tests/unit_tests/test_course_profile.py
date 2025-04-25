@@ -7,13 +7,13 @@ from mysql.connector.errors import IntegrityError, DataError, DatabaseError
 
 
 def test_course_profile_count(db_connection):
-    """Test that the number of course profiles is exactly 3"""
+    """Test that the number of course profiles in initial table is exactly 3"""
     dao = CourseProfileDAO(db_connection)
     count = dao.count_course_profiles()
     assert count == 3
 
 
-def test_create_course_profile_distinct(db_connection):
+def test_create_course_profile(db_connection):
     """Test that adding a course profile makes the number of rows increment by 1 and check for presence of row"""
     dao = CourseProfileDAO(db_connection)
     initial_count_rows = dao.count_course_profiles()
@@ -125,23 +125,15 @@ def test_update_nonexistent_course_raises_error(db_connection):
                                             "", AudienceType.YOUTH,
                                             19, 3.0, ProfileStatus.ACTIVE))
 
+def test_delete_course_profile(db_connection):
+    dao = CourseProfileDAO(db_connection)
+    initial_count_rows = dao.count_course_profiles()
+    course_profile_to_delete = dao.get_course_by_name("Sampling Theory and Applications")
+    course_id = course_profile_to_delete.get_course_id()
+    dao.delete_course_profile(course_id)
+    assert dao.count_course_profiles() == initial_count_rows - 1  # should remain unchanged
+    assert dao.get_course_by_name("Sampling Theory and Applications") is None
 
-
-
-# # UPDATE
-# cursor = connection.cursor()
-# sql = "UPDATE course_profile SET course_desc = %s WHERE course_name = %s"
-# values = ("MATLAB operations", "Numerical Computing")
-# cursor.execute(sql, values)
-# connection.commit()
-# print(f"{cursor.rowcount} record(s) updated.")
-#
-# cursor = connection.cursor()
-# cursor.execute("SELECT * FROM course_profile")
-# results = cursor.fetchall()
-# for row in results:
-#     print(row)
-#
 # # DELETE
 # cursor = connection.cursor()
 # sql = "DELETE FROM course_profile WHERE course_name = %s"

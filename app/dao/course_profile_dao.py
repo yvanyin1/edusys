@@ -131,7 +131,7 @@ class CourseProfileDAO:
         if cursor.rowcount == 0:
             raise ValueError(f"Course ID {course_profile.get_course_id()} does not exist in the database.")
 
-    def delete_course(self, course_id: int):
+    def delete_course_profile(self, course_id: int):
         query = "DELETE FROM course_profile WHERE course_id = %s"
         conn = self.get_connection()
         cursor = conn.cursor()
