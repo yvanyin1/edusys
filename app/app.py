@@ -26,7 +26,8 @@ template_dir = os.path.join(basedir, 'templates')
 app = Flask(__name__, template_folder=template_dir)
 
 # Configure SQLAlchemy with MySQL
-app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+mysqlconnector://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/education_management_test"
+app.config['SQLALCHEMY_DATABASE_URI'] = (f"mysql+mysqlconnector://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
+                                         + f"{os.getenv('DB_HOST')}/education_management_test")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -116,9 +117,10 @@ def course_profile_created():
     # Add course profile to database
     connection = get_connection()
     dao = CourseProfileDAO(connection)
-    dao.create_course_profile(CourseProfile(0, course_name, course_code,
+    new_course_profile = CourseProfile(0, course_name, course_code,
                                             course_desc, target_audience, int(duration_in_weeks),
-                                            float(credit_hours), ProfileStatus.INACTIVE))
+                                            float(credit_hours), ProfileStatus.INACTIVE)
+    dao.create_course_profile(new_course_profile)
 
     course_data = {
         'course_name': course_name,

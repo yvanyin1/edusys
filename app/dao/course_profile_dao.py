@@ -100,6 +100,24 @@ class CourseProfileDAO:
         conn.commit()
         return cursor.lastrowid
 
+    def read_course_profiles(self):
+        try:
+            query = "SELECT * FROM course_profile"
+            conn = self.get_connection()
+            cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
+            cursor.execute(query)
+            courses = cursor.fetchall()
+            conn.commit()
+
+            # Convert Enum integer values to Enum name
+            for course in courses:
+                course["target_audience"] = AudienceType(course["target_audience"]).name.title()
+                course["profile_status"] = ProfileStatus(course["profile_status"]).name.title()
+            return courses
+
+        except Exception as e:
+            return f"Error fetching courses: {e}"
+
     def update_course_profile(self, course_profile: CourseProfile):
         query = """
         UPDATE course_profile SET

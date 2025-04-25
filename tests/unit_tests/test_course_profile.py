@@ -60,7 +60,6 @@ def test_create_duplicate_course_code_raises_error(db_connection):
         dao.create_course_profile(duplicate_course)
 
 
-
 def test_create_null_course_name_raises_error(db_connection):
     """Test that inserting a NULL course_name raises an IntegrityError"""
     dao = CourseProfileDAO(db_connection)
@@ -100,6 +99,16 @@ def test_create_long_course_name_raises_error(db_connection):
 
     with pytest.raises(DataError):
         dao.create_course_profile(long_name_course)
+
+
+def test_read_course_profiles(db_connection):
+    dao = CourseProfileDAO(db_connection)
+    courses = dao.read_course_profiles()
+    assert len(courses) == 3
+    assert [course["course_name"]
+            for course in courses] == ["Introduction to Computer Science",
+                                       "Theory of Computation", "Sampling Theory and Applications"]
+    assert [course["course_code"] for course in courses] == ["COMP 250", "COMP 330", "MATH 525"]
 
 
 def test_update_course_profile(db_connection):
