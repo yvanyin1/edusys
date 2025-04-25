@@ -102,13 +102,21 @@ def test_create_long_course_name_raises_error(db_connection):
 
 
 def test_read_course_profiles(db_connection):
+    """Test reading course profiles"""
     dao = CourseProfileDAO(db_connection)
     courses = dao.read_course_profiles()
-    assert len(courses) == 3
     assert [course["course_name"]
             for course in courses] == ["Introduction to Computer Science",
                                        "Theory of Computation", "Sampling Theory and Applications"]
     assert [course["course_code"] for course in courses] == ["COMP 250", "COMP 330", "MATH 525"]
+
+
+def test_read_course_profiles_one_course_subject(db_connection):
+    dao = CourseProfileDAO(db_connection)
+    courses = dao.read_course_profiles(filter_column="course_code", filter_value="COMP")
+    assert [course["course_name"]
+            for course in courses] == ["Introduction to Computer Science", "Theory of Computation"]
+    assert [course["course_code"] for course in courses] == ["COMP 250", "COMP 330"]
 
 
 def test_update_course_profile(db_connection):

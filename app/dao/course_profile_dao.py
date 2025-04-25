@@ -100,9 +100,11 @@ class CourseProfileDAO:
         conn.commit()
         return cursor.lastrowid
 
-    def read_course_profiles(self):
+    def read_course_profiles(self, filter_column=None, filter_value=None):
         try:
             query = "SELECT * FROM course_profile"
+            if filter_column and filter_value:
+                query += f" WHERE {filter_column} LIKE '%{filter_value}%'"
             conn = self.get_connection()
             cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
             cursor.execute(query)
