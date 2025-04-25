@@ -95,7 +95,7 @@ def test_create_long_course_name_raises_error(db_connection):
         dao.create_course_profile(null_name_course)
 
 
-def test_update_course(db_connection):
+def test_update_course_profile(db_connection):
     """Test that updating a course profile does not change the number of rows and check for modified row values"""
     dao = CourseProfileDAO(db_connection)
     initial_count_rows = dao.count_course_profiles()
@@ -117,15 +117,18 @@ def test_update_course(db_connection):
     assert updated_course_profile.get_profile_status() == ProfileStatus.ACTIVE
 
 def test_update_nonexistent_course_raises_error(db_connection):
-    """Test that updating a course profile does not change the number of rows and check for modified row values"""
+    """Test that updating a non-existent course raises a ValueError"""
     dao = CourseProfileDAO(db_connection)
+    nonexistent_course_id = 999
+    assert dao.get_course_by_id(nonexistent_course_id) is None
     with pytest.raises(ValueError):
-        dao.update_course_profile(CourseProfile(999, "Unknown Course",
+        dao.update_course_profile(CourseProfile(nonexistent_course_id, "Unknown Course",
                                             "COMP 999",
                                             "", AudienceType.YOUTH,
                                             19, 3.0, ProfileStatus.ACTIVE))
 
 def test_delete_course_profile(db_connection):
+    """Test that deleting a course profile decrements the number of rows and check for absence of row"""
     dao = CourseProfileDAO(db_connection)
     initial_count_rows = dao.count_course_profiles()
     course_profile_to_delete = dao.get_course_by_name("Sampling Theory and Applications")
@@ -134,18 +137,10 @@ def test_delete_course_profile(db_connection):
     assert dao.count_course_profiles() == initial_count_rows - 1
     assert dao.get_course_by_name("Sampling Theory and Applications") is None
 
-# # DELETE
-# cursor = connection.cursor()
-# sql = "DELETE FROM course_profile WHERE course_name = %s"
-# values = ("Numerical Computing",)
-# cursor.execute(sql, values)
-# connection.commit()
-# print(f"{cursor.rowcount} record(s) deleted.")
-#
-# cursor = connection.cursor()
-# cursor.execute("SELECT * FROM course_profile")
-# results = cursor.fetchall()
-# for row in results:
-#     print(row)
-#
-# cursor.close()
+def test_delete_nonexistent_course_raises_error(db_connection):
+    """Test that deleting a nonexistent course profile raises a ValueError"""
+    dao = CourseProfileDAO(db_connection)
+    nonexistent_course_id = 999
+    assert dao.get_course_by_id(nonexistent_course_id) is None
+    with pytest.raises(ValueError):
+        dao.delete_course_profile(nonexistent_course_id)

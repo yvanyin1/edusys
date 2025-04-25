@@ -138,6 +138,10 @@ class CourseProfileDAO:
         cursor.execute(query, (course_id,))
         conn.commit()
 
+        # Check if update actually affected a row
+        if cursor.rowcount == 0:
+            raise ValueError(f"Course ID {course_id} does not exist in the database.")
+
     @staticmethod
     def build_course_object(row):
         return CourseProfile(
