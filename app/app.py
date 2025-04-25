@@ -172,7 +172,8 @@ def edit_course_profile():
 
     connection = get_connection()
     dao = CourseProfileDAO(connection)
-    course_profile = dao.get_course_by_name(course_name_or_code) if dao.get_course_by_name(course_name_or_code) else dao.get_course_by_code(course_name_or_code)
+    course_profile = dao.get_course_by_name(course_name_or_code) if dao.get_course_by_name(
+        course_name_or_code) else dao.get_course_by_code(course_name_or_code)
     return render_template("update_course_profile_edit.html", course=course_profile, username="dluo")
 
 
@@ -217,6 +218,22 @@ def update_course_profiles_success():
 @app.route('/delete-course-profile/search', methods=['GET'])
 def delete_course_profile_search():
     return render_template("delete_course_profile_search.html", username="dluo")
+
+
+@app.route('/delete-course-profile/success', methods=['POST'])
+def delete_course_profile_success():
+    course_name_or_code = request.form["course_name_or_code"]
+
+    connection = get_connection()
+    dao = CourseProfileDAO(connection)
+    course_profile = dao.get_course_by_name(course_name_or_code) if dao.get_course_by_name(
+        course_name_or_code) else dao.get_course_by_code(course_name_or_code)
+    dao.delete_course_profile(course_profile.get_course_id())
+    course_data = {
+        'course_name': course_profile.get_name(),
+        'course_code': course_profile.get_code(),
+    }
+    return render_template("delete_course_profile_success.html", course=course_data, username="dluo")
 
 
 if __name__ == '__main__':
