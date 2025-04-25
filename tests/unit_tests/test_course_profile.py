@@ -99,26 +99,34 @@ def test_update_course(db_connection):
     """Test that updating a course profile does not change the number of rows and check for modified row values"""
     dao = CourseProfileDAO(db_connection)
     initial_count_rows = dao.count_course_profiles()
-    initial_last_row_id = dao.get_max_course_id()
-    last_row_id = dao.create_course_profile(CourseProfile(-1, "Numerical Computing", "COMP 350",
-                                            "", AudienceType.ADULT, 13,
-                                            3.0, ProfileStatus.ACTIVE))  # -1 is a dummy course_id
+    course_profile_to_update = dao.get_course_by_name("Introduction to Computer Science")
+    course_id = course_profile_to_update.get_course_id()
+    dao.update_course_profile(CourseProfile(course_id, "Introduction to Computer Science",
+                                            "COMP 250",
+                                            "Searching/sorting algorithms, data structures, time complexity",
+                                            AudienceType.YOUTH, 19, 3.0, ProfileStatus.ACTIVE))
+    assert dao.count_course_profiles() == initial_count_rows  # should remain unchanged
+    updated_course_profile = dao.get_course_by_id(course_id)  # fetch the updated row
+    assert updated_course_profile.get_course_id() == course_id  # should remain unchanged
+    assert updated_course_profile.get_name() == "Introduction to Computer Science"
+    assert updated_course_profile.get_code() == "COMP 250"
+    assert updated_course_profile.get_description() == "Searching/sorting algorithms, data structures, time complexity"
+    assert updated_course_profile.get_target_audience() == AudienceType.YOUTH
+    assert updated_course_profile.get_duration_in_weeks() == 19
+    assert updated_course_profile.get_credit_hours() == 3.0
+    assert updated_course_profile.get_profile_status() == ProfileStatus.ACTIVE
 
-    assert last_row_id == initial_last_row_id + 1
-    assert dao.count_course_profiles() == initial_count_rows + 1
+def test_update_nonexistent_course_raises_error(db_connection):
+    """Test that updating a course profile does not change the number of rows and check for modified row values"""
+    dao = CourseProfileDAO(db_connection)
+    with pytest.raises(ValueError):
+        dao.update_course_profile(CourseProfile(999, "Unknown Course",
+                                            "COMP 999",
+                                            "", AudienceType.YOUTH,
+                                            19, 3.0, ProfileStatus.ACTIVE))
 
-    rows = dao.get_rows()
-    # Check if new row is here
-    new_row = rows[-1]
 
-    assert new_row[0] == 4 and new_row[1] == "Numerical Computing" and new_row[2] == "COMP 350"
 
-# # READ
-# cursor = connection.cursor()
-# cursor.execute("SELECT * FROM course_profile")
-# results = cursor.fetchall()
-# for row in results:
-#     print(row)
 
 # # UPDATE
 # cursor = connection.cursor()
