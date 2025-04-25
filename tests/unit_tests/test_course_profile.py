@@ -18,9 +18,16 @@ def test_create_course_profile(db_connection):
     dao = CourseProfileDAO(db_connection)
     initial_count_rows = dao.count_course_profiles()
     initial_last_row_id = dao.get_max_course_id()
-    last_row_id = dao.create_course_profile(CourseProfile(-1, "Numerical Computing", "COMP 350",
-                                            "", AudienceType.ADULT, 13,
-                                            3.0, ProfileStatus.ACTIVE))  # -1 is a dummy course_id
+    new_course_profile = CourseProfile(
+        course_id=-1,  # -1 is a dummy course_id
+        course_name="Numerical Computing",
+        course_code="COMP 350",
+        course_desc="",
+        target_audience=AudienceType.ADULT,
+        duration_in_weeks=13,
+        credit_hours=3.0,
+        profile_status=ProfileStatus.ACTIVE)
+    last_row_id = dao.create_course_profile(new_course_profile)
 
     assert last_row_id == initial_last_row_id + 1
     assert dao.count_course_profiles() == initial_count_rows + 1
@@ -80,7 +87,7 @@ def test_create_long_course_name_raises_error(db_connection):
     max_course_name_length = dao.get_varchar_max_length("course_name",
                                                         "education_management_test")
 
-    null_name_course = CourseProfile(
+    long_name_course = CourseProfile(
         course_id=1,
         course_name=(max_course_name_length + 1) * "A",  # Overly long course name
         course_code="AAAA 444",
@@ -92,7 +99,7 @@ def test_create_long_course_name_raises_error(db_connection):
     )
 
     with pytest.raises(DataError):
-        dao.create_course_profile(null_name_course)
+        dao.create_course_profile(long_name_course)
 
 
 def test_update_course_profile(db_connection):
@@ -101,10 +108,17 @@ def test_update_course_profile(db_connection):
     initial_count_rows = dao.count_course_profiles()
     course_profile_to_update = dao.get_course_by_name("Introduction to Computer Science")
     course_id = course_profile_to_update.get_course_id()
-    dao.update_course_profile(CourseProfile(course_id, "Introduction to Computer Science",
-                                            "COMP 250",
-                                            "Searching/sorting algorithms, data structures, time complexity",
-                                            AudienceType.YOUTH, 19, 3.0, ProfileStatus.ACTIVE))
+    course_profile_updated = CourseProfile(
+        course_id=course_id,
+        course_name="Introduction to Computer Science",
+        course_code="COMP 250",
+        course_desc="Searching/sorting algorithms, data structures, time complexity",
+        target_audience=AudienceType.YOUTH,
+        duration_in_weeks=19,
+        credit_hours=3.0,
+        profile_status=ProfileStatus.ACTIVE
+    )
+    dao.update_course_profile(course_profile_updated)
     assert dao.count_course_profiles() == initial_count_rows  # should remain unchanged
     updated_course_profile = dao.get_course_by_id(course_id)  # fetch the updated row
     assert updated_course_profile.get_course_id() == course_id  # should remain unchanged
@@ -121,11 +135,42 @@ def test_update_nonexistent_course_raises_error(db_connection):
     dao = CourseProfileDAO(db_connection)
     nonexistent_course_id = 999
     assert dao.get_course_by_id(nonexistent_course_id) is None
+
+    nonexistent_course_profile = CourseProfile(
+        course_id=nonexistent_course_id,
+        course_name="Unknown",
+        course_code="COMP 999",
+        course_desc="Some Description",
+        target_audience=AudienceType.YOUTH,
+        duration_in_weeks=19,
+        credit_hours=3.0,
+        profile_status=ProfileStatus.ACTIVE
+    )
+
     with pytest.raises(ValueError):
-        dao.update_course_profile(CourseProfile(nonexistent_course_id, "Unknown Course",
-                                            "COMP 999",
-                                            "", AudienceType.YOUTH,
-                                            19, 3.0, ProfileStatus.ACTIVE))
+        dao.update_course_profile(nonexistent_course_profile)
+
+def test_update_course_name_too_long_raises_error(db_connection):
+    """Test that updating a course name with an overly long name raises a ValueError"""
+    dao = CourseProfileDAO(db_connection)
+    max_course_name_length = dao.get_varchar_max_length("course_name",
+                                                        "education_management_test")
+    course_profile_to_update = dao.get_course_by_name("Introduction to Computer Science")
+    course_id = course_profile_to_update.get_course_id()
+
+    long_name_course = CourseProfile(
+        course_id=course_id,
+        course_name=(max_course_name_length + 1) * "A",  # Overly long course name
+        course_code="COMP 250",
+        course_desc="Some Description",
+        target_audience=AudienceType.ADULT,
+        duration_in_weeks=None,
+        credit_hours=None,
+        profile_status=ProfileStatus.ACTIVE
+    )
+
+    with pytest.raises(DataError):
+        dao.create_course_profile(long_name_course)
 
 def test_delete_course_profile(db_connection):
     """Test that deleting a course profile decrements the number of rows and check for absence of row"""
