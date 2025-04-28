@@ -2,15 +2,24 @@
 {% block title %}Course Profile Updated{% endblock %}
 
 {% block content %}
-  <h2>Course Profile Successfully Updated</h2>
+    <h2>Course Profile Successfully Updated</h2>
 
-  <p><strong>Course Name:</strong> {{ course.course_name }}</p>
-  <p><strong>Course Code:</strong> {{ course.course_code }}</p>
-  <p><strong>Course Description:</strong> {{ course.course_desc }}</p>
-  <p><strong>Target Audience:</strong> {{ course.target_audience }}</p>
-  <p><strong>Duration in Weeks:</strong> {{ course.duration_in_weeks }}</p>
-  <p><strong>Prerequisites Course(s):</strong> {{ course.prerequisites }}</p>
-  <p><strong>Corequisite Course(s):</strong> {{ course.corequisites }}</p>
-  <p><strong>Number of Credits:</strong> {{ course.credit_hours }}</p>
+    <p><strong>Course Name:</strong> {{ course.course_name }}</p>
+    <p><strong>Course Code:</strong> {{ course.course_code }}</p>
+    <p><strong>Course Description:</strong> {{ course.course_desc }}</p>
+    <p><strong>Target Audience:</strong> {{ course.target_audience }}</p>
+    <p><strong>Duration in Weeks:</strong> {{ course.duration_in_weeks }}</p>
+    <p><strong>Prerequisites Course(s):</strong> {{ course.prerequisites }}</p>
+    <p><strong>Corequisite Course(s):</strong> {{ course.corequisites }}</p>
+    <p><strong>Number of Credits:</strong> {{ course.credit_hours }}</p>
     <p><strong>Profile Status:</strong> {{ course.profile_status}}</p>
+
+    <div style="margin-top: 30px;">
+         <button type="button" onclick="location.href='{{ url_for('update_course_profiles_search') }}'">
+             Update Another Course Profile
+         </button>
+         <button type="button" onclick="location.href='{{ url_for('course_management') }}'">
+             Course Management Menu
+         </button>
+     </div>
 {% endblock %}
