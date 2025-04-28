@@ -45,12 +45,17 @@
             <input type="number" step="0.1" name="credit_hours" value="{{ course.get_credit_hours() }}" style="width: 100%;">
         </label>
 
-        <label>Profile Status:
-            <select name="profile_status" required style="width: 100%;">
-                <option value="Active" {% if enum_to_string[course.get_profile_status()] == 'Active' %}selected{% endif %}>Active</option>
-                <option value="Inactive" {% if enum_to_string[course.get_profile_status()] == 'Inactive' %}selected{% endif %}>Inactive</option>
-            </select>
-        </label>
+        <label>Profile Status:</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label>
+                <input type="radio" name="profile_status" value="Active"
+                       {% if enum_to_string[course.get_profile_status()] == "Active" %}checked{% endif %} required> Active
+            </label>
+            <label>
+                <input type="radio" name="profile_status" value="Inactive"
+                       {% if enum_to_string[course.get_profile_status()] == "Inactive" %}checked{% endif %}> Inactive
+            </label>
+        </div>
 
         <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
             Update Course

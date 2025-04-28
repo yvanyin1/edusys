@@ -191,7 +191,6 @@ def edit_course_profile():
 
 @app.route('/update-course-profiles/success', methods=['POST'])
 def update_course_profiles_success():
-
     course_id = request.form['course_id']
     course_name = request.form['course_name']
     course_code = request.form['course_code']
@@ -203,8 +202,7 @@ def update_course_profiles_success():
     corequisites = request.form['corequisites']
     credit_hours = request.form['credit_hours']
     profile_status_string = request.form['profile_status']
-    profile_status_name = profile_status_string.split('.')[-1].title()
-    profile_status = profile_status_map[profile_status_name]
+    profile_status = profile_status_map[profile_status_string]
 
     # Update course profile in database
     connection = get_connection()
