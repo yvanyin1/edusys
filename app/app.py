@@ -214,7 +214,8 @@ def update_course_profiles_success():
         'duration_in_weeks': duration_in_weeks,
         'prerequisites': prerequisites,
         'corequisites': corequisites,
-        'credit_hours': credit_hours
+        'credit_hours': credit_hours,
+        'profile_status': profile_status_string
     }
 
     return render_template("update_course_profile_success.html", course=course_data, username="dluo")
