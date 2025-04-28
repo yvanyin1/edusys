@@ -12,4 +12,13 @@
     <p><strong>Corequisite Course(s):</strong> {{ course.corequisites }}</p>
     <p><strong>Number of Credits:</strong> {{ course.credit_hours }}</p>
     <p><strong>Profile Status:</strong> {{ course.profile_status }}</p>
+
+     <div style="margin-top: 30px;">
+         <button type="button" onclick="location.href='{{ url_for('create_course_profile') }}'">
+             Create Another Course Profile
+         </button>
+         <button type="button" onclick="location.href='{{ url_for('course_management') }}'">
+             Course Management Menu
+         </button>
+     </div>
 {% endblock %}
