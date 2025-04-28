@@ -101,7 +101,7 @@ def create_course_profile():
     return render_template("create_course_profile_form.html", username="dluo")
 
 
-@app.route('/course-created', methods=['POST'])
+@app.route('/course-profile-created', methods=['POST'])
 def course_profile_created():
 
     course_name = request.form['course_name']
@@ -113,13 +113,15 @@ def course_profile_created():
     prerequisites = request.form['prerequisites']  # will handle that logic later
     corequisites = request.form['corequisites']
     credit_hours = request.form['credit_hours']
+    profile_status_string = request.form['profile_status']
+    profile_status = profile_status_map[profile_status_string]
 
     # Add course profile to database
     connection = get_connection()
     dao = CourseProfileDAO(connection)
     new_course_profile = CourseProfile(0, course_name, course_code,
                                             course_desc, target_audience, int(duration_in_weeks),
-                                            float(credit_hours), ProfileStatus.INACTIVE)
+                                            float(credit_hours), profile_status)
     dao.create_course_profile(new_course_profile)
 
     course_data = {
@@ -130,7 +132,8 @@ def course_profile_created():
         'duration_in_weeks': duration_in_weeks,
         'prerequisites': prerequisites,
         'corequisites': corequisites,
-        'credit_hours': credit_hours
+        'credit_hours': credit_hours,
+        'profile_status': profile_status_string
     }
 
     return render_template("create_course_profile_success.html", course=course_data, username="dluo")
