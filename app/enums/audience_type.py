@@ -1,6 +1,7 @@
 from enum import Enum
 
 class AudienceType(Enum):
-    YOUTH = 1
-    ADULT = 2
+    GENERAL_AUDIENCE = 1
+    YOUTH = 2
+    ADULT = 3
     

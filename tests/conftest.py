@@ -23,8 +23,13 @@ def db_connection():
 def reset_database(db_connection):
     cursor = db_connection.cursor()
 
-    # Empty the table before each test to ensure no leftover data
-    cursor.execute("TRUNCATE TABLE course_profile;")
+    with open('tests/sql_tests/create_tables.sql', 'r') as f:
+        sql_script = f.read()
+
+        # Split script by ";" and execute each statement (in case multiple statements)
+    for statement in sql_script.split(';'):
+        if statement.strip():
+            cursor.execute(statement)
 
     # Insert the initial rows (reset the table to its initial state)
     sql_insert = """
