@@ -9,6 +9,7 @@ from app.enums.profile_status import ProfileStatus
 from app.dao.course_profile_dao import CourseProfileDAO
 
 audience_type_map = {
+    "General Audience": AudienceType.GENERAL_AUDIENCE,
     "Adult": AudienceType.ADULT,
     "Youth": AudienceType.YOUTH
 }
@@ -60,7 +61,7 @@ def load_initial_data():
             course_name VARCHAR(50) NOT NULL UNIQUE,
             course_code VARCHAR(10) NOT NULL UNIQUE,
             course_desc TEXT,
-            target_audience TINYINT DEFAULT 1 CHECK (target_audience IN (1, 2)),
+            target_audience TINYINT DEFAULT 1 CHECK (target_audience BETWEEN 1 AND 3),
             duration_in_weeks TINYINT,
             credit_hours FLOAT,
             profile_status TINYINT NOT NULL DEFAULT 0 CHECK (profile_status IN (0, 1)),
@@ -155,7 +156,7 @@ def read_course_profiles():
 
         # Convert Enum integer values to Enum name
         for course in courses:
-            course["target_audience"] = AudienceType(course["target_audience"]).name.title()
+            course["target_audience"] = AudienceType(course["target_audience"]).name.title().replace("_", " ")
             course["profile_status"] = ProfileStatus(course["profile_status"]).name.title()
 
         cursor.close()

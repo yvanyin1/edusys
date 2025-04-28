@@ -23,6 +23,7 @@
 
         <label>Target Audience:
             <select name="target_audience" required style="width: 100%;">
+                <option value="General Audience" {% if enum_to_string[course.get_target_audience()] == 'General Audience' %}selected{% endif %}>General Audience</option>
                 <option value="Youth" {% if enum_to_string[course.get_target_audience()] == 'Youth' %}selected{% endif %}>Youth</option>
                 <option value="Adult" {% if enum_to_string[course.get_target_audience()] == 'Adult' %}selected{% endif %}>Adult</option>
             </select>
