@@ -23,9 +23,8 @@
 
         <label>Target Audience:
             <select name="target_audience" required style="width: 100%;">
-                <option value="" disabled {% if not course.target_audience %}selected{% endif %}>Select an audience</option>
-                <option value="Youth" {% if course.target_audience == 'Youth' %}selected{% endif %}>Youth</option>
-                <option value="Adult" {% if course.target_audience == 'Adult' %}selected{% endif %}>Adult</option>
+                <option value="Youth" {% if enum_to_string[course.get_target_audience()] == 'Youth' %}selected{% endif %}>Youth</option>
+                <option value="Adult" {% if enum_to_string[course.get_target_audience()] == 'Adult' %}selected{% endif %}>Adult</option>
             </select>
         </label>
 
@@ -48,9 +47,8 @@
 
         <label>Profile Status:
             <select name="profile_status" required style="width: 100%;">
-                <option value="" disabled selected>Select status</option>
-                <option value="Inactive" {% if course.profile_status == 'Inactive' %}selected{% endif %}>Inactive</option>
-                <option value="Active" {% if course.profile_status == 'Active' %}selected{% endif %}>Active</option>
+                <option value="Active" {% if enum_to_string[course.get_profile_status()] == 'Active' %}selected{% endif %}>Active</option>
+                <option value="Inactive" {% if enum_to_string[course.get_profile_status()] == 'Inactive' %}selected{% endif %}>Inactive</option>
             </select>
         </label>
 

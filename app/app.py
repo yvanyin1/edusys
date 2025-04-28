@@ -179,7 +179,14 @@ def edit_course_profile():
     dao = CourseProfileDAO(connection)
     course_profile = dao.get_course_by_name(course_name_or_code) if dao.get_course_by_name(
         course_name_or_code) else dao.get_course_by_code(course_name_or_code)
-    return render_template("update_course_profile_edit.html", course=course_profile, username="dluo")
+
+    enum_to_string = {
+        course_profile.get_target_audience(): AudienceType(course_profile.get_target_audience()).name.title(),
+        course_profile.get_profile_status(): ProfileStatus(course_profile.get_profile_status()).name.title()
+    }
+
+    return render_template("update_course_profile_edit.html",
+                           course=course_profile, enum_to_string=enum_to_string, username="dluo")
 
 
 @app.route('/update-course-profiles/success', methods=['POST'])
