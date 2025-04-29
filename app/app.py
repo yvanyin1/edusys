@@ -166,6 +166,15 @@ def course_profile_created():
 
 @app.route('/read-course-profiles')
 def read_course_profiles():
+    filter_column = request.args.get('filter_column')
+    filter_value = request.args.get('filter_value')
+
+    valid_columns = {
+        'course_id': 'course_id',
+        'course_code': 'course_code',
+        'course_name': 'course_name',
+        'profile_status': 'profile_status'
+    }
     try:
         # Query all courses from the 'course_profile' table
         connection = mysql.connector.connect(  # Will move this to DAO
@@ -175,8 +184,16 @@ def read_course_profiles():
             database=os.getenv("DB_NAME"),
         )
         cursor = connection.cursor(dictionary=True)  # Enable fetching data as a dictionary
-        cursor.execute("SELECT * FROM course_profile")
-        courses = cursor.fetchall()  # Get all rows as a list of dictionaries
+
+        query = "SELECT * FROM course_profile"
+        params = []
+
+        if filter_column in valid_columns and filter_value:
+            query += f" WHERE {valid_columns[filter_column]} LIKE %s"
+            params.append(f"%{filter_value}%")
+
+        cursor.execute(query, params)
+        courses = cursor.fetchall()
 
         # Convert Enum integer values to Enum name
         for course in courses:
@@ -187,7 +204,8 @@ def read_course_profiles():
         connection.close()
 
         # Pass the courses data to the template
-        return render_template("read_course_profiles.html", courses=courses, username="dluo")
+        return render_template("read_course_profiles.html",
+                               courses=courses, filter_column=filter_column, filter_value=filter_value, username="dluo")
     except Exception as e:
         return f"Error fetching courses: {e}"
 
