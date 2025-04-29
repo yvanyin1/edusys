@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import mysql.connector
@@ -25,6 +25,7 @@ basedir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 template_dir = os.path.join(basedir, 'templates')
 
 app = Flask(__name__, template_folder=template_dir)
+app.secret_key = os.getenv("SECRET_KEY", "dev")
 
 # Configure SQLAlchemy with MySQL
 app.config['SQLALCHEMY_DATABASE_URI'] = (f"mysql+mysqlconnector://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
@@ -120,6 +121,29 @@ def course_profile_created():
     # Add course profile to database
     connection = get_connection()
     dao = CourseProfileDAO(connection)
+
+    form_data = {
+        'course_name': course_name,
+        'course_code': course_code,
+        'course_desc': course_desc,
+        'target_audience': target_audience_string,
+        'duration_in_weeks': duration_in_weeks,
+        'prerequisites': prerequisites,
+        'corequisites': corequisites,
+        'credit_hours': credit_hours,
+        'profile_status': profile_status_string
+    }
+
+    # Check if course name or code already exists
+    if dao.get_course_by_name(course_name):
+        flash(f"A course with the name '{course_name}' already exists.", 'warning')
+        return render_template("create_course_profile_form.html", form_data=form_data, username="dluo")
+
+    if dao.get_course_by_code(course_code):
+        flash(f"A course with the code '{course_code}' already exists.", 'warning')
+        return render_template("create_course_profile_form.html", form_data=form_data, username="dluo")
+
+
     new_course_profile = CourseProfile(0, course_name, course_code,
                                             course_desc, target_audience, int(duration_in_weeks),
                                             float(credit_hours), profile_status)
