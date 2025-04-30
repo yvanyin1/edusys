@@ -20,23 +20,6 @@ class CourseProfileDAO(BaseDAO):
         cursor.execute("SELECT * FROM course_profile")
         return cursor.fetchall()
 
-    def get_varchar_max_length(self, column_name, schema_name):
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        query = """
-                SELECT CHARACTER_MAXIMUM_LENGTH
-                FROM INFORMATION_SCHEMA.COLUMNS
-                WHERE TABLE_SCHEMA = %s
-                  AND TABLE_NAME = %s
-                  AND COLUMN_NAME = %s \
-                """
-        cursor.execute(query, (schema_name, self._table_name, column_name))
-        result = cursor.fetchone()
-        if result:
-            return result[0]
-        else:
-            raise ValueError(f"No such column '{column_name}' in table '{self._table_name}' in schema '{schema_name}'")
-
     def get_course_by_id(self, course_id: int) -> CourseProfile | None:
         query = "SELECT * FROM course_profile WHERE course_id = %s"
         conn = self.get_connection()
@@ -44,7 +27,7 @@ class CourseProfileDAO(BaseDAO):
         cursor.execute(query, (course_id,))
         result = cursor.fetchone()
         if result:
-            return self.build_course_object(result)
+            return self.build_entity_object(result)
         return None
 
     def get_course_by_name(self, course_name: str) -> CourseProfile | None:
@@ -54,7 +37,7 @@ class CourseProfileDAO(BaseDAO):
         cursor.execute(query, (course_name,))
         result = cursor.fetchone()
         if result:
-            return self.build_course_object(result)
+            return self.build_entity_object(result)
         return None
 
     def get_course_by_code(self, course_code: str) -> CourseProfile | None:
@@ -64,7 +47,7 @@ class CourseProfileDAO(BaseDAO):
         cursor.execute(query, (course_code,))
         result = cursor.fetchone()
         if result:
-            return self.build_course_object(result)
+            return self.build_entity_object(result)
         return None
 
     def create_course_profile(self, course_profile: CourseProfile):
@@ -152,7 +135,7 @@ class CourseProfileDAO(BaseDAO):
             raise ValueError(f"Course ID {course_id} does not exist in the database.")
 
     @staticmethod
-    def build_course_object(row):
+    def build_entity_object(row: dict) -> CourseProfile:
         return CourseProfile(
             course_id=row['course_id'],
             course_name=row['course_name'],

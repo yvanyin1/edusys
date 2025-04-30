@@ -47,6 +47,7 @@ class BaseDAO(object):
         return self.build_entity_object(result) if result else None
 
     @abstractmethod
-    def build_entity_object(self, row: dict):
+    @staticmethod
+    def build_entity_object(row: dict):
         """Convert a DB row into an entity object."""
         pass
