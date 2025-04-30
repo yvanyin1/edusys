@@ -3,7 +3,7 @@ from app.models.course_profile import CourseProfile
 from app.enums.audience_type import AudienceType
 from app.enums.profile_status import ProfileStatus
 from app.dao.course_profile_dao import CourseProfileDAO
-from mysql.connector.errors import IntegrityError, DataError, DatabaseError
+from mysql.connector.errors import IntegrityError, DataError
 
 
 def test_course_profile_count(db_connection):

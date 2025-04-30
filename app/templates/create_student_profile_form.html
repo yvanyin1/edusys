@@ -17,7 +17,7 @@
       {% endif %}
     {% endwith %}
 
-    <form action="#" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+    <form action={{ url_for('student_profile_created') }} method="post" style="display: flex; flex-direction: column; gap: 15px;">
 
         <label>First Name*:
             <input type="text" name="first_name" value="{{ form_data.first_name if form_data else '' }}" required style="width: 100%;">
@@ -54,25 +54,25 @@
         <label>Enrollment Status*:
             <select name="enrollment_status" required style="width: 100%;">
                 <option value="" disabled selected>Select status</option>
-                <option value="0" {% if form_data and form_data.enrollment_status == 0 %}selected{% endif %}>Not Enrolled</option>
-                <option value="1" {% if form_data and form_data.enrollment_status == 1 %}selected{% endif %}>Part-Time</option>
-                <option value="2" {% if form_data and form_data.enrollment_status == 2 %}selected{% endif %}>Full-Time</option>
+                <option value="Inactive" {% if form_data and form_data.enrollment_status == 0 %}selected{% endif %}>Inactive</option>
+                <option value="Enrolled" {% if form_data and form_data.enrollment_status == 1 %}selected{% endif %}>Enrolled</option>
+                <option value="Graduated" {% if form_data and form_data.enrollment_status == 2 %}selected{% endif %}>Graduated</option>
             </select>
         </label>
 
         <label>Guardian Status*:
             <select name="guardian_status" required style="width: 100%;">
                 <option value="" disabled selected>Select guardian status</option>
-                <option value="0" {% if form_data and form_data.guardian_status == 0 %}selected{% endif %}>No Guardian</option>
-                <option value="1" {% if form_data and form_data.guardian_status == 1 %}selected{% endif %}>Has Guardian</option>
+                <option value="No Guardian" {% if form_data and form_data.guardian_status == 0 %}selected{% endif %}>No Guardian</option>
+                <option value="Has Guardian" {% if form_data and form_data.guardian_status == 1 %}selected{% endif %}>Has Guardian</option>
             </select>
         </label>
 
         <label>Profile Status*:
             <select name="profile_status" required style="width: 100%;">
                 <option value="" disabled selected>Select profile status</option>
-                <option value="0" {% if form_data and form_data.profile_status == 0 %}selected{% endif %}>Inactive</option>
-                <option value="1" {% if form_data and form_data.profile_status == 1 %}selected{% endif %}>Active</option>
+                <option value="Inactive" {% if form_data and form_data.profile_status == 0 %}selected{% endif %}>Inactive</option>
+                <option value="Active" {% if form_data and form_data.profile_status == 1 %}selected{% endif %}>Active</option>
             </select>
         </label>
 

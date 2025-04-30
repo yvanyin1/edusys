@@ -76,7 +76,7 @@ class StudentProfile(object):
     def set_birth_date(self, birth_date):
         self.__birth_date = birth_date
 
-    def phone_number(self):
+    def get_phone_number(self):
         return self.__phone_number
 
     def set_phone_number(self, phone_number):

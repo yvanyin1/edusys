@@ -3,11 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import mysql.connector
 import os
+
 from app.models.course_profile import CourseProfile
+from app.models.student_profile import StudentProfile
+
 from app.enums.audience_type import AudienceType
 from app.enums.profile_status import ProfileStatus
+from app.enums.enrollment_status import EnrollmentStatus
+from app.enums.guardian_status import GuardianStatus
+
 from app.dao.course_profile_dao import CourseProfileDAO
-from app.models.student_profile import StudentProfile
+from app.dao.student_profile_dao import StudentProfileDAO
 
 audience_type_map = {
     "General Audience": AudienceType.GENERAL_AUDIENCE,
@@ -18,6 +24,17 @@ audience_type_map = {
 profile_status_map = {
     "Active": ProfileStatus.ACTIVE,
     "Inactive": ProfileStatus.INACTIVE
+}
+
+enrollment_status_map = {
+    "Inactive": EnrollmentStatus.INACTIVE,
+    "Enrolled": EnrollmentStatus.ENROLLED,
+    "Graduated": EnrollmentStatus.GRADUATED
+}
+
+guardian_status_map = {
+    "No Guardian": GuardianStatus.NO_GUARDIAN,
+    "Has Guardian": GuardianStatus.HAS_GUARDIAN
 }
 
 load_dotenv(dotenv_path='.env_test')
@@ -94,13 +111,12 @@ def load_initial_data():
             profile_status TINYINT NOT NULL DEFAULT 0 CHECK (profile_status IN (0, 1)),
             PRIMARY KEY (student_id)
         );""")
-        StudentProfile()
-        sql_insert_courses = """
+        sql_insert_students = """
             INSERT INTO student_profile(first_name, middle_name, last_name, birth_date, phone_number, email_address, home_address, registration_date, enrollment_status, guardian_status, profile_status)
             VALUES ('Daniel', 'Ziyang', 'Luo', '1998-12-10', '5141234567', 'daniel.luo@mail.mcgill.ca', '123 rue Street', '2025-03-27', 1, 0, 1),
                     ('Brian', 'Harold', 'May', '1947-07-19', '4381234567', 'brianmay@gmail.com', '1975 rue Queen', '2024-10-31', 0, 0, 0),
                     ('Farrokh', '', 'Bulsara', '1946-09-05', '4501234567', 'freddiemercury@gmail.com', '1975 rue Bohemian', '2024-01-31', 1, 1, 1);"""
-        cursor.execute(sql_insert_courses)
+        cursor.execute(sql_insert_students)
 
         connection.commit()
         cursor.close()
@@ -323,6 +339,83 @@ def delete_course_profile_success():
 @app.route('/create-student-profile')
 def create_student_profile():
     return render_template("create_student_profile_form.html", username="dluo")
+
+
+@app.route('/student-profile-created', methods=['POST'])
+def student_profile_created():
+    # Extract form data
+    first_name = request.form['first_name']
+    middle_name = request.form.get('middle_name', '')
+    last_name = request.form['last_name']
+    birth_date = request.form.get('birth_date') or None
+    phone_number = request.form.get('phone_number', '')
+    email_address = request.form['email_address']
+    home_address = request.form.get('home_address', '')
+    registration_date = request.form.get('registration_date') or None
+    enrollment_status_string = request.form['enrollment_status']
+    enrollment_status = enrollment_status_map[enrollment_status_string]
+    guardian_status_string = request.form['guardian_status']
+    guardian_status = guardian_status_map[guardian_status_string]
+    profile_status_string = request.form['profile_status']
+    profile_status = profile_status_map[profile_status_string]
+
+    form_data = {
+        'first_name': first_name,
+        'middle_name': middle_name,
+        'last_name': last_name,
+        'birth_date': birth_date,
+        'phone_number': phone_number,
+        'email_address': email_address,
+        'home_address': home_address,
+        'registration_date': registration_date,
+        'enrollment_status': enrollment_status_string,
+        'guardian_status': guardian_status_string,
+        'profile_status': profile_status_string
+    }
+
+    # Connect to DB
+    connection = get_connection()
+    dao = StudentProfileDAO(connection)
+
+    # Check for duplicate email
+    if dao.get_student_by_email(email_address):
+        flash(f"A student with the email '{email_address}' already exists.", 'warning')
+        return render_template("create_student_profile_form.html", form_data=form_data, username="dluo")
+
+    # Create student profile
+    new_student = StudentProfile(
+        0, first_name, middle_name, last_name,
+        birth_date, phone_number, email_address,
+        home_address, registration_date,
+        enrollment_status, guardian_status, profile_status
+    )
+    dao.create_student_profile(new_student)
+
+    # Pass student data to success template
+    student_data = {
+        'first_name': first_name,
+        'middle_name': middle_name,
+        'last_name': last_name,
+        'birth_date': birth_date,
+        'phone_number': phone_number,
+        'email_address': email_address,
+        'home_address': home_address,
+        'registration_date': registration_date,
+        'enrollment_status': enrollment_status_string,
+        'guardian_status': guardian_status_string,
+        'profile_status': profile_status_string
+    }
+
+    return render_template("create_student_profile_success.html", student=student_data, username="dluo")
+
+
+@app.route('/read_student_profiles')
+def read_student_profiles():
+    # Connect to DB
+    connection = get_connection()
+    dao = StudentProfileDAO(connection)
+    return dao.get_all_rows()
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Student Profile Created{% endblock %}
+
+{% block content %}
+    <h2>Student Profile Successfully Added</h2>
+    <p><strong>First Name:</strong> {{ student.first_name }}</p>
+    <p><strong>Middle Name:</strong> {{ student.middle_name or 'N/A' }}</p>
+    <p><strong>Last Name:</strong> {{ student.last_name }}</p>
+    <p><strong>Birth Date:</strong> {{ student.birth_date or 'N/A' }}</p>
+    <p><strong>Phone Number:</strong> {{ student.phone_number or 'N/A' }}</p>
+    <p><strong>Email Address:</strong> {{ student.email_address }}</p>
+    <p><strong>Home Address:</strong> {{ student.home_address or 'N/A' }}</p>
+    <p><strong>Registration Date:</strong> {{ student.registration_date or 'N/A' }}</p>
+    <p><strong>Enrollment Status:</strong>
+        {% if student.enrollment_status == 0 %}Inactive
+        {% elif student.enrollment_status == 1 %}Enrolled
+        {% elif student.enrollment_status == 2 %}Graduated
+        {% else %}Unknown{% endif %}
+    </p>
+    <p><strong>Guardian Status:</strong> {{ 'Has Guardian' if student.guardian_status else 'No Guardian' }}</p>
+    <p><strong>Profile Status:</strong> {{ 'Active' if student.profile_status else 'Inactive' }}</p>
+
+    <div style="margin-top: 30px;">
+        <button type="button" onclick="location.href='{{ url_for('create_student_profile') }}'">
+            Create Another Student Profile
+        </button>
+        <button type="button" onclick="location.href='{{ url_for('student_management') }}'">
+            Student Management Menu
+        </button>
+    </div>
+{% endblock %}

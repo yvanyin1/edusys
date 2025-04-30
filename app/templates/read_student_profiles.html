@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Course List</h1>
+
+    <!-- Filter Links -->
+    <div class="mb-3">
+        <a href="{{ url_for('read_student_profiles') }}" class="btn btn-primary me-2">Find All</a>
+        <a href="#" class="btn btn-outline-secondary me-2" onclick="showFilter('student_id')">Find by Student ID</a>
+        <a href="#" class="btn btn-outline-secondary me-2" onclick="showFilter('first_name')">Find by First Name</a>
+        <a href="#" class="btn btn-outline-secondary me-2" onclick="showFilter('last_name')">Find by Last Name</a>
+        <a href="#" class="btn btn-outline-secondary me-2" onclick="showFilter('profile_status')">Find by Profile Status</a>
+    </div>
+
+    <!-- Filter Input Form -->
+    <form method="get" action="{{ url_for('read_student_profiles') }}" id="filterForm" class="mb-5" style="height: auto; visibility: hidden;">
+        <input type="hidden" name="filter_column" id="filterColumn">
+        <div class="input-group mb-4">
+            <input type="text" class="form-control" name="filter_value" placeholder="Enter value..." id="filterInput">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </div>
+    </form>
+
+    <!-- Spacer between filter and table -->
+    <div class="mb-5"></div>
+
+    <!-- Table Display -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Email Address</th>
+                <th>Home Address</th>
+                <th>Registration Date</th>
+                <th>Profile Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+                <tr>
+                    <td>{{ student['first_name'] }}</td>
+                    <td>{{ student['middle_name'] }}</td>
+                    <td>{{ student['last_name'] }}</td>
+                    <td>{{ student['email_address'] }}</td>
+                    <td>{{ student['home_address'] }}</td>
+                    <td>{{ student['registration_date'] }}</td>
+                    <td>{{ student['profile_status'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- JavaScript for showing/hiding the filter form -->
+<script>
+    function showFilter(column) {
+        const form = document.getElementById('filterForm');
+        form.style.visibility = 'visible';
+        document.getElementById('filterColumn').value = column;
+        document.getElementById('filterInput').placeholder = 'Enter ' + column.replace('_', ' ') + '...';
+        document.getElementById('filterInput').focus();
+    }
+</script>
+{% endblock %}
