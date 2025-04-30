@@ -32,7 +32,7 @@ def test_create_course_profile(db_connection):
     assert last_row_id == initial_last_row_id + 1
     assert dao.count_rows() == initial_count_rows + 1
 
-    rows = dao.get_rows()
+    rows = dao.get_all_rows()
     # Check if new row is here
     new_row = rows[-1]
 

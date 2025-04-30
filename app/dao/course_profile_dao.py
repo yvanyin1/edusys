@@ -8,12 +8,6 @@ class CourseProfileDAO(BaseDAO):
     def __init__(self, connection):
         super().__init__(connection, "course_profile")
 
-    def get_rows(self):
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM course_profile")
-        return cursor.fetchall()
-
     def get_course_by_id(self, course_id: int) -> CourseProfile | None:
         query = "SELECT * FROM course_profile WHERE course_id = %s"
         conn = self.get_connection()
