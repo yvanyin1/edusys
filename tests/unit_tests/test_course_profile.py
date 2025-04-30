@@ -17,7 +17,7 @@ def test_create_course_profile(db_connection):
     """Test that adding a course profile makes the number of rows increment by 1 and check for presence of row"""
     dao = CourseProfileDAO(db_connection)
     initial_count_rows = dao.count_rows()
-    initial_last_row_id = dao.get_max_course_id()
+    initial_last_row_id = dao.get_max_element_in_column("course_id")
     new_course_profile = CourseProfile(
         course_id=-1,  # -1 is a dummy course_id
         course_name="Numerical Computing",

@@ -8,12 +8,6 @@ class CourseProfileDAO(BaseDAO):
     def __init__(self, connection):
         super().__init__(connection, "course_profile")
 
-    def get_max_course_id(self):
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        cursor.execute("SELECT MAX(course_id) FROM course_profile")
-        return cursor.fetchone()[0]
-
     def get_rows(self):
         conn = self.get_connection()
         cursor = conn.cursor()

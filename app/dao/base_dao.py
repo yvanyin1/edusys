@@ -21,6 +21,12 @@ class BaseDAO(object):
         cursor.execute(f"SELECT * FROM {self._table_name}")
         return cursor.fetchall()
 
+    def get_max_element_in_column(self, column_name):
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT MAX({column_name}) FROM {self._table_name}")
+        return cursor.fetchone()[0]
+
     def get_varchar_max_length(self, column_name, schema_name):
         conn = self.get_connection()
         cursor = conn.cursor()
