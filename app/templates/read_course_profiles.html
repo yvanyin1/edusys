@@ -14,13 +14,16 @@
     </div>
 
     <!-- Filter Input Form -->
-    <form method="get" action="{{ url_for('read_course_profiles') }}" id="filterForm" class="mb-4" style="display: none;">
+    <form method="get" action="{{ url_for('read_course_profiles') }}" id="filterForm" class="mb-5" style="height: auto; visibility: hidden;">
         <input type="hidden" name="filter_column" id="filterColumn">
-        <div class="input-group">
+        <div class="input-group mb-4">
             <input type="text" class="form-control" name="filter_value" placeholder="Enter value..." id="filterInput">
             <button type="submit" class="btn btn-secondary">Search</button>
         </div>
     </form>
+
+    <!-- Spacer between filter and table -->
+    <div class="mb-5"></div>
 
     <!-- Table Display -->
     <table class="table table-bordered">
@@ -55,7 +58,7 @@
 <script>
     function showFilter(column) {
         const form = document.getElementById('filterForm');
-        form.style.display = 'block';
+        form.style.visibility = 'visible';
         document.getElementById('filterColumn').value = column;
         document.getElementById('filterInput').placeholder = 'Enter ' + column.replace('_', ' ') + '...';
         document.getElementById('filterInput').focus();
