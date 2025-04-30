@@ -9,14 +9,14 @@ from mysql.connector.errors import IntegrityError, DataError, DatabaseError
 def test_course_profile_count(db_connection):
     """Test that the number of course profiles in initial table is exactly 3"""
     dao = CourseProfileDAO(db_connection)
-    count = dao.count_course_profiles()
+    count = dao.count_rows()
     assert count == 3
 
 
 def test_create_course_profile(db_connection):
     """Test that adding a course profile makes the number of rows increment by 1 and check for presence of row"""
     dao = CourseProfileDAO(db_connection)
-    initial_count_rows = dao.count_course_profiles()
+    initial_count_rows = dao.count_rows()
     initial_last_row_id = dao.get_max_course_id()
     new_course_profile = CourseProfile(
         course_id=-1,  # -1 is a dummy course_id
@@ -30,7 +30,7 @@ def test_create_course_profile(db_connection):
     last_row_id = dao.create_course_profile(new_course_profile)
 
     assert last_row_id == initial_last_row_id + 1
-    assert dao.count_course_profiles() == initial_count_rows + 1
+    assert dao.count_rows() == initial_count_rows + 1
 
     rows = dao.get_rows()
     # Check if new row is here
@@ -122,7 +122,7 @@ def test_read_course_profiles_one_course_subject(db_connection):
 def test_update_course_profile(db_connection):
     """Test that updating a course profile does not change the number of rows and check for modified row values"""
     dao = CourseProfileDAO(db_connection)
-    initial_count_rows = dao.count_course_profiles()
+    initial_count_rows = dao.count_rows()
     course_profile_to_update = dao.get_course_by_name("Introduction to Computer Science")
     course_id = course_profile_to_update.get_course_id()
     course_profile_updated = CourseProfile(
@@ -136,7 +136,7 @@ def test_update_course_profile(db_connection):
         profile_status=ProfileStatus.ACTIVE
     )
     dao.update_course_profile(course_profile_updated)
-    assert dao.count_course_profiles() == initial_count_rows  # should remain unchanged
+    assert dao.count_rows() == initial_count_rows  # should remain unchanged
     updated_course_profile = dao.get_course_by_id(course_id)  # fetch the updated row
     assert updated_course_profile.get_course_id() == course_id  # should remain unchanged
     assert updated_course_profile.get_name() == "Introduction to Computer Science"
@@ -192,11 +192,11 @@ def test_update_course_name_too_long_raises_error(db_connection):
 def test_delete_course_profile(db_connection):
     """Test that deleting a course profile decrements the number of rows and check for absence of row"""
     dao = CourseProfileDAO(db_connection)
-    initial_count_rows = dao.count_course_profiles()
+    initial_count_rows = dao.count_rows()
     course_profile_to_delete = dao.get_course_by_name("Sampling Theory and Applications")
     course_id = course_profile_to_delete.get_course_id()
     dao.delete_course_profile(course_id)
-    assert dao.count_course_profiles() == initial_count_rows - 1
+    assert dao.count_rows() == initial_count_rows - 1
     assert dao.get_course_by_name("Sampling Theory and Applications") is None
 
 def test_delete_nonexistent_course_raises_error(db_connection):

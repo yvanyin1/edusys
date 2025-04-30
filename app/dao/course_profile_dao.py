@@ -8,12 +8,6 @@ class CourseProfileDAO(BaseDAO):
     def __init__(self, connection):
         super().__init__(connection, "course_profile")
 
-    def count_course_profiles(self):
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT COUNT(*) FROM course_profile')
-        return cursor.fetchone()[0]
-
     def get_max_course_id(self):
         conn = self.get_connection()
         cursor = conn.cursor()
@@ -36,12 +30,12 @@ class CourseProfileDAO(BaseDAO):
                   AND TABLE_NAME = %s
                   AND COLUMN_NAME = %s \
                 """
-        cursor.execute(query, (schema_name, self.__table_name, column_name))
+        cursor.execute(query, (schema_name, self._table_name, column_name))
         result = cursor.fetchone()
         if result:
             return result[0]
         else:
-            raise ValueError(f"No such column '{column_name}' in table '{self.__table_name}' in schema '{schema_name}'")
+            raise ValueError(f"No such column '{column_name}' in table '{self._table_name}' in schema '{schema_name}'")
 
     def get_course_by_id(self, course_id: int) -> CourseProfile | None:
         query = "SELECT * FROM course_profile WHERE course_id = %s"
