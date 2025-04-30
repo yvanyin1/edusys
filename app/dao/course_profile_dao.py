@@ -25,13 +25,9 @@ class CourseProfileDAO(BaseDAO):
         return None
 
     def get_course_by_code(self, course_code: str) -> CourseProfile | None:
-        query = "SELECT * FROM course_profile WHERE course_code = %s"
-        conn = self.get_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(query, (course_code,))
-        result = cursor.fetchone()
+        result = self.get_rows_by_column_value(course_code, "course_code")
         if result:
-            return self.build_entity_object(result)
+            return self.build_entity_object(result[0])
         return None
 
     def create_course_profile(self, course_profile: CourseProfile):
