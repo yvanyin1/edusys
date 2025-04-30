@@ -7,6 +7,7 @@ from app.models.course_profile import CourseProfile
 from app.enums.audience_type import AudienceType
 from app.enums.profile_status import ProfileStatus
 from app.dao.course_profile_dao import CourseProfileDAO
+from app.models.student_profile import StudentProfile
 
 audience_type_map = {
     "General Audience": AudienceType.GENERAL_AUDIENCE,
@@ -55,7 +56,7 @@ def load_initial_data():
         )
         cursor = connection.cursor()
 
-        # SQL query to insert initial data
+        # Insert course data
         cursor.execute("DROP TABLE IF EXISTS course_profile")
         cursor.execute("""CREATE TABLE course_profile (
             course_id INT NOT NULL AUTO_INCREMENT,  -- for some reason adding NOT NULL removes an error
@@ -68,15 +69,39 @@ def load_initial_data():
             profile_status TINYINT NOT NULL DEFAULT 0 CHECK (profile_status IN (0, 1)),
             PRIMARY KEY (course_id)
         );""")
-        sql_insert = """
+        sql_insert_courses = """
             INSERT INTO course_profile(course_name, course_code, course_desc, target_audience, duration_in_weeks, credit_hours, profile_status)
             VALUES ('Introduction to Computer Science', 'COMP 250', 'Searching/sorting algorithms, data structures', 2, 15, 3.0, 1),
                    ('Theory of Computation', 'COMP 330', NULL, 2, 12, 3.0, 1),
                    ('Sampling Theory and Applications', 'MATH 525', 'Horvitz-Thompson estimator', 1, 10, 3.0, 1);
         """
+        cursor.execute(sql_insert_courses)
 
-        # Execute the SQL insert query
-        cursor.execute(sql_insert)
+        # Insert student data
+        cursor.execute("DROP TABLE IF EXISTS student_profile")
+        cursor.execute("""CREATE TABLE student_profile (
+            student_id INT AUTO_INCREMENT,
+            first_name VARCHAR(30) NOT NULL,
+            middle_name VARCHAR(30),
+            last_name VARCHAR(30) NOT NULL,
+            birth_date DATE,
+            phone_number VARCHAR(15),
+            email_address VARCHAR(120) NOT NULL UNIQUE,
+            home_address VARCHAR(255),
+            registration_date DATE,
+            enrollment_status TINYINT NOT NULL DEFAULT 0 CHECK (enrollment_status BETWEEN 0 AND 2),
+            guardian_status TINYINT(1) NOT NULL DEFAULT 0 CHECK (guardian_status IN (0, 1)),
+            profile_status TINYINT NOT NULL DEFAULT 0 CHECK (profile_status IN (0, 1)),
+            PRIMARY KEY (student_id)
+        );""")
+        StudentProfile()
+        sql_insert_courses = """
+            INSERT INTO student_profile(first_name, middle_name, last_name, birth_date, phone_number, email_address, home_address, registration_date, enrollment_status, guardian_status, profile_status)
+            VALUES ('Daniel', 'Ziyang', 'Luo', '1998-12-10', '5141234567', 'daniel.luo@mail.mcgill.ca', '123 rue Street', '2025-03-27', 1, 0, 1),
+                    ('Brian', 'Harold', 'May', '1947-07-19', '4381234567', 'brianmay@gmail.com', '1975 rue Queen', '2024-10-31', 0, 0, 0),
+                    ('Farrokh', '', 'Bulsara', '1946-09-05', '4501234567', 'freddiemercury@gmail.com', '1975 rue Bohemian', '2024-01-31', 1, 1, 1);"""
+        cursor.execute(sql_insert_courses)
+
         connection.commit()
         cursor.close()
         connection.close()
@@ -95,7 +120,12 @@ def home():
 
 @app.route('/course-management')
 def course_management():
-    return render_template("index.html", username="dluo")
+    return render_template("course_management.html", username="dluo")
+
+
+@app.route('/student-management')
+def student_management():
+    return render_template("student_management.html", username="dluo")
 
 
 @app.route('/create-course-profile')

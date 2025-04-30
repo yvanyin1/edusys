@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Student Management{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Student Management</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
+        <!-- Read -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Read Student Profiles</a>
+            <p style="margin-top: 8px;">
+                Browse the complete list of registered students along with their personal details.
+                Use this view to search or filter students.
+            </p>
+        </div>
+        <!-- Create -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Create Student Profile</a>
+            <p style="margin-top: 8px;">
+                Register a new student by entering their details such as
+                name, birthdate, email address, etc.
+            </p>
+        </div>
+
+        <!-- Update -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Update Student Profiles</a>
+            <p style="margin-top: 8px;">
+                Modify existing student information such as
+                student name, birthdate, email address, etc.
+            </p>
+        </div>
+
+        <!-- Delete -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Delete Student Profiles</a>
+            <p style="margin-top: 8px;">Remove a student profile from the system.</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
