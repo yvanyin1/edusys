@@ -9,13 +9,9 @@ class CourseProfileDAO(BaseDAO):
         super().__init__(connection, "course_profile")
 
     def get_course_by_id(self, course_id: int) -> CourseProfile | None:
-        query = "SELECT * FROM course_profile WHERE course_id = %s"
-        conn = self.get_connection()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(query, (course_id,))
-        result = cursor.fetchone()
+        result = self.get_rows_by_column_value(course_id, "course_id")
         if result:
-            return self.build_entity_object(result)
+            return self.build_entity_object(result[0])
         return None
 
     def get_course_by_name(self, course_name: str) -> CourseProfile | None:
