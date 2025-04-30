@@ -1,17 +1,12 @@
-import mysql.connector
+from app.dao.base_dao import BaseDAO
 from app.models.course_profile import CourseProfile
 from app.enums.audience_type import AudienceType
 from app.enums.profile_status import ProfileStatus
 
-class CourseProfileDAO:
-
-    __table_name = "course_profile"
+class CourseProfileDAO(BaseDAO):
 
     def __init__(self, connection):
-        self.__connection = connection
-
-    def get_connection(self):
-        return self.__connection
+        super().__init__(connection, "course_profile")
 
     def count_course_profiles(self):
         conn = self.get_connection()
