@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Create Student Profile{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Add a New Student</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="margin-bottom: 15px;">
+          {% for category, message in messages %}
+            <div style="color: {% if category == 'warning' %}red{% else %}green{% endif %};">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="#" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        <label>First Name*:
+            <input type="text" name="first_name" value="{{ form_data.first_name if form_data else '' }}" required style="width: 100%;">
+        </label>
+
+        <label>Middle Name:
+            <input type="text" name="middle_name" value="{{ form_data.middle_name if form_data else '' }}" style="width: 100%;">
+        </label>
+
+        <label>Last Name*:
+            <input type="text" name="last_name" value="{{ form_data.last_name if form_data else '' }}" required style="width: 100%;">
+        </label>
+
+        <label>Birth Date:
+            <input type="date" name="birth_date" value="{{ form_data.birth_date if form_data else '' }}" style="width: 100%;">
+        </label>
+
+        <label>Phone Number:
+            <input type="text" name="phone_number" value="{{ form_data.phone_number if form_data else '' }}" style="width: 100%;">
+        </label>
+
+        <label>Email Address*:
+            <input type="email" name="email_address" value="{{ form_data.email_address if form_data else '' }}" required style="width: 100%;">
+        </label>
+
+        <label>Home Address:
+            <input type="text" name="home_address" value="{{ form_data.home_address if form_data else '' }}" style="width: 100%;">
+        </label>
+
+        <label>Registration Date:
+            <input type="date" name="registration_date" value="{{ form_data.registration_date if form_data else '' }}" style="width: 100%;">
+        </label>
+
+        <label>Enrollment Status*:
+            <select name="enrollment_status" required style="width: 100%;">
+                <option value="" disabled selected>Select status</option>
+                <option value="0" {% if form_data and form_data.enrollment_status == 0 %}selected{% endif %}>Not Enrolled</option>
+                <option value="1" {% if form_data and form_data.enrollment_status == 1 %}selected{% endif %}>Part-Time</option>
+                <option value="2" {% if form_data and form_data.enrollment_status == 2 %}selected{% endif %}>Full-Time</option>
+            </select>
+        </label>
+
+        <label>Guardian Status*:
+            <select name="guardian_status" required style="width: 100%;">
+                <option value="" disabled selected>Select guardian status</option>
+                <option value="0" {% if form_data and form_data.guardian_status == 0 %}selected{% endif %}>No Guardian</option>
+                <option value="1" {% if form_data and form_data.guardian_status == 1 %}selected{% endif %}>Has Guardian</option>
+            </select>
+        </label>
+
+        <label>Profile Status*:
+            <select name="profile_status" required style="width: 100%;">
+                <option value="" disabled selected>Select profile status</option>
+                <option value="0" {% if form_data and form_data.profile_status == 0 %}selected{% endif %}>Inactive</option>
+                <option value="1" {% if form_data and form_data.profile_status == 1 %}selected{% endif %}>Active</option>
+            </select>
+        </label>
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Add Student
+        </button>
+    </form>
+</div>
+{% endblock %}

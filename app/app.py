@@ -320,5 +320,9 @@ def delete_course_profile_success():
     return render_template("delete_course_profile_success.html", course=course_data, username="dluo")
 
 
+@app.route('/create-student-profile')
+def create_student_profile():
+    return render_template("create_student_profile_form.html", username="dluo")
+
 if __name__ == '__main__':
     app.run(debug=True)
