@@ -44,13 +44,12 @@ class BaseDAO(object):
         else:
             raise ValueError(f"No such column '{column_name}' in table '{self._table_name}' in schema '{schema_name}'")
 
-    def get_by_id(self, id_value: int, id_column: str, builder_func) -> object | None:
-        query = f"SELECT * FROM {self._table_name} WHERE {id_column} = %s"
+    def get_rows_by_column_value(self, value, column_name: str) -> object | None:
+        query = f"SELECT * FROM {self._table_name} WHERE {column_name} = %s"
         conn = self.get_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute(query, (id_value,))
-        result = cursor.fetchone()
-        return self.build_entity_object(result) if result else None
+        cursor.execute(query, (value,))
+        return cursor.fetchall()
 
     @staticmethod
     @abstractmethod
