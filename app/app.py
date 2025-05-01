@@ -217,43 +217,23 @@ def read_course_profiles():
     filter_column = request.args.get('filter_column')
     filter_value = request.args.get('filter_value')
 
-    valid_columns = {
-        'course_id': 'course_id',
-        'course_code': 'course_code',
-        'course_name': 'course_name',
-        'profile_status': 'profile_status'
-    }
+    valid_columns = {'course_id', 'course_code', 'course_name', 'profile_status'}
+
+    if filter_column and filter_column not in valid_columns:
+        return "Invalid filter column", 400
+
     try:
-        # Query all courses from the 'course_profile' table
-        connection = mysql.connector.connect(  # Will move this to DAO
-            host=os.getenv("DB_HOST"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            database=os.getenv("DB_NAME"),
+        connection = get_connection()
+        dao = CourseProfileDAO(connection)
+        courses = dao.read_course_profiles(filter_column, filter_value)
+
+        return render_template(
+            "read_course_profiles.html",
+            courses=courses,
+            filter_column=filter_column,
+            filter_value=filter_value,
+            username="dluo"
         )
-        cursor = connection.cursor(dictionary=True)  # Enable fetching data as a dictionary
-
-        query = "SELECT * FROM course_profile"
-        params = []
-
-        if filter_column in valid_columns and filter_value:
-            query += f" WHERE {valid_columns[filter_column]} LIKE %s"
-            params.append(f"%{filter_value}%")
-
-        cursor.execute(query, params)
-        courses = cursor.fetchall()
-
-        # Convert Enum integer values to Enum name
-        for course in courses:
-            course["target_audience"] = AudienceType(course["target_audience"]).name.title().replace("_", " ")
-            course["profile_status"] = ProfileStatus(course["profile_status"]).name.title()
-
-        cursor.close()
-        connection.close()
-
-        # Pass the courses data to the template
-        return render_template("read_course_profiles.html",
-                               courses=courses, filter_column=filter_column, filter_value=filter_value, username="dluo")
     except Exception as e:
         return f"Error fetching courses: {e}"
 
