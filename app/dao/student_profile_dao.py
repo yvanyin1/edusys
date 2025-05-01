@@ -114,7 +114,6 @@ class StudentProfileDAO(BaseDAO):
 
     @staticmethod
     def build_entity_object(row: dict) -> StudentProfile:
-        print(row['enrollment_status'])
         return StudentProfile(
             student_id=row['student_id'],
             first_name=row['first_name'],
