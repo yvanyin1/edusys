@@ -1,5 +1,6 @@
 from app.dao.base_dao import BaseDAO
 from app.models.student_profile import StudentProfile
+from app.utils.student_utils import StudentUtils
 from app.enums.enrollment_status import EnrollmentStatus
 from app.enums.guardian_status import GuardianStatus
 from app.enums.profile_status import ProfileStatus
@@ -21,13 +22,18 @@ class StudentProfileDAO(BaseDAO):
             return self.build_entity_object(result[0])
         return None
 
+    def get_max_student_id(self):
+        return self.get_max_element_in_column("student_id")
+
     def create_student_profile(self, student_profile: StudentProfile):
+        new_student_id = StudentUtils.generate_unique_student_id()
         query = """
         INSERT INTO student_profile 
-        (first_name, middle_name, last_name, birth_date, phone_number, email_address, home_address, registration_date, enrollment_status, guardian_status, profile_status)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        (student_id, first_name, middle_name, last_name, birth_date, phone_number, email_address, home_address, registration_date, enrollment_status, guardian_status, profile_status)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         values = (
+            new_student_id,
             student_profile.get_first_name(),
             student_profile.get_middle_name(),
             student_profile.get_last_name(),

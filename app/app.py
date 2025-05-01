@@ -14,6 +14,7 @@ from app.enums.guardian_status import GuardianStatus
 
 from app.dao.course_profile_dao import CourseProfileDAO
 from app.dao.student_profile_dao import StudentProfileDAO
+from app.utils.student_utils import StudentUtils
 
 audience_type_map = {
     "General Audience": AudienceType.GENERAL_AUDIENCE,
@@ -112,10 +113,10 @@ def load_initial_data():
             PRIMARY KEY (student_id)
         );""")
         sql_insert_students = """
-            INSERT INTO student_profile(first_name, middle_name, last_name, birth_date, phone_number, email_address, home_address, registration_date, enrollment_status, guardian_status, profile_status)
-            VALUES ('Daniel', 'Ziyang', 'Luo', '1998-12-10', '5141234567', 'daniel.luo@mail.mcgill.ca', '123 rue Street', '2025-03-27', 1, 0, 1),
-                    ('Brian', 'Harold', 'May', '1947-07-19', '4381234567', 'brianmay@gmail.com', '1975 rue Queen', '2024-10-31', 0, 0, 0),
-                    ('Farrokh', '', 'Bulsara', '1946-09-05', '4501234567', 'freddiemercury@gmail.com', '1975 rue Bohemian', '2024-01-31', 1, 1, 1);"""
+            INSERT INTO student_profile(student_id, first_name, middle_name, last_name, birth_date, phone_number, email_address, home_address, registration_date, enrollment_status, guardian_status, profile_status)
+            VALUES ('2025050001', 'Daniel', 'Ziyang', 'Luo', '1998-12-10', '5141234567', 'daniel.luo@mail.mcgill.ca', '123 rue Street', '2025-03-27', 1, 0, 1),
+                    ('2025050002', 'Brian', 'Harold', 'May', '1947-07-19', '4381234567', 'brianmay@gmail.com', '1975 rue Queen', '2024-10-31', 0, 0, 0),
+                    ('2025050003', 'Farrokh', '', 'Bulsara', '1946-09-05', '4501234567', 'freddiemercury@gmail.com', '1975 rue Bohemian', '2024-01-31', 1, 1, 1);"""
         cursor.execute(sql_insert_students)
 
         connection.commit()
@@ -344,6 +345,7 @@ def create_student_profile():
 @app.route('/student-profile-created', methods=['POST'])
 def student_profile_created():
     # Extract form data
+    student_id = StudentUtils.generate_unique_student_id()
     first_name = request.form['first_name']
     middle_name = request.form.get('middle_name', '')
     last_name = request.form['last_name']
@@ -393,6 +395,7 @@ def student_profile_created():
 
     # Pass student data to success template
     student_data = {
+        'student_id': student_id,
         'first_name': first_name,
         'middle_name': middle_name,
         'last_name': last_name,

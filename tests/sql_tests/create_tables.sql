@@ -19,7 +19,7 @@ CREATE TABLE course_profile (
 DROP TABLE IF EXISTS student_profile;
 
 CREATE TABLE student_profile (
-	student_id INT AUTO_INCREMENT,
+	student_id VARCHAR(10) NOT NULL UNIQUE,
 	first_name VARCHAR(30) NOT NULL,
 	middle_name VARCHAR(30),
 	last_name VARCHAR(30) NOT NULL,
