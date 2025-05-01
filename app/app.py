@@ -120,6 +120,32 @@ def load_initial_data():
                     ('2025050003', 'Farrokh', '', 'Bulsara', '1946-09-05', '4501234567', 'freddiemercury@gmail.com', '1975 rue Bohemian', '2024-01-31', 1, 1, 1);"""
         cursor.execute(sql_insert_students)
 
+        # Insert teacher data
+        cursor.execute("DROP TABLE IF EXISTS student_profile")
+        cursor.execute("""CREATE TABLE teacher_profile (
+            teacher_id INT AUTO_INCREMENT,
+            first_name VARCHAR(30) NOT NULL,
+            middle_name VARCHAR(30),
+            last_name VARCHAR(30) NOT NULL,
+            birth_date DATE,
+            phone_number VARCHAR(15),
+            email_address VARCHAR(120) NOT NULL UNIQUE,
+            home_address VARCHAR(255),
+            subject_expertise VARCHAR(100) NOT NULL,
+            employment_status TINYINT NOT NULL DEFAULT 0 CHECK (employment_status BETWEEN 0 AND 3),
+            teacher_role TINYINT NOT NULL DEFAULT 1 CHECK (teacher_role IN (1, 2)),
+            profile_status TINYINT NOT NULL DEFAULT 0 CHECK (profile_status IN (0, 1)),
+            PRIMARY KEY (teacher_id)
+        );""")
+        sql_insert_teachers= """
+            INSERT INTO student_profile(first_name, middle_name, last_name, birth_date,
+                phone_number, email_address, home_address, subject_expertise, employment_status, teacher_role, profile_status),
+            VALUES ('Albert', '', 'Einstein', '1879-03-14', '5143141879', 'emc2@gmail.com', '123 Relativity Street', 'Physics, Science', 1, 1, 1),
+                    ('Alan', 'Mathison', 'Turing', '1912-06-23', '5146231912', 'turing@gmail.com', '468 Fox Street', 'Computer Science', 3, 1, 0),
+                    ('Harald', '', 'Cramer', '1893-09-25', '5149251893', 'haraldcramer@gmail.com', '100 Gothenburg Street', 'Statistics', 2, 2, 1);
+            """
+        cursor.execute(sql_insert_teachers)
+
         connection.commit()
         cursor.close()
         connection.close()
@@ -491,6 +517,11 @@ def update_student_profile_success():
 @app.route('/teacher-management')
 def teacher_management():
     return render_template("teacher_management.html", username="dluo")
+
+
+@app.route('/read-teacher-profiles')
+def read_teacher_profiles():
+    return "Teacher!"
 
 
 if __name__ == '__main__':

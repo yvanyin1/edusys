@@ -82,4 +82,7 @@ class CourseProfile(object):
         return self.__profile_status
 
     def set_profile_status(self, profile_status):
-        self.__profile_status = profile_status
+        if isinstance(profile_status, ProfileStatus):
+            self.__profile_status = profile_status
+        else:
+            raise Exception("profile_status must be of type ProfileStatus")

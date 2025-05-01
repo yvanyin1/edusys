@@ -1,13 +1,13 @@
-from app.enums.enrollment_status import EnrollmentStatus
-from app.enums.guardian_status import GuardianStatus
+from app.enums.employment_status import EmploymentStatus
+from app.enums.teacher_role import TeacherRole
 from app.enums.profile_status import ProfileStatus
 
 
-class StudentProfile(object):
+class TeacherProfile(object):
 
-    def __init__(self, student_id, first_name, middle_name, last_name, birth_date, phone_number, email_address,
-                 home_address, registration_date, enrollment_status, guardian_status, profile_status):
-        self.__student_id = student_id
+    def __init__(self, teacher_id, first_name, middle_name, last_name, birth_date, phone_number, email_address,
+                 home_address, subject_expertise, employment_status, teacher_role, profile_status):
+        self.__teacher_id = teacher_id
         self.__first_name = first_name
         self.__middle_name = middle_name
         self.__last_name = last_name
@@ -15,39 +15,39 @@ class StudentProfile(object):
         self.__phone_number = phone_number
         self.__email_address = email_address
         self.__home_address = home_address
-        self.__registration_date = registration_date
-        if isinstance(enrollment_status, EnrollmentStatus):
-            self.__enrollment_status = enrollment_status
+        self.__subject_expertise = subject_expertise
+        if isinstance(employment_status, EmploymentStatus):
+            self.__employment_status = employment_status
         else:
-            raise Exception('enrollment_status must be of type EnrollmentStatus')
-        if isinstance(guardian_status, GuardianStatus):
-            self.__guardian_status = guardian_status
+            raise Exception('employment_status must be of type EmploymentStatus')
+        if isinstance(teacher_role, TeacherRole):
+            self.__teacher_role = teacher_role
         else:
-            raise Exception('guardian_status must be of type GuardianStatus')
+            raise Exception('teacher_role must be of type TeacherRole')
         if isinstance(profile_status, ProfileStatus):
             self.__profile_status = profile_status
         else:
             raise Exception("profile_status must be of type ProfileStatus")
 
     def __eq__(self, other):
-        if not isinstance(other, StudentProfile):
+        if not isinstance(other, TeacherProfile):
             return False
-        return self.__student_id == other.__student_id
+        return self.__teacher_id == other.__teacher_id
 
     def __hash__(self):
-        return hash((self.__student_id, self.__first_name, self.__middle_name, self.__last_name, self.__birth_date))
+        return hash((self.__teacher_id, self.__first_name, self.__middle_name, self.__last_name, self.__birth_date))
 
     def __repr__(self):
-        return (f"StudentProfile({self.__student_id}), {self.__first_name}, {self.__middle_name}, " +
+        return (f"TeacherProfile({self.__teacher_id}), {self.__first_name}, {self.__middle_name}, " +
                 f"{self.__last_name}, {self.__birth_date}), {self.__phone_number}, {self.__email_address}, " +
-                f"{self.__home_address}, {self.__registration_date}, {self.__enrollment_status}, " +
-                f"{self.__guardian_status}, {self.__profile_status})")
+                f"{self.__home_address}, {self.__subject_expertise}, {self.__employment_status}, " +
+                f"{self.__teacher_role}, {self.__profile_status})")
 
     def __str__(self):
-        return f"{self.__student_id}: {self.__first_name} {self.__middle_name} {self.__last_name}"
+        return f"{self.__teacher_id}: {self.__first_name} {self.__middle_name} {self.__last_name}"
 
     def get_student_id(self):
-        return self.__student_id
+        return self.__teacher_id
 
     def get_first_name(self):
         return self.__first_name
@@ -94,29 +94,29 @@ class StudentProfile(object):
     def set_home_address(self, home_address):
         self.__home_address = home_address
 
-    def get_registration_date(self):
-        return self.__registration_date
+    def get_subject_expertise(self):
+        return self.__subject_expertise
 
-    def set_registration_date(self, registration_date):
-        self.__registration_date = registration_date
+    def set_subject_expertise(self, subject_expertise):
+        self.__subject_expertise = subject_expertise
 
-    def get_enrollment_status(self):
-        return self.__enrollment_status
+    def get_employment_status(self):
+        return self.__employment_status
 
-    def set_enrollment_status(self, enrollment_status):
-        if isinstance(enrollment_status, EnrollmentStatus):
-            self.__enrollment_status = enrollment_status
+    def set_employment_status(self, employment_status):
+        if isinstance(employment_status, EmploymentStatus):
+            self.__employment_status = employment_status
         else:
-            raise Exception('enrollment_status must be of type EnrollmentStatus')
+            raise Exception('employment_status must be of type EmploymentStatus')
 
-    def get_guardian_status(self):
-        return self.__guardian_status
+    def get_teacher_role(self):
+        return self.__teacher_role
 
-    def set_guardian_status(self, guardian_status):
-        if isinstance(guardian_status, GuardianStatus):
-            self.__guardian_status = guardian_status
+    def set_teacher_role(self, teacher_role):
+        if isinstance(teacher_role, TeacherRole):
+            self.__teacher_role = teacher_role
         else:
-            raise Exception('guardian_status must be of type GuardianStatus')
+            raise Exception('teacher_role must be of type TeacherRole')
 
     def get_profile_status(self):
         return self.__profile_status

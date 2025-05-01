@@ -33,3 +33,20 @@ CREATE TABLE student_profile (
 	profile_status TINYINT NOT NULL DEFAULT 0 CHECK (profile_status IN (0, 1)),
 	PRIMARY KEY (student_id)
 );
+
+DROP TABLE IF EXISTS teacher_profile;
+CREATE TABLE teacher_profile (
+	teacher_id INT AUTO_INCREMENT,
+	first_name VARCHAR(30) NOT NULL,
+	middle_name VARCHAR(30),
+	last_name VARCHAR(30) NOT NULL,
+	birth_date DATE,
+	phone_number VARCHAR(15),
+	email_address VARCHAR(120) NOT NULL UNIQUE,
+	home_address VARCHAR(255),
+	subject_expertise VARCHAR(100) NOT NULL,
+	employment_status TINYINT NOT NULL DEFAULT 0 CHECK (employment_status BETWEEN 0 AND 3),
+	teacher_role TINYINT NOT NULL DEFAULT 1 CHECK (teacher_role IN (1, 2)),
+	profile_status TINYINT NOT NULL DEFAULT 0 CHECK (profile_status IN (0, 1)),
+	PRIMARY KEY (teacher_id)
+);
