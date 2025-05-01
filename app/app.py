@@ -488,22 +488,10 @@ def update_student_profile_success():
     return render_template("update_student_profile_success.html", student=student_data, username="dluo")
 
 
-# @app.route('/update-course-profile/edit-course', methods=['GET'])
-# def edit_course_profile():
-#     course_name_or_code = request.args.get('course_name_or_code')
-#
-#     connection = get_connection()
-#     dao = CourseProfileDAO(connection)
-#     course_profile = dao.get_course_by_name(course_name_or_code) if dao.get_course_by_name(
-#         course_name_or_code) else dao.get_course_by_code(course_name_or_code)
-#
-#     enum_to_string = {
-#         course_profile.get_target_audience(): AudienceType(course_profile.get_target_audience()).name.title().replace("_", " "),
-#         course_profile.get_profile_status(): ProfileStatus(course_profile.get_profile_status()).name.title()
-#     }
-#
-#     return render_template("update_course_profile_edit.html",
-#                            course=course_profile, enum_to_string=enum_to_string, username="dluo")
+@app.route('/teacher-management')
+def teacher_management():
+    return render_template("teacher_management.html", username="dluo")
+
 
 if __name__ == '__main__':
     app.run(debug=True)

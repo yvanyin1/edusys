@@ -33,15 +33,15 @@
     <div class="content">
         <h1>Welcome to EduSys!</h1>
             <div class="home-buttons">
-                <a href="/student-management" class="home-button-block">
+                <a href="{{ url_for("student_management") }}" class="home-button-block">
                     <div class="title">Student Management</div>
                     <div class="desc">Register, update, search or delete student profiles</div>
                 </a>
-                <a href="#" class="home-button-block">
+                <a href="{{ url_for("teacher_management") }}" class="home-button-block">
                     <div class="title">Teacher Management</div>
                     <div class="desc">Manage teacher profiles and assignments</div>
                 </a>
-                <a href="/course-management" class="home-button-block">
+                <a href="{{ url_for("course_management") }}" class="home-button-block">
                     <div class="title">Course Management</div>
                     <div class="desc">Create, view, update or delete course offerings</div>
                 </a>
