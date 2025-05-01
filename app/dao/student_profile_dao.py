@@ -52,6 +52,27 @@ class StudentProfileDAO(BaseDAO):
         conn.commit()
         return cursor.lastrowid
 
+    def read_student_profiles(self, filter_column=None, filter_value=None):
+        try:
+            query = "SELECT * FROM student_profile"
+            if filter_column and filter_value:
+                query += f" WHERE {filter_column} LIKE '%{filter_value}%'"
+            conn = self.get_connection()
+            cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
+            cursor.execute(query)
+            students = cursor.fetchall()
+            conn.commit()
+
+            # Convert Enum integer values to Enum name
+            for student in students:
+                student["enrollment_status"] = EnrollmentStatus(student["enrollment_status"]).name.title()
+                student["guardian_status"] = GuardianStatus(student["guardian_status"]).name.title().replace("_", " ")
+                student["profile_status"] = ProfileStatus(student["profile_status"]).name.title()
+            return students
+
+        except Exception as e:
+            return f"Error fetching courses: {e}"
+
     @staticmethod
     def build_entity_object(row: dict) -> StudentProfile:
         return StudentProfile(
