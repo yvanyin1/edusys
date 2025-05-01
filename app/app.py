@@ -535,7 +535,6 @@ def read_teacher_profiles():
         connection = get_connection()
         dao = TeacherProfileDAO(connection)
         teachers = dao.read_teacher_profiles(filter_column, filter_value)
-        print(teachers)
 
         return render_template(
             "read_teacher_profiles.html",
@@ -546,6 +545,11 @@ def read_teacher_profiles():
         )
     except Exception as e:
         return f"Error fetching teachers: {e}"
+
+
+@app.route('/class-management')
+def class_management():
+    return render_template("class_management.html", username="dluo")
 
 
 if __name__ == '__main__':

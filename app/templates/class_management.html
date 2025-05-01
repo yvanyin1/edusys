@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Class Management{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Class Management</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
+        <!-- Read -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">View Class Sections</a>
+            <p style="margin-top: 8px;">
+                Browse the complete list of registered class sections along with their details.
+                Use this view to search or filter class sections.
+            </p>
+        </div>
+        <!-- Create -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Create Class Section</a>
+            <p style="margin-top: 8px;">
+                Register a new course by entering its details such as
+                associated course, associated teachers, etc.
+            </p>
+        </div>
+
+        <!-- Update -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Update Class Sections</a>
+            <p style="margin-top: 8px;">
+                Modify existing class section information such as
+                associated course, associated teachers, etc.
+            </p>
+        </div>
+
+        <!-- Delete -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Delete Class Sections</a>
+            <p style="margin-top: 8px;">Remove a class section that's no longer needed.</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

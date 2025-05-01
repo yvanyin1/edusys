@@ -20,10 +20,10 @@
 
         <!-- Tabs (Navigation links) -->
         <div>
-            <a href="/student-management">Student Management</a>
-            <a href="/teacher-management">Teacher Management</a>
-            <a href="/course-management">Course Management</a>
-            <a href="#">Class Management</a>
+            <a href=" {{ url_for('student_management') }}">Student Management</a>
+            <a href="{{ url_for('teacher_management') }}">Teacher Management</a>
+            <a href="{{ url_for('course_management') }}">Course Management</a>
+            <a href="{{ url_for('class_management') }}">Class Management</a>
         </div>
 
         <!-- Dropdown for User Info -->
