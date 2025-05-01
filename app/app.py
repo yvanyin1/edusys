@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import mysql.connector
@@ -132,8 +132,12 @@ load_initial_data()
 
 
 @app.route('/')
+def index():
+    return redirect(url_for("home"))
+
+@app.route('/home')
 def home():
-    return "Hello, World!"
+    return render_template("home_page.html", username="dluo")
 
 
 @app.route('/course-management')
