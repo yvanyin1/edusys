@@ -552,5 +552,15 @@ def class_management():
     return render_template("class_management.html", username="dluo")
 
 
+@app.route('/create-scheduled-class-session')
+def create_scheduled_class_session():
+    return "Create scheduled class session"
+
+
+@app.route('/create-scheduled-class-session-success')
+def scheduled_class_session_created():
+    return "Session created"
+
+
 if __name__ == '__main__':
     app.run(debug=True)
