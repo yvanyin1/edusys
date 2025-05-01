@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import mysql.connector
 import os
+from datetime import datetime
 
 from app.models.course_profile import CourseProfile
 from app.models.student_profile import StudentProfile
@@ -353,7 +354,7 @@ def student_profile_created():
     phone_number = request.form.get('phone_number', '')
     email_address = request.form['email_address']
     home_address = request.form.get('home_address', '')
-    registration_date = request.form.get('registration_date') or None
+    registration_date = request.form.get('registration_date') or datetime.today().date().isoformat()  # YYYY-MM-DD for today
     enrollment_status_string = request.form['enrollment_status']
     enrollment_status = enrollment_status_map[enrollment_status_string]
     guardian_status_string = request.form['guardian_status']
