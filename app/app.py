@@ -241,12 +241,12 @@ def read_course_profiles():
     except Exception as e:
         return f"Error fetching courses: {e}"
 
-@app.route('/update-course-profiles/search', methods=["GET"])
-def update_course_profiles_search():
+@app.route('/update-course-profile/search', methods=["GET"])
+def update_course_profile_search():
     return render_template("update_course_profile_search.html", username="dluo")
 
 
-@app.route('/update-course-profiles/edit-course', methods=['GET'])
+@app.route('/update-course-profile/edit-course', methods=['GET'])
 def edit_course_profile():
     course_name_or_code = request.args.get('course_name_or_code')
 
@@ -256,7 +256,7 @@ def edit_course_profile():
         course_name_or_code) else dao.get_course_by_code(course_name_or_code)
 
     enum_to_string = {
-        course_profile.get_target_audience(): AudienceType(course_profile.get_target_audience()).name.title(),
+        course_profile.get_target_audience(): AudienceType(course_profile.get_target_audience()).name.title().replace("_", " "),
         course_profile.get_profile_status(): ProfileStatus(course_profile.get_profile_status()).name.title()
     }
 
@@ -264,8 +264,8 @@ def edit_course_profile():
                            course=course_profile, enum_to_string=enum_to_string, username="dluo")
 
 
-@app.route('/update-course-profiles/success', methods=['POST'])
-def update_course_profiles_success():
+@app.route('/update-course-profile/success', methods=['POST'])
+def update_course_profile_success():
     course_id = request.form['course_id']
     course_name = request.form['course_name']
     course_code = request.form['course_code']
@@ -422,6 +422,90 @@ def read_student_profiles():
     except Exception as e:
         return f"Error fetching courses: {e}"
 
+
+@app.route('/update-student-profile/search', methods=["GET"])
+def update_student_profile_search():
+    return render_template("update_student_profile_search.html", username="dluo")
+
+
+@app.route('/update-student-profile/edit-student', methods=['GET'])
+def edit_student_profile():
+    student_id = int(request.args.get('student_id'))
+
+    connection = get_connection()
+    dao = StudentProfileDAO(connection)
+    print("before bug")
+    student_profile = dao.get_student_by_id(student_id)
+    print("no bug")
+    enum_to_string = {
+        student_profile.get_enrollment_status(): EnrollmentStatus(student_profile.get_enrollment_status()).name.title(),
+        student_profile.get_guardian_status(): GuardianStatus(student_profile.get_guardian_status()).name.title().replace("_", " "),
+        student_profile.get_profile_status(): ProfileStatus(student_profile.get_profile_status()).name.title()
+    }
+
+    return render_template("update_student_profile_edit.html",
+                           student=student_profile, enum_to_string=enum_to_string, username="dluo")
+
+
+@app.route('/update-student-profile/success', methods=['POST'])
+def update_student_profile_success():
+    student_id = request.form['student_id']
+    first_name = request.form['first_name']
+    middle_name = request.form['middle_name']
+    last_name = request.form['last_name']
+    birth_date = request.form['birth_date']
+    phone_number = request.form['phone_number']
+    email_address = request.form['email_address']
+    home_address = request.form['home_address']
+    registration_date = request.form['registration_date']
+    enrollment_status_string = request.form['enrollment_status']
+    guardian_status_string = request.form['guardian_status']
+    profile_status_string = request.form['profile_status']
+
+    enrollment_status = enrollment_status_map[enrollment_status_string]
+    guardian_status = guardian_status_map[guardian_status_string]
+    profile_status = profile_status_map[profile_status_string]
+
+    connection = get_connection()
+    dao = StudentProfileDAO(connection)
+    dao.update_student_profile(StudentProfile(student_id, first_name, middle_name, last_name, birth_date,
+                                              phone_number, email_address, home_address, registration_date,
+                                              enrollment_status, guardian_status, profile_status))
+
+    student_data = {
+        'student_id': student_id,
+        'first_name': first_name,
+        'middle_name': middle_name,
+        'last_name': last_name,
+        'birth_date': birth_date,
+        'phone_number': phone_number,
+        'email_address': email_address,
+        'home_address': home_address,
+        'registration_date': registration_date,
+        'enrollment_status': enrollment_status_string,
+        'guardian_status': guardian_status_string,
+        'profile_status': profile_status_string
+    }
+
+    return render_template("update_student_profile_success.html", student=student_data, username="dluo")
+
+
+# @app.route('/update-course-profile/edit-course', methods=['GET'])
+# def edit_course_profile():
+#     course_name_or_code = request.args.get('course_name_or_code')
+#
+#     connection = get_connection()
+#     dao = CourseProfileDAO(connection)
+#     course_profile = dao.get_course_by_name(course_name_or_code) if dao.get_course_by_name(
+#         course_name_or_code) else dao.get_course_by_code(course_name_or_code)
+#
+#     enum_to_string = {
+#         course_profile.get_target_audience(): AudienceType(course_profile.get_target_audience()).name.title().replace("_", " "),
+#         course_profile.get_profile_status(): ProfileStatus(course_profile.get_profile_status()).name.title()
+#     }
+#
+#     return render_template("update_course_profile_edit.html",
+#                            course=course_profile, enum_to_string=enum_to_string, username="dluo")
 
 if __name__ == '__main__':
     app.run(debug=True)

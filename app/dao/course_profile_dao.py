@@ -61,7 +61,7 @@ class CourseProfileDAO(BaseDAO):
 
             # Convert Enum integer values to Enum name
             for course in courses:
-                course["target_audience"] = AudienceType(course["target_audience"]).name.title()
+                course["target_audience"] = AudienceType(course["target_audience"]).name.title().replace("_", " ")
                 course["profile_status"] = ProfileStatus(course["profile_status"]).name.title()
             return courses
 

@@ -12,14 +12,9 @@
     <p><strong>Email Address:</strong> {{ student.email_address }}</p>
     <p><strong>Home Address:</strong> {{ student.home_address or 'N/A' }}</p>
     <p><strong>Registration Date:</strong> {{ student.registration_date or 'N/A' }}</p>
-    <p><strong>Enrollment Status:</strong>
-        {% if student.enrollment_status == 0 %}Inactive
-        {% elif student.enrollment_status == 1 %}Enrolled
-        {% elif student.enrollment_status == 2 %}Graduated
-        {% else %}Unknown{% endif %}
-    </p>
-    <p><strong>Guardian Status:</strong> {{ 'Has Guardian' if student.guardian_status else 'No Guardian' }}</p>
-    <p><strong>Profile Status:</strong> {{ 'Active' if student.profile_status else 'Inactive' }}</p>
+    <p><strong>Enrollment Status:</strong> {{ student.enrollment_status }}</p>
+    <p><strong>Guardian Status:</strong> {{ student.guardian_status }}</p>
+    <p><strong>Profile Status:</strong> {{ student.profile_status }}</p>
 
     <div style="margin-top: 30px;">
         <button type="button" onclick="location.href='{{ url_for('create_student_profile') }}'">

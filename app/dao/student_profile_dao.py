@@ -71,10 +71,50 @@ class StudentProfileDAO(BaseDAO):
             return students
 
         except Exception as e:
-            return f"Error fetching courses: {e}"
+            return f"Error fetching students: {e}"
+
+    def update_student_profile(self, student_profile: StudentProfile):
+        query = """
+        UPDATE student_profile SET
+            first_name = %s,
+            middle_name = %s,
+            last_name = %s,
+            birth_date = %s,
+            phone_number = %s,
+            email_address = %s,
+            home_address = %s,
+            registration_date = %s,
+            enrollment_status = %s,
+            guardian_status = %s,
+            profile_status = %s
+        WHERE student_id = %s
+        """
+        values = (
+            student_profile.get_first_name(),
+            student_profile.get_middle_name(),
+            student_profile.get_last_name(),
+            student_profile.get_birth_date(),
+            student_profile.get_phone_number(),
+            student_profile.get_email_address(),
+            student_profile.get_home_address(),
+            student_profile.get_registration_date(),
+            student_profile.get_enrollment_status().value,
+            student_profile.get_guardian_status().value,
+            student_profile.get_profile_status().value,
+            student_profile.get_student_id()
+        )
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()
+
+        # Check if update actually affected a row
+        if cursor.rowcount == 0:
+            raise ValueError(f"Student ID {student_profile.get_student_id()} does not exist in the database.")
 
     @staticmethod
     def build_entity_object(row: dict) -> StudentProfile:
+        print(row['enrollment_status'])
         return StudentProfile(
             student_id=row['student_id'],
             first_name=row['first_name'],
@@ -85,6 +125,6 @@ class StudentProfileDAO(BaseDAO):
             email_address=row['email_address'],
             home_address=row['home_address'],
             registration_date=row['registration_date'],
-            enrollment_status=row['enrollment_status'],
-            guardian_status=row['guardian_status'],
-            profile_status=row['profile_status'])
+            enrollment_status=EnrollmentStatus(row['enrollment_status']),
+            guardian_status=GuardianStatus(row['guardian_status']),
+            profile_status=ProfileStatus(row['profile_status']))
