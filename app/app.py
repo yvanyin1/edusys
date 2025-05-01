@@ -7,6 +7,7 @@ from datetime import datetime
 
 from app.models.course_profile import CourseProfile
 from app.models.student_profile import StudentProfile
+from app.models.teacher_profile import TeacherProfile
 
 from app.enums.audience_type import AudienceType
 from app.enums.profile_status import ProfileStatus
@@ -15,6 +16,7 @@ from app.enums.guardian_status import GuardianStatus
 
 from app.dao.course_profile_dao import CourseProfileDAO
 from app.dao.student_profile_dao import StudentProfileDAO
+from app.dao.teacher_profile_dao import TeacherProfileDAO
 from app.utils.student_utils import StudentUtils
 
 audience_type_map = {
@@ -121,7 +123,7 @@ def load_initial_data():
         cursor.execute(sql_insert_students)
 
         # Insert teacher data
-        cursor.execute("DROP TABLE IF EXISTS student_profile")
+        cursor.execute("DROP TABLE IF EXISTS teacher_profile")
         cursor.execute("""CREATE TABLE teacher_profile (
             teacher_id INT AUTO_INCREMENT,
             first_name VARCHAR(30) NOT NULL,
@@ -138,8 +140,8 @@ def load_initial_data():
             PRIMARY KEY (teacher_id)
         );""")
         sql_insert_teachers= """
-            INSERT INTO student_profile(first_name, middle_name, last_name, birth_date,
-                phone_number, email_address, home_address, subject_expertise, employment_status, teacher_role, profile_status),
+            INSERT INTO teacher_profile(first_name, middle_name, last_name, birth_date,
+                phone_number, email_address, home_address, subject_expertise, employment_status, teacher_role, profile_status)
             VALUES ('Albert', '', 'Einstein', '1879-03-14', '5143141879', 'emc2@gmail.com', '123 Relativity Street', 'Physics, Science', 1, 1, 1),
                     ('Alan', 'Mathison', 'Turing', '1912-06-23', '5146231912', 'turing@gmail.com', '468 Fox Street', 'Computer Science', 3, 1, 0),
                     ('Harald', '', 'Cramer', '1893-09-25', '5149251893', 'haraldcramer@gmail.com', '100 Gothenburg Street', 'Statistics', 2, 2, 1);
@@ -521,7 +523,29 @@ def teacher_management():
 
 @app.route('/read-teacher-profiles')
 def read_teacher_profiles():
-    return "Teacher!"
+    filter_column = request.args.get('filter_column')
+    filter_value = request.args.get('filter_value')
+
+    valid_columns = {'teacher_id', 'first_name', 'last_name', 'employment_status', 'teacher_role', 'profile_status'}
+
+    if filter_column and filter_column not in valid_columns:
+        return "Invalid filter column", 400
+
+    try:
+        connection = get_connection()
+        dao = TeacherProfileDAO(connection)
+        teachers = dao.read_teacher_profiles(filter_column, filter_value)
+        print(teachers)
+
+        return render_template(
+            "read_teacher_profiles.html",
+            teachers=teachers,
+            filter_column=filter_column,
+            filter_value=filter_value,
+            username="dluo"
+        )
+    except Exception as e:
+        return f"Error fetching teachers: {e}"
 
 
 if __name__ == '__main__':

@@ -51,7 +51,7 @@ class TeacherProfileDAO(BaseDAO):
         conn.commit()
         return cursor.lastrowid
 
-    def read_student_profiles(self, filter_column=None, filter_value=None):
+    def read_teacher_profiles(self, filter_column=None, filter_value=None):
         try:
             query = "SELECT * FROM teacher_profile"
             if filter_column and filter_value:
@@ -65,7 +65,8 @@ class TeacherProfileDAO(BaseDAO):
             # Convert Enum integer values to Enum name
             for teacher in teachers:
                 teacher["employment_status"] = EmploymentStatus(teacher["employment_status"]).name.title().replace("_", "-")
-                teacher["teacher_role"] = TeacherRole(teacher["teacher_role"]).name.title()
+                enum_role = TeacherRole(teacher["teacher_role"])
+                teacher["teacher_role"] = "TA" if enum_role == TeacherRole.TA else TeacherRole(teacher["teacher_role"]).name.title()
                 teacher["profile_status"] = ProfileStatus(teacher["profile_status"]).name.title()
             return teachers
 
