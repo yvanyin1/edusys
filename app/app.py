@@ -415,10 +415,49 @@ def student_profile_created():
 
 @app.route('/read_student_profiles')
 def read_student_profiles():
-    # Connect to DB
-    connection = get_connection()
-    dao = StudentProfileDAO(connection)
-    return dao.get_all_rows()
+    filter_column = request.args.get('filter_column')
+    filter_value = request.args.get('filter_value')
+
+    valid_columns = {
+        'student_id': 'student_id',
+        'first_name': 'first_name',
+        'last_name': 'last_name',
+        'profile_status': 'profile_status'
+    }
+    try:
+        # Query all courses from the 'course_profile' table
+        connection = mysql.connector.connect(  # Will move this to DAO
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME"),
+        )
+        cursor = connection.cursor(dictionary=True)  # Enable fetching data as a dictionary
+
+        query = "SELECT * FROM student_profile"
+        params = []
+
+        if filter_column in valid_columns and filter_value:
+            query += f" WHERE {valid_columns[filter_column]} LIKE %s"
+            params.append(f"%{filter_value}%")
+
+        cursor.execute(query, params)
+        students = cursor.fetchall()
+
+        # Convert Enum integer values to Enum name
+        for student in students:
+            student["enrollment_status"] = EnrollmentStatus(student["enrollment_status"]).name.title()
+            student["guardian_status"] = GuardianStatus(student["guardian_status"]).name.title().replace("_", " ")
+            student["profile_status"] = ProfileStatus(student["profile_status"]).name.title()
+
+        cursor.close()
+        connection.close()
+
+        # Pass the students data to the template
+        return render_template("read_student_profiles.html", students=students,
+                               filter_column=filter_column, filter_value=filter_value, username="dluo")
+    except Exception as e:
+        return f"Error fetching students: {e}"
 
 
 if __name__ == '__main__':
