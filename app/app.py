@@ -434,9 +434,7 @@ def edit_student_profile():
 
     connection = get_connection()
     dao = StudentProfileDAO(connection)
-    print("before bug")
     student_profile = dao.get_student_by_id(student_id)
-    print("no bug")
     enum_to_string = {
         student_profile.get_enrollment_status(): EnrollmentStatus(student_profile.get_enrollment_status()).name.title(),
         student_profile.get_guardian_status(): GuardianStatus(student_profile.get_guardian_status()).name.title().replace("_", " "),
