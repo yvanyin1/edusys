@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Create Class Section{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Add a New Class Schedule</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="margin-bottom: 15px;">
+          {% for category, message in messages %}
+            <div style="color: {% if category == 'warning' %}red{% else %}green{% endif %};">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('class_schedule_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        <label>Course*:
+            <select name="course_id" required style="width: 100%;">
+                <option value="" disabled selected>Select a course</option>
+                {% for course in active_courses %}
+                    <option value="{{ course.course_id }}"
+                        {% if form_data and form_data.course_id == course.course_id %}selected{% endif %}>
+                        {{ course.course_code }}: {{ course.course_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Semester*:
+            <select name="semester_id" required style="width: 100%;">
+                <option value="" disabled selected>Select semester</option>
+                {% for semester in semesters %}
+                    <option value="{{ semester.semester_id }}"
+                        {% if form_data and form_data.semester_id == semester.semester_id %}selected{% endif %}>
+                        {{ semester.season }} {{ semester.academic_year }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Class Capacity*:
+            <input type="number" name="class_capacity" value="{{ form_data.class_capacity if form_data else '' }}" required style="width: 100%;">
+        </label>
+
+        <label>Class Type*:
+            <select name="class_type" required style="width: 100%;">
+                <option value="" disabled selected>Select class type</option>
+                {% for type in class_types %}
+                    <option value="{{ type.name }}"
+                        {% if form_data and form_data.class_type == type.name %}selected{% endif %}>
+                        {{ type.name.title().replace('_', ' ') }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Class Description:
+            <textarea name="class_desc" rows="4" style="width: 100%;">{{ form_data.class_desc if form_data else '' }}</textarea>
+        </label>
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Create Class Section
+        </button>
+    </form>
+</div>
+{% endblock %}

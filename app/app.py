@@ -7,6 +7,7 @@ from datetime import datetime
 
 from app.dao.classroom_location_dao import ClassroomLocationDAO
 from app.dao.semester_dao import SemesterDAO
+from app.enums.class_type import ClassType
 from app.models.course_profile import CourseProfile
 from app.models.student_profile import StudentProfile
 from app.models.teacher_profile import TeacherProfile
@@ -585,6 +586,23 @@ def read_teacher_profiles():
 @app.route('/class-management')
 def class_management():
     return render_template("class_management.html", username="dluo")
+
+
+@app.route('/create-class-schedule')
+def create_class_schedule():
+    connection = get_connection()
+    course_profile_dao = CourseProfileDAO(connection)
+    active_courses = course_profile_dao.read_course_profiles("profile_status", 1)
+    semester_dao = SemesterDAO(connection)
+    semesters = semester_dao.read_semester_data()
+    class_types = list(ClassType)
+    return render_template("create_class_schedule.html", active_courses=active_courses,
+                           semesters=semesters, class_types=class_types, username="dluo")
+
+
+@app.route('/create-class-schedule-success')
+def class_schedule_created():
+    return "Class schedule created"
 
 
 @app.route('/create-scheduled-class-session')
