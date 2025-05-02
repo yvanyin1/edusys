@@ -51,7 +51,7 @@
             <select name="class_type" required style="width: 100%;">
                 <option value="" disabled selected>Select class type</option>
                 {% for type in class_types %}
-                    <option value="{{ type.name }}"
+                    <option value="{{ type.name.title() }}"
                         {% if form_data and form_data.class_type == type.name %}selected{% endif %}>
                         {{ type.name.title().replace('_', ' ') }}
                     </option>

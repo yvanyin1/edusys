@@ -5,21 +5,24 @@ import mysql.connector
 import os
 from datetime import datetime
 
-from app.dao.classroom_location_dao import ClassroomLocationDAO
-from app.dao.semester_dao import SemesterDAO
-from app.enums.class_type import ClassType
 from app.models.course_profile import CourseProfile
 from app.models.student_profile import StudentProfile
 from app.models.teacher_profile import TeacherProfile
+from app.models.class_schedule import ClassSchedule
 
 from app.enums.audience_type import AudienceType
 from app.enums.profile_status import ProfileStatus
 from app.enums.enrollment_status import EnrollmentStatus
 from app.enums.guardian_status import GuardianStatus
+from app.enums.class_type import ClassType
 
 from app.dao.course_profile_dao import CourseProfileDAO
 from app.dao.student_profile_dao import StudentProfileDAO
 from app.dao.teacher_profile_dao import TeacherProfileDAO
+from app.dao.class_schedule_dao import ClassScheduleDAO
+from app.dao.classroom_location_dao import ClassroomLocationDAO
+from app.dao.semester_dao import SemesterDAO
+
 from app.utils.student_utils import StudentUtils
 
 audience_type_map = {
@@ -42,6 +45,14 @@ enrollment_status_map = {
 guardian_status_map = {
     "No Guardian": GuardianStatus.NO_GUARDIAN,
     "Has Guardian": GuardianStatus.HAS_GUARDIAN
+}
+
+class_type_map = {
+    "Regular": ClassType.REGULAR,
+    "Recreational": ClassType.RECREATIONAL,
+    "One To One": ClassType.ONE_TO_ONE,
+    "Workshop": ClassType.WORKSHOP,
+    "Intensive": ClassType.INTENSIVE,
 }
 
 load_dotenv(dotenv_path='.env_test')
@@ -183,6 +194,26 @@ def load_initial_data():
             INSERT INTO classroom_location(room_number, building_name, capacity)
             VALUES ("132", "Leacock", 600), ("112", "Rutherford Physics", 150), ("0132", "Trottier", 50);"""
         cursor.execute(sql_insert_classroom_locations)
+
+        # Insert class schedule data
+        cursor.execute("DROP TABLE IF EXISTS class_schedule")
+        cursor.execute("""CREATE TABLE class_schedule (
+            schedule_id INT AUTO_INCREMENT,
+            course_id INT NOT NULL,
+            semester_id INT NOT NULL,
+            class_capacity INT NOT NULL,
+            class_type TINYINT NOT NULL DEFAULT 1 CHECK (class_type BETWEEN 1 AND 5),
+            class_desc TEXT NOT NULL,
+            PRIMARY KEY (schedule_id),
+            FOREIGN KEY (course_id) REFERENCES course_profile(course_id),
+            FOREIGN KEY (semester_id) REFERENCES semester(semester_id)
+        );""")
+        sql_insert_class_schedules = """
+            INSERT INTO class_schedule(course_id, semester_id, class_capacity, class_type, class_desc)
+                                         VALUES (1, 2, 100, 2, "Computer science in a breeze"), \
+                                                (2, 2, 1, 3, "DFA for one person"), \
+                                                (3, 3, 30, 1, "Statistics in a medium-sized class");"""
+        cursor.execute(sql_insert_class_schedules)
 
         connection.commit()
         cursor.close()
@@ -588,7 +619,7 @@ def class_management():
     return render_template("class_management.html", username="dluo")
 
 
-@app.route('/create-class-schedule')
+@app.route('/class-management/create-class-schedule')
 def create_class_schedule():
     connection = get_connection()
     course_profile_dao = CourseProfileDAO(connection)
@@ -600,9 +631,52 @@ def create_class_schedule():
                            semesters=semesters, class_types=class_types, username="dluo")
 
 
-@app.route('/create-class-schedule-success')
+@app.route('/class-management/create-class-schedule-success', methods=['POST'])
 def class_schedule_created():
-    return "Class schedule created"
+    connection = get_connection()
+    course_profile = CourseProfileDAO(connection).get_course_by_id(int(request.form['course_id']))
+    semester = SemesterDAO(connection).get_semester_by_id(int(request.form['semester_id']))
+    class_capacity = request.form['class_capacity']
+    class_type_string = request.form['class_type']
+    class_desc = request.form['class_desc']
+
+    # Convert to correct types
+    class_type = class_type_map[class_type_string]  # assuming this map exists like profile_status_map
+
+    connection = get_connection()
+    dao = ClassScheduleDAO(connection)
+
+    form_data = {
+        'course_name': course_profile.get_name(),
+        'semester_name': semester.get_name(),
+        'class_capacity': class_capacity,
+        'class_type': class_type_string,
+        'class_desc': class_desc
+    }
+
+    # (Optional) Any custom validation you want here
+    if int(class_capacity) <= 0:
+        flash("Class capacity must be a positive number.", 'warning')
+        return render_template("create_class_schedule.html", form_data=form_data, username="dluo", semesters=..., active_courses=..., classroom_locations=...)
+
+    new_schedule = ClassSchedule(
+        schedule_id=0,
+        course_id=course_profile.get_course_id(),
+        semester_id=semester.get_semester_id(),
+        class_capacity=int(class_capacity),
+        class_type=class_type,
+        class_desc=class_desc
+    )
+
+    dao.create_class_schedule(new_schedule)
+
+    return render_template("create_class_schedule_success.html", class_schedule=form_data, username="dluo")
+
+
+@app.route('/read-class-schedules')
+def read_class_schedules():
+    class_schedules = ClassScheduleDAO(get_connection()).read_class_schedules()
+    return "<br>".join([str(schedule) for schedule in class_schedules])
 
 
 @app.route('/create-scheduled-class-session')
