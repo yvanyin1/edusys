@@ -17,7 +17,7 @@
       {% endif %}
     {% endwith %}
 
-    <form action="{{ url_for('create_scheduled_class_session') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+    <form action="{{ url_for('scheduled_class_session_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
 
         <label>Class Schedule*:
             <select name="schedule_id" required style="width: 100%;">

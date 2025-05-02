@@ -5,9 +5,11 @@ import mysql.connector
 import os
 from datetime import datetime
 
+from app.dao.scheduled_class_session_dao import ScheduledClassSessionDAO
 from app.enums.session_change_type import SessionChangeType
 from app.enums.session_type import SessionType
 from app.models.course_profile import CourseProfile
+from app.models.scheduled_class_session import ScheduledClassSession
 from app.models.student_profile import StudentProfile
 from app.models.teacher_profile import TeacherProfile
 from app.models.class_schedule import ClassSchedule
@@ -181,8 +183,8 @@ def load_initial_data():
         sql_insert_semesters = """
             INSERT INTO semester(season, academic_year, start_date, end_date, registration_deadline, withdrawal_deadline)
             VALUES (3, 2025, '2025-05-05', '2025-08-22', '2025-05-03 23:59:59', '2025-06-15 23:59:59'),
-                    (1, 2025, '2025-09-08', '2025-12-19', '2025-09-06 23:59:59', '2025-10-15 23:59:59'),
-                    (2, 2026, '2025-01-05', '2025-04-24', '2025-01-03 23:59:59', '2025-02-15 23:59:59');"""
+                    (3, 2025, '2025-09-08', '2025-12-19', '2025-09-06 23:59:59', '2025-10-15 23:59:59'),
+                    (3, 2026, '2025-01-05', '2025-04-24', '2025-01-03 23:59:59', '2025-02-15 23:59:59');"""
         cursor.execute(sql_insert_semesters)
 
         # Insert classroom location data
@@ -215,8 +217,8 @@ def load_initial_data():
         sql_insert_class_schedules = """
             INSERT INTO class_schedule(course_id, semester_id, class_capacity, class_type, class_desc)
                                          VALUES (1, 2, 100, 2, "Computer science in a breeze"), \
-                                                (2, 2, 1, 3, "DFA for one person"), \
-                                                (3, 3, 30, 1, "Statistics in a medium-sized class");"""
+                                                (1, 2, 1, 3, "DFA for one person"), \
+                                                (1, 3, 30, 1, "Statistics in a medium-sized class");"""
         cursor.execute(sql_insert_class_schedules)
 
         # Insert scheduled class sessions data
@@ -711,7 +713,6 @@ def create_scheduled_class_session():
         class_schedule_dao.get_course_profile_by_schedule_id(schedule["schedule_id"])
         for schedule in class_schedules_dict
     ]
-    print(course_profiles)
     class_schedule_names = [{"schedule_id": schedule["schedule_id"], "course_code": course.get_code(), "course_name": course.get_name()}
                             for (schedule, course) in zip(class_schedules_dict, course_profiles)]
 
@@ -730,9 +731,72 @@ def create_scheduled_class_session():
                            flags=flags, username="dluo")
 
 
-@app.route('/create-scheduled-class-session-success')
+@app.route('/create-scheduled-class-session-success', methods=["POST"])
 def scheduled_class_session_created():
-    return "Session created"
+    try:
+        schedule_id = int(request.form["schedule_id"])
+        location_id = int(request.form["location_id"])
+        day_of_week = DayOfWeek(int(request.form["day_of_week"]))
+        start_time = request.form["start_time"]
+        end_time = request.form["end_time"]
+        session_type = SessionType[request.form["session_type"]]
+        scheduled_date = request.form["scheduled_date"]
+        seq_no = int(request.form["seq_no"])
+        session_change_type_str = request.form.get("session_change_type")
+        session_change_type = SessionChangeType[session_change_type_str] if session_change_type_str else None
+        flag = Flag(int(request.form["flag"]))
+
+        session = ScheduledClassSession(
+            session_id=None,
+            schedule_id=schedule_id,
+            location_id=location_id,
+            day_of_week=day_of_week,
+            start_time=start_time,
+            end_time=end_time,
+            session_type=session_type,
+            scheduled_date=scheduled_date,
+            seq_no=seq_no,
+            session_change_type=session_change_type,
+            flag=flag,
+        )
+
+        ScheduledClassSessionDAO(get_connection()).create_class_session(session)
+        flash("Scheduled session created successfully!", "success")
+        return redirect(url_for("create_scheduled_class_session"))
+
+    except Exception as e:
+        flash(f"Failed to create session: {str(e)}", "warning")
+
+        # Pull fresh values for re-rendering form
+        connection = get_connection()
+        class_schedule_dao = ClassScheduleDAO(connection)
+        class_schedules_dict = class_schedule_dao.read_class_schedules()
+        course_profiles = [
+            class_schedule_dao.get_course_profile_by_schedule_id(schedule["schedule_id"])
+            for schedule in class_schedules_dict
+        ]
+        class_schedule_names = [{"schedule_id": schedule["schedule_id"], "course_code": course.get_code(), "course_name": course.get_name()}
+                                for (schedule, course) in zip(class_schedules_dict, course_profiles)]
+
+        classroom_location_dao = ClassroomLocationDAO(connection)
+        classroom_locations = classroom_location_dao.read_classroom_location_data()
+
+        days = list(DayOfWeek)
+        session_types = list(SessionType)
+        session_change_types = list(SessionChangeType)
+        flags = list(Flag)
+
+        form_data = request.form.to_dict()
+
+        return render_template("create_scheduled_class_session.html",
+                               class_schedule_names=class_schedule_names,
+                               classroom_locations=classroom_locations,
+                               days=days,
+                               session_types=session_types,
+                               session_change_types=session_change_types,
+                               flags=flags,
+                               form_data=form_data,
+                               username="dluo")
 
 
 if __name__ == '__main__':
