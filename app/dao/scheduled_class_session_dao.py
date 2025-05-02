@@ -33,7 +33,7 @@ class ScheduledClassSessionDAO(BaseDAO):
             session.get_session_type().value,
             session.get_scheduled_date(),
             session.get_seq_no(),
-            session.get_session_change_type().value,
+            session.get_session_change_type().value if session.get_session_change_type() else None,
             session.get_flag().value
         )
         conn = self.get_connection()

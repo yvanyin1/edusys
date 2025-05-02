@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import mysql.connector
 import os
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from app.dao.scheduled_class_session_dao import ScheduledClassSessionDAO
 from app.enums.session_change_type import SessionChangeType
@@ -97,8 +97,12 @@ def load_initial_data():
         )
         cursor = connection.cursor()
 
-        # Insert course data
+        # Drop existing tables
+        cursor.execute("""DROP TABLE IF EXISTS scheduled_class_session""")
+        cursor.execute("DROP TABLE IF EXISTS class_schedule")
+
         cursor.execute("DROP TABLE IF EXISTS course_profile")
+        # Insert course data
         cursor.execute("""CREATE TABLE course_profile (
             course_id INT NOT NULL AUTO_INCREMENT,  -- for some reason adding NOT NULL removes an error
             course_name VARCHAR(50) NOT NULL UNIQUE,
@@ -202,7 +206,6 @@ def load_initial_data():
         cursor.execute(sql_insert_classroom_locations)
 
         # Insert class schedule data
-        cursor.execute("DROP TABLE IF EXISTS class_schedule")
         cursor.execute("""CREATE TABLE class_schedule (
             schedule_id INT AUTO_INCREMENT,
             course_id INT NOT NULL,
@@ -222,7 +225,6 @@ def load_initial_data():
         cursor.execute(sql_insert_class_schedules)
 
         # Insert scheduled class sessions data
-        cursor.execute("""DROP TABLE IF EXISTS scheduled_class_session""")
         cursor.execute("""CREATE TABLE scheduled_class_session (
             session_id INT AUTO_INCREMENT,
             schedule_id INT NOT NULL,
@@ -249,6 +251,70 @@ def load_initial_data():
 
 # TODO for testing purposes
 load_initial_data()
+
+
+# TODO for testing purposes
+def add_initial_scheduled_class_sessions():
+    connection = get_connection()
+    session_dao = ScheduledClassSessionDAO(connection)
+
+    start_date = date(2025, 5, 5)
+    end_date = date(2025, 8, 24)
+    session_type = SessionType.LECTURE
+    flag = Flag.ACTIVE
+    session_change_type = None
+
+    schedule_configs = {
+        1: {
+            "days": [DayOfWeek.TUESDAY, DayOfWeek.THURSDAY],
+            "start_time": "14:30",
+            "end_time": "16:00",
+            "location_id": 1,
+        },
+        2: {
+            "days": [DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY],
+            "start_time": "10:00",
+            "end_time": "11:00",
+            "location_id": 3,
+        },
+        3: {
+            "days": [DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY],
+            "start_time": "12:00",
+            "end_time": "13:30",
+            "location_id": 2,
+        },
+    }
+
+    for schedule_id, config in schedule_configs.items():
+        current_date = start_date
+        seq_no = 1
+        while current_date <= end_date:
+            day_enum = DayOfWeek(current_date.weekday() + 1)
+            if day_enum in config["days"]:
+                session = ScheduledClassSession(
+                    session_id=None,
+                    schedule_id=schedule_id,
+                    location_id=config["location_id"],
+                    day_of_week=day_enum,
+                    start_time=config["start_time"],
+                    end_time=config["end_time"],
+                    session_type=session_type,
+                    scheduled_date=current_date.isoformat(),
+                    seq_no=seq_no,
+                    session_change_type=session_change_type,
+                    flag=flag,
+                )
+                session_dao.create_class_session(session)
+                seq_no += 1
+            current_date += timedelta(days=1)
+
+        print(f"✅ Finished inserting sessions for schedule {schedule_id}")
+
+    print("🎉 All sessions inserted successfully.")
+    print(session_dao.count_rows())
+
+
+add_initial_scheduled_class_sessions()
 
 
 @app.route('/')
