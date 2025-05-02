@@ -1,6 +1,12 @@
 from app.dao.base_dao import BaseDAO
 from app.models.class_schedule import ClassSchedule
 from app.enums.class_type import ClassType
+from app.enums.audience_type import AudienceType
+from app.enums.profile_status import ProfileStatus
+
+from app.dao.course_profile_dao import CourseProfileDAO
+from app.models.course_profile import CourseProfile
+
 
 class ClassScheduleDAO(BaseDAO):
 
@@ -51,6 +57,11 @@ class ClassScheduleDAO(BaseDAO):
         except Exception as e:
             return f"Error fetching class schedules: {e}"
 
+    def get_course_profile_by_schedule_id(self, schedule_id):
+        class_schedule = self.get_class_schedule_by_id(schedule_id)
+        course_id = class_schedule.get_course_id()
+        return CourseProfileDAO(self.get_connection()).get_course_by_id(course_id)
+
     @staticmethod
     def build_entity_object(row: dict) -> ClassSchedule:
         return ClassSchedule(
@@ -58,6 +69,6 @@ class ClassScheduleDAO(BaseDAO):
             course_id=row["course_id"],
             semester_id=row["semester_id"],
             class_capacity=row["class_capacity"],
-            class_type=row["class_type"],
+            class_type=ClassType(row["class_type"]),
             class_desc=row["class_desc"],
         )

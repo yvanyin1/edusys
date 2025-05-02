@@ -29,7 +29,7 @@ class CourseProfile(object):
         return hash((self.__course_id, self.__course_code, self.__course_name))
 
     def __repr__(self):
-        return (f"Course({self.__course_id}), {self.__course_name}, {self.__course_code}, " +
+        return (f"Course({self.__course_id}, {self.__course_name}, {self.__course_code}, " +
                 f"{self.__course_desc}, {self.__target_audience}, {self.__duration_in_weeks}, " +
                 f"{self.__credit_hours}, {self.__profile_status})")
 

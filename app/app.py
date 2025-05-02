@@ -5,6 +5,8 @@ import mysql.connector
 import os
 from datetime import datetime
 
+from app.enums.session_change_type import SessionChangeType
+from app.enums.session_type import SessionType
 from app.models.course_profile import CourseProfile
 from app.models.student_profile import StudentProfile
 from app.models.teacher_profile import TeacherProfile
@@ -15,6 +17,8 @@ from app.enums.profile_status import ProfileStatus
 from app.enums.enrollment_status import EnrollmentStatus
 from app.enums.guardian_status import GuardianStatus
 from app.enums.class_type import ClassType
+from app.enums.day_of_week import DayOfWeek
+from app.enums.flag import Flag
 
 from app.dao.course_profile_dao import CourseProfileDAO
 from app.dao.student_profile_dao import StudentProfileDAO
@@ -214,6 +218,25 @@ def load_initial_data():
                                                 (2, 2, 1, 3, "DFA for one person"), \
                                                 (3, 3, 30, 1, "Statistics in a medium-sized class");"""
         cursor.execute(sql_insert_class_schedules)
+
+        # Insert scheduled class sessions data
+        cursor.execute("""DROP TABLE IF EXISTS scheduled_class_session""")
+        cursor.execute("""CREATE TABLE scheduled_class_session (
+            session_id INT AUTO_INCREMENT,
+            schedule_id INT NOT NULL,
+            location_id INT NOT NULL,
+            day_of_week TINYINT NOT NULL DEFAULT 1 CHECK (day_of_week BETWEEN 1 AND 7),
+            start_time TIME NOT NULL,
+            end_time TIME NOT NULL,
+            session_type TINYINT NOT NULL DEFAULT 1 CHECK (session_type BETWEEN 1 AND 4),
+            scheduled_date DATE NOT NULL,
+            seq_no TINYINT NOT NULL,
+            session_change_type TINYINT DEFAULT NULL CHECK (session_change_type IS NULL OR session_change_type BETWEEN 0 AND 3),
+            flag TINYINT NOT NULL DEFAULT 1 CHECK (flag IN (0, 1)),
+            PRIMARY KEY (session_id),
+            FOREIGN KEY (schedule_id) REFERENCES class_schedule(schedule_id),
+            FOREIGN KEY (location_id) REFERENCES classroom_location(location_id)
+        );""")
 
         connection.commit()
         cursor.close()
@@ -682,13 +705,29 @@ def read_class_schedules():
 @app.route('/create-scheduled-class-session')
 def create_scheduled_class_session():
     connection = get_connection()
-    semester_dao = SemesterDAO(connection)
-    semesters = semester_dao.read_semester_data()
+    class_schedule_dao = ClassScheduleDAO(connection)
+    class_schedules_dict = class_schedule_dao.read_class_schedules()
+    course_profiles = [
+        class_schedule_dao.get_course_profile_by_schedule_id(schedule["schedule_id"])
+        for schedule in class_schedules_dict
+    ]
+    print(course_profiles)
+    class_schedule_names = [{"schedule_id": schedule["schedule_id"], "course_code": course.get_code(), "course_name": course.get_name()}
+                            for (schedule, course) in zip(class_schedules_dict, course_profiles)]
+
     classroom_location_dao = ClassroomLocationDAO(connection)
     classroom_locations = classroom_location_dao.read_classroom_location_data()
-    print(semesters, classroom_locations)
 
-    return render_template("create_scheduled_class_session_form.html", username="dluo")
+    days = list(DayOfWeek)
+    session_types = list(SessionType)
+    session_change_types = list(SessionChangeType)
+    flags = list(Flag)
+
+    return render_template("create_scheduled_class_session.html",
+                           class_schedule_names=class_schedule_names,
+                           classroom_locations=classroom_locations,
+                           days=days, session_types=session_types, session_change_types=session_change_types,
+                           flags=flags, username="dluo")
 
 
 @app.route('/create-scheduled-class-session-success')
