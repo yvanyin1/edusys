@@ -5,11 +5,14 @@ import mysql.connector
 import os
 from datetime import datetime, date, timedelta
 
+from app.dao.student_enrollment_status_dao import StudentEnrollmentDetailsDAO
 from app.dao.scheduled_class_session_dao import ScheduledClassSessionDAO
+from app.enums.class_enrollment_status import ClassEnrollmentStatus
 from app.enums.session_change_type import SessionChangeType
 from app.enums.session_type import SessionType
 from app.models.course_profile import CourseProfile
 from app.models.scheduled_class_session import ScheduledClassSession
+from app.models.student_enrollment_details import StudentEnrollmentDetails
 from app.models.student_profile import StudentProfile
 from app.models.teacher_profile import TeacherProfile
 from app.models.class_schedule import ClassSchedule
@@ -98,10 +101,11 @@ def load_initial_data():
         cursor = connection.cursor()
 
         # Drop existing tables
-        cursor.execute("""DROP TABLE IF EXISTS scheduled_class_session""")
+        cursor.execute("DROP TABLE IF EXISTS student_enrollment_details")
+        cursor.execute("DROP TABLE IF EXISTS scheduled_class_session")
         cursor.execute("DROP TABLE IF EXISTS class_schedule")
-
         cursor.execute("DROP TABLE IF EXISTS course_profile")
+
         # Insert course data
         cursor.execute("""CREATE TABLE course_profile (
             course_id INT NOT NULL AUTO_INCREMENT,  -- for some reason adding NOT NULL removes an error
@@ -224,7 +228,7 @@ def load_initial_data():
                                                 (1, 3, 30, 1, "Statistics in a medium-sized class");"""
         cursor.execute(sql_insert_class_schedules)
 
-        # Insert scheduled class sessions data
+        # Create scheduled class sessions table
         cursor.execute("""CREATE TABLE scheduled_class_session (
             session_id INT AUTO_INCREMENT,
             schedule_id INT NOT NULL,
@@ -240,6 +244,18 @@ def load_initial_data():
             PRIMARY KEY (session_id),
             FOREIGN KEY (schedule_id) REFERENCES class_schedule(schedule_id),
             FOREIGN KEY (location_id) REFERENCES classroom_location(location_id)
+        );""")
+
+        # Create student enrollment details table
+        cursor.execute("""CREATE TABLE student_enrollment_details (
+            enrollment_id INT AUTO_INCREMENT,
+            student_id VARCHAR(10) NOT NULL,
+            class_schedule_id INT NOT NULL,
+            enrollment_date DATE NOT NULL,
+            enrollment_status TINYINT NOT NULL DEFAULT 0 CHECK (enrollment_status BETWEEN 0 AND 3),
+            PRIMARY KEY (enrollment_id),
+            FOREIGN KEY (student_id) REFERENCES student_profile(student_id),
+            FOREIGN KEY (class_schedule_id) REFERENCES class_schedule(schedule_id)
         );""")
 
         connection.commit()
@@ -314,7 +330,19 @@ def add_initial_scheduled_class_sessions():
     print(session_dao.count_rows())
 
 
+# TODO for testing purposes
 add_initial_scheduled_class_sessions()
+
+
+# TODO for testing purposes
+def enroll_students_in_classes_initial():
+    connection = get_connection()
+    dao = StudentEnrollmentDetailsDAO(connection)
+    dao.create_enrollment(StudentEnrollmentDetails(0, 2025050001, 1, "2025-05-03", ClassEnrollmentStatus.ACTIVE))
+    dao.create_enrollment(StudentEnrollmentDetails(0, 2025050001, 2, "2025-05-03", ClassEnrollmentStatus.ACTIVE))
+    dao.create_enrollment(StudentEnrollmentDetails(0, 2025050001, 3, "2025-05-03", ClassEnrollmentStatus.ACTIVE))
+
+enroll_students_in_classes_initial()
 
 
 @app.route('/')
