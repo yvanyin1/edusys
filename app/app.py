@@ -64,6 +64,16 @@ class_type_map = {
     "Intensive": ClassType.INTENSIVE,
 }
 
+day_of_week_map = {
+    "Monday": DayOfWeek.MONDAY,
+    "Tuesday": DayOfWeek.TUESDAY,
+    "Wednesday": DayOfWeek.WEDNESDAY,
+    "Thursday": DayOfWeek.THURSDAY,
+    "Friday": DayOfWeek.FRIDAY,
+    "Saturday": DayOfWeek.SATURDAY,
+    "Sunday": DayOfWeek.SUNDAY
+}
+
 load_dotenv(dotenv_path='.env_test')
 
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
@@ -891,6 +901,34 @@ def scheduled_class_session_created():
                                flags=flags,
                                form_data=form_data,
                                username="dluo")
+
+
+@app.route('/generate-sessions-by-class')
+def generate_sessions_by_class():
+    course_query = request.args.get('course_query')
+    class_sessions = []
+    search_attempted = False  # <-- Add this
+
+    if course_query is not None:
+        search_attempted = True
+        course_query = course_query.strip()
+        if course_query.isdigit():
+            schedule_id = int(course_query)
+
+            connection = get_connection()
+            session_dao = ScheduledClassSessionDAO(connection)
+
+            class_sessions = session_dao.read_class_sessions("schedule_id", schedule_id)
+            for session in class_sessions:
+                session["location_id"] = (ClassroomLocationDAO(connection)
+                                          .get_location_by_id(session["location_id"])).get_name()
+
+            if not class_sessions:
+                flash('No sessions found for that schedule ID.', 'warning')
+        elif course_query:
+            flash('Please enter a valid numeric Schedule ID.', 'warning')
+
+    return render_template('generate_sessions_by_class.html', class_sessions=class_sessions, search_attempted=search_attempted, username="dluo")
 
 
 if __name__ == '__main__':

@@ -57,7 +57,12 @@ class ScheduledClassSessionDAO(BaseDAO):
             for session in sessions:
                 session["day_of_week"] = DayOfWeek(session["day_of_week"]).name.title()
                 session["session_type"] = DayOfWeek(session["session_type"]).name.title()
-                session["session_change_type"] = SessionChangeType(session["session_change_type"]).name.title().replace("_", " ")
+
+                session_change_type_val = session.get("session_change_type")
+                session["session_change_type"] = (
+                    SessionChangeType(session_change_type_val).name.title().replace("_", " ")
+                    if session_change_type_val is not None else None
+                )
                 session["flag"] = Flag(session["flag"]).name.title()
 
             return sessions
