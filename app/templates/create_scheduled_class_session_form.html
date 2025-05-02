@@ -3,7 +3,7 @@
 
 {% block content %}
 <div style="max-width: 600px; margin: 40px auto; padding: 20px;">
-    <h2 style="text-align: center; color: #007BFF;">Add a New Class Session</h2>
+    <h2 style="text-align: center; color: #007BFF;">Add a Scheduled Class Session</h2>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -17,55 +17,53 @@
       {% endif %}
     {% endwith %}
 
-    <form action="{{ url_for('scheduled_class_session_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+    <form action="{{ url_for('create_scheduled_class_session') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
 
-        <label>Course Name*:
-            <input type="text" name="course_name" value="{{ form_data.course_name if form_data else '' }}" required style="width: 100%;">
+        <label>Schedule ID*:
+            <input type="number" name="schedule_id" required style="width: 100%;">
         </label>
 
-        <label>Course Code*:
-            <input type="text" name="course_code" value="{{ form_data.course_code if form_data else '' }}" required style="width: 100%;">
+        <label>Location ID*:
+            <input type="number" name="location_id" required style="width: 100%;">
         </label>
 
-        <label>Course Description:
-            <textarea name="course_desc" rows="3" style="width: 100%;">{{ form_data.course_desc if form_data else '' }}</textarea>
+        <label>Day of Week (0 = Mon, ..., 6 = Sun)*:
+            <input type="number" name="day_of_week" min="0" max="6" required style="width: 100%;">
         </label>
 
-        <label>Target Audience:
-            <select name="target_audience" required style="width: 100%;">
-                <option value="" disabled selected>Select an audience</option>
-                <option value="General Audience" {% if form_data and form_data.target_audience == "General Audience" %}selected{% endif %}>General Audience</option>
-                <option value="Youth" {% if form_data and form_data.target_audience == "Youth" %}selected{% endif %}>Youth</option>
-                <option value="Adult" {% if form_data and form_data.target_audience == "Adult" %}selected{% endif %}>Adult</option>
-            </select>
+        <label>Start Time*:
+            <input type="time" name="start_time" required style="width: 100%;">
         </label>
 
-        <label>Duration in Weeks:
-            <input type="number" name="duration_in_weeks" value="{{ form_data.duration_in_weeks if form_data else '' }}" style="width: 100%;">
+        <label>End Time*:
+            <input type="time" name="end_time" required style="width: 100%;">
         </label>
 
-        <label>Prerequisite Course(s):
-            <input type="text" name="prerequisites" value="{{ form_data.prerequisites if form_data else '' }}" style="width: 100%;">
+        <label>Session Type*:
+            <input type="text" name="session_type" required style="width: 100%;">
         </label>
 
-        <label>Corequisite Course(s):
-            <input type="text" name="corequisites" value="{{ form_data.corequisites if form_data else '' }}" style="width: 100%;">
+        <label>Scheduled Date*:
+            <input type="date" name="scheduled_date" required style="width: 100%;">
         </label>
 
-        <label>Number of Credits:
-            <input type="number" step="0.1" name="credit_hours" value="{{ form_data.credit_hours if form_data else '' }}" style="width: 100%;">
+        <label>Sequence Number*:
+            <input type="number" name="seq_no" min="1" required style="width: 100%;">
         </label>
 
-        <label>Profile Status:
-            <select name="profile_status" required style="width: 100%;">
-                <option value="" disabled selected>Select status</option>
-                <option value="Inactive" {% if form_data and form_data.profile_status == "Inactive" %}selected{% endif %}>Inactive</option>
-                <option value="Active" {% if form_data and form_data.profile_status == "Active" %}selected{% endif %}>Active</option>
+        <label>Session Changed Type:
+            <input type="text" name="session_changed_type" style="width: 100%;">
+        </label>
+
+        <label>Session Flag*:
+            <select name="flag" required style="width: 100%;">
+                <option value="1" selected>Active</option>
+                <option value="0">Inactive</option>
             </select>
         </label>
 
         <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
-            Add Course
+            Add Session
         </button>
     </form>
 </div>

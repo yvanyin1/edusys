@@ -15,6 +15,9 @@ class Semester(object):
         self.__registration_deadline = registration_deadline
         self.__withdrawal_deadline = withdrawal_deadline
 
+    def __str__(self):
+        return f"{self.__season.name.title()} {self.__academic_year}"
+
     def get_season(self):
         return self.__season
 

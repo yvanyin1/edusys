@@ -5,6 +5,8 @@ import mysql.connector
 import os
 from datetime import datetime
 
+from app.dao.classroom_location_dao import ClassroomLocationDAO
+from app.dao.semester_dao import SemesterDAO
 from app.models.course_profile import CourseProfile
 from app.models.student_profile import StudentProfile
 from app.models.teacher_profile import TeacherProfile
@@ -147,6 +149,39 @@ def load_initial_data():
                     ('Harald', '', 'Cramer', '1893-09-25', '5149251893', 'haraldcramer@gmail.com', '100 Gothenburg Street', 'Statistics', 2, 2, 1);
             """
         cursor.execute(sql_insert_teachers)
+
+        # Insert semester data
+        cursor.execute("DROP TABLE IF EXISTS semester")
+        cursor.execute("""CREATE TABLE semester (
+            semester_id INT AUTO_INCREMENT,
+            season TINYINT NOT NULL DEFAULT 1 CHECK (season BETWEEN 1 AND 3),
+            academic_year INT NOT NULL,
+            start_date DATE NOT NULL,
+            end_date DATE NOT NULL,
+            registration_deadline DATETIME NOT NULL,
+            withdrawal_deadline DATETIME NOT NULL,
+            PRIMARY KEY (semester_id)
+        );""")
+        sql_insert_semesters = """
+            INSERT INTO semester(season, academic_year, start_date, end_date, registration_deadline, withdrawal_deadline)
+            VALUES (3, 2025, '2025-05-05', '2025-08-22', '2025-05-03 23:59:59', '2025-06-15 23:59:59'),
+                    (1, 2025, '2025-09-08', '2025-12-19', '2025-09-06 23:59:59', '2025-10-15 23:59:59'),
+                    (2, 2026, '2025-01-05', '2025-04-24', '2025-01-03 23:59:59', '2025-02-15 23:59:59');"""
+        cursor.execute(sql_insert_semesters)
+
+        # Insert classroom location data
+        cursor.execute("DROP TABLE IF EXISTS classroom_location")
+        cursor.execute("""CREATE TABLE classroom_location (
+            location_id INT AUTO_INCREMENT,
+            room_number VARCHAR(10) NOT NULL,
+            building_name VARCHAR(100) NOT NULL,
+            capacity INT NOT NULL,
+            PRIMARY KEY (location_id)
+        );""")
+        sql_insert_classroom_locations = """
+            INSERT INTO classroom_location(room_number, building_name, capacity)
+            VALUES ("132", "Leacock", 600), ("112", "Rutherford Physics", 150), ("0132", "Trottier", 50);"""
+        cursor.execute(sql_insert_classroom_locations)
 
         connection.commit()
         cursor.close()
@@ -554,7 +589,14 @@ def class_management():
 
 @app.route('/create-scheduled-class-session')
 def create_scheduled_class_session():
-    return "Create scheduled class session"
+    connection = get_connection()
+    semester_dao = SemesterDAO(connection)
+    semesters = semester_dao.read_semester_data()
+    classroom_location_dao = ClassroomLocationDAO(connection)
+    classroom_locations = classroom_location_dao.read_classroom_location_data()
+    print(semesters, classroom_locations)
+
+    return render_template("create_scheduled_class_session_form.html", username="dluo")
 
 
 @app.route('/create-scheduled-class-session-success')
