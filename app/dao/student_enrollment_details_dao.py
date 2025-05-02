@@ -52,7 +52,6 @@ class StudentEnrollmentDetailsDAO(BaseDAO):
 
     @staticmethod
     def build_entity_object(row: dict) -> StudentEnrollmentDetails:
-        print(row["enrollment_date"])
         return StudentEnrollmentDetails(
             enrollment_id=row["enrollment_id"],
             student_id=row["student_id"],

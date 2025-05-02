@@ -56,7 +56,7 @@ class ScheduledClassSessionDAO(BaseDAO):
             # Convert Enum integer values to Enum name
             for session in sessions:
                 session["day_of_week"] = DayOfWeek(session["day_of_week"]).name.title()
-                session["session_type"] = DayOfWeek(session["session_type"]).name.title()
+                session["session_type"] = SessionType(session["session_type"]).name.title()
 
                 session_change_type_val = session.get("session_change_type")
                 session["session_change_type"] = (

@@ -5,7 +5,7 @@ import mysql.connector
 import os
 from datetime import datetime, date, timedelta
 
-from app.dao.student_enrollment_status_dao import StudentEnrollmentDetailsDAO
+from app.dao.student_enrollment_details_dao import StudentEnrollmentDetailsDAO
 from app.dao.scheduled_class_session_dao import ScheduledClassSessionDAO
 from app.enums.class_enrollment_status import ClassEnrollmentStatus
 from app.enums.session_change_type import SessionChangeType
@@ -929,6 +929,61 @@ def generate_sessions_by_class():
             flash('Please enter a valid numeric Schedule ID.', 'warning')
 
     return render_template('generate_sessions_by_class.html', class_sessions=class_sessions, search_attempted=search_attempted, username="dluo")
+
+
+@app.route('/generate-schedule-by-student')
+def generate_schedule_by_student():
+    student_query = request.args.get('student_query')
+    schedule_by_date = {}
+    search_attempted = False
+
+    if student_query is not None:
+        search_attempted = True
+        student_query = student_query.strip()
+
+        if student_query.isdigit():
+            student_id = int(student_query)
+
+            connection = get_connection()
+            student_dao = StudentProfileDAO(connection)
+            student = student_dao.get_student_by_id(student_id)
+
+            if student:
+                enrollment_dao = StudentEnrollmentDetailsDAO(connection)
+                enrollments = enrollment_dao.read_enrollments()
+                session_dao = ScheduledClassSessionDAO(connection)
+                location_dao = ClassroomLocationDAO(connection)
+                schedule_dao = ClassScheduleDAO(connection)
+                course_dao = CourseProfileDAO(connection)
+
+                for enrollment in enrollments:
+                    sessions = session_dao.read_class_sessions('schedule_id', enrollment["class_schedule_id"])
+                    for session in sessions:
+                        # Replace location ID with actual name
+                        session["location_id"] = location_dao.get_location_by_id(session["location_id"]).get_name()
+                        # Add course details
+                        course_profile = schedule_dao.get_course_profile_by_schedule_id(session["schedule_id"])
+                        print(session)
+                        session["course_code"] = course_profile.get_code()
+                        session["course_name"] = course_profile.get_name()
+                        # Group by exact date
+                        session_date = str(session["scheduled_date"])  # Ensure it's a string for templating
+                        if session_date not in schedule_by_date:
+                            schedule_by_date[session_date] = []
+                        schedule_by_date[session_date].append(session)
+
+                # Sort sessions within each date
+                for date_sessions in schedule_by_date.values():
+                    date_sessions.sort(key=lambda x: x["seq_no"])
+            else:
+                flash('No student found with that ID.', 'warning')
+        elif student_query:
+            flash('Please enter a valid numeric Student ID.', 'warning')
+
+    return render_template('generate_schedule_by_student.html',
+                           schedule_by_date=schedule_by_date,
+                           search_attempted=search_attempted,
+                           username="dluo")
 
 
 if __name__ == '__main__':

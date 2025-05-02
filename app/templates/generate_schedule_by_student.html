@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Generate Student Schedule{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 40px auto; padding: 20px;">
+    <h3 style="font-weight: bold;">Generate Student Schedule</h3>
+
+    <form action="{{ url_for('generate_schedule_by_student') }}" method="get" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+        <label for="student_query" style="white-space: nowrap;">Enter Student ID:</label>
+        <input type="text" id="student_query" name="student_query" style="padding: 5px; width: 250px;">
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 6px 15px; border: none; border-radius: 5px;">Generate</button>
+    </form>
+
+   {% if search_attempted %}
+       {% if schedule_by_date %}
+           {% for date in schedule_by_date|dictsort %}
+                <h3>Schedule for {{ date[0] }}</h3>
+                <ul>
+                    {% for i in range(date[1]|length) %}
+                        {% set session = date[1][i] %}
+                        <li>
+                            <strong>Day of Week:</strong> {{ session.day_of_week }}<br>
+                            <strong>Course Code:</strong> {{ session.course_code }}<br>
+                            <strong>Course Name:</strong> {{ session.course_name }}<br>
+                            <strong>Time:</strong> {{ session.start_time }} - {{ session.end_time }}<br>
+                            <strong>Classroom:</strong> {{ session.location_id }}<br>
+                            <strong>Session Type:</strong> {{ session.session_type }}
+                        </li>
+                        {% if i + 1 < date[1]|length %}
+                            <hr style="margin: 0.5em 0;">
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>No sessions found for that student ID.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
