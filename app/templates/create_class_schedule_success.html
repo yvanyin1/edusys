@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Class Schedule Created{% endblock %}
+{% block title %}Class Created{% endblock %}
 
 {% block content %}
 <div style="max-width: 600px; margin: 40px auto; padding: 20px;">
-    <h2 style="text-align: center; color: #28a745;">Class Schedule Created Successfully</h2>
+    <h2 style="text-align: center; color: #28a745;">Class Successfully Created</h2>
 
     <div style="margin-top: 20px; line-height: 1.6;">
         <p><strong>Course Name:</strong> {{ class_schedule.course_name }}</p>
@@ -14,10 +14,12 @@
     </div>
 
     <div style="margin-top: 30px; text-align: center;">
-        <a href="{{ url_for('create_scheduled_class_session') }}" 
-           style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">
-            Create Another Class Schedule
-        </a>
+        <button type="button" onclick="location.href='{{ url_for('create_course_profile') }}'">
+             Create Another Class
+         </button>
+         <button type="button" onclick="location.href='{{ url_for('class_management') }}'">
+             Class Management Menu
+         </button>
     </div>
 </div>
 {% endblock %}

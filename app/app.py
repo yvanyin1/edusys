@@ -713,48 +713,60 @@ def update_student_profile_success():
     return render_template("update_student_profile_success.html", student=student_data, username="dluo")
 
 
-@app.route('/student_enroll')
+@app.route('/class-management/student_enroll')
 def student_enrollment_form():
     connection = get_connection()
     student_dao = StudentProfileDAO(connection)
     classes_dao = ClassScheduleDAO(connection)
-    courses_dao = CourseProfileDAO(connection)
 
     students = student_dao.read_student_profiles("profile_status", 1)
-    print(students)
     classes = classes_dao.read_class_schedules()
     for c in classes:
-        print(c["schedule_id"])
         course = classes_dao.get_course_profile_by_schedule_id(c["schedule_id"])
-        print(course.get_code())
         c["course_name"] = course.get_name()
         c["course_code"] = course.get_code()
-    print(classes)
     return render_template("student_enrollment_form.html",
                            students=students, classes=classes, username="dluo")
 
 
-@app.route("/enroll-student-submit", methods=["POST"])
+@app.route("/class-management/enroll-student-success", methods=["POST"])
 def student_enrollment_success():
-    # student_id = request.form["student_id"]
-    # class_id = request.form["class_id"]
-    #
-    # # Check if already enrolled
-    # existing_enrollment = StudentEnrollmentDetail.query.filter_by(
-    #     student_id=student_id,
-    #     class_id=class_id
-    # ).first()
-    #
-    # if existing_enrollment:
-    #     flash("Student is already enrolled in this class.", "warning")
-    # else:
-    #     enrollment = StudentEnrollmentDetail(student_id=student_id, class_id=class_id)
-    #     db.session.add(enrollment)
-    #     db.session.commit()
-    #     flash("Student successfully enrolled.", "success")
+    student_id = int(request.form["student_id"])
+    class_id = int(request.form["class_id"])
 
-    # return redirect(url_for("enroll_student"))
-    return "Success"
+    # Check if already enrolled
+    connection = get_connection()
+    student_dao = StudentProfileDAO(connection)
+    class_dao = ClassScheduleDAO(connection)
+    enrollments_dao = StudentEnrollmentDetailsDAO(connection)
+
+    enrollments = enrollments_dao.read_enrollments("student_id", student_id)
+
+    if any([e["class_schedule_id"] == class_id for e in enrollments]):
+        flash("Student is already enrolled in this class.", "warning")
+        return redirect(url_for("student_enrollment_form"))
+    else:
+        student = student_dao.get_student_by_id(student_id)
+        class_schedule = class_dao.get_class_schedule_by_id(class_id)
+        course = class_dao.get_course_profile_by_schedule_id(class_schedule.get_course_id())
+        student_data = {
+            "student_id": student.get_student_id(),
+            "first_name": student.get_first_name(),
+            "last_name": student.get_last_name()
+        }
+        class_data = {
+            "class_id": class_schedule.get_schedule_id(),
+            "course_name": course.get_name(),
+            "course_code": course.get_code(),
+        }
+
+        new_enrollment = StudentEnrollmentDetails(
+            0, student_id, class_id, datetime.today(), ClassEnrollmentStatus.ACTIVE
+        )
+        enrollments_dao.create_enrollment(new_enrollment)
+
+        return render_template("student_enrollment_success.html",
+                           student=student_data, class_schedule=class_data, username="dluo")
 
 
 @app.route('/teacher-management')
@@ -995,11 +1007,10 @@ def generate_schedule_by_student():
 
             if student:
                 enrollment_dao = StudentEnrollmentDetailsDAO(connection)
-                enrollments = enrollment_dao.read_enrollments()
+                enrollments = enrollment_dao.read_enrollments("student_id", student_id)
                 session_dao = ScheduledClassSessionDAO(connection)
                 location_dao = ClassroomLocationDAO(connection)
                 schedule_dao = ClassScheduleDAO(connection)
-                course_dao = CourseProfileDAO(connection)
 
                 for enrollment in enrollments:
                     sessions = session_dao.read_class_sessions('schedule_id', enrollment["class_schedule_id"])
@@ -1008,7 +1019,6 @@ def generate_schedule_by_student():
                         session["location_id"] = location_dao.get_location_by_id(session["location_id"]).get_name()
                         # Add course details
                         course_profile = schedule_dao.get_course_profile_by_schedule_id(session["schedule_id"])
-                        print(session)
                         session["course_code"] = course_profile.get_code()
                         session["course_name"] = course_profile.get_name()
                         # Group by exact date

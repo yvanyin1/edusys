@@ -23,7 +23,7 @@
             <select name="student_id" required style="width: 100%;">
                 <option value="" disabled selected>Select student</option>
                 {% for student in students %}
-                    <option value="{{ student.student_id }}">{{ student.first_name }} {{ student.last_name }} ({{ student.email_address }})</option>
+                    <option value="{{ student.student_id }}">{{ student.student_id }}: {{ student.first_name }} {{ student.last_name }} ({{ student.email_address }})</option>
                 {% endfor %}
             </select>
         </label>

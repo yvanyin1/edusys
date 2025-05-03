@@ -1,14 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Enrollment Successful{% endblock %}
+{% block title %}Student Enrollment Successful{% endblock %}
 
 {% block content %}
 <div style="max-width: 600px; margin: 40px auto; padding: 20px;">
-    <h2 style="text-align: center; color: #28a745;">Student Enrolled Successfully</h2>
+    <h2 style="text-align: center; color: #000000;">Student Enrolled Successfully</h2>
 
     <div style="margin-top: 20px; line-height: 1.6;">
-        <p><strong>Student:</strong> {{ student.first_name }} {{ student.last_name }}</p>
-        <p><strong>Class:</strong> {{ class_schedule.name }}</p>
-        <p><strong>Schedule:</strong> {{ class_schedule.schedule }}</p>
+        <p><strong>Student:</strong> {{ student.student_id }}: {{ student.first_name }} {{ student.last_name }}</p>
+        <p><strong>Class:</strong> {{ class_schedule.class_id }}: {{ class_schedule.course_code }} - {{ class_schedule.course_name }}</p>
     </div>
 
     <div style="margin-top: 30px; text-align: center;">
