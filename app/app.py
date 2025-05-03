@@ -5,8 +5,6 @@ import mysql.connector
 import os
 from datetime import datetime, date, timedelta
 
-from app.dao.student_enrollment_details_dao import StudentEnrollmentDetailsDAO
-from app.dao.scheduled_class_session_dao import ScheduledClassSessionDAO
 from app.enums.class_enrollment_status import ClassEnrollmentStatus
 from app.enums.session_change_type import SessionChangeType
 from app.enums.session_type import SessionType
@@ -25,6 +23,9 @@ from app.enums.class_type import ClassType
 from app.enums.day_of_week import DayOfWeek
 from app.enums.flag import Flag
 
+from app.dao.student_enrollment_details_dao import StudentEnrollmentDetailsDAO
+from app.dao.scheduled_class_session_dao import ScheduledClassSessionDAO
+from app.dao import class_schedule_dao
 from app.dao.course_profile_dao import CourseProfileDAO
 from app.dao.student_profile_dao import StudentProfileDAO
 from app.dao.teacher_profile_dao import TeacherProfileDAO
@@ -234,8 +235,8 @@ def load_initial_data():
         sql_insert_class_schedules = """
             INSERT INTO class_schedule(course_id, semester_id, class_capacity, class_type, class_desc)
                                          VALUES (1, 2, 100, 2, "Computer science in a breeze"), \
-                                                (1, 2, 1, 3, "DFA for one person"), \
-                                                (1, 3, 30, 1, "Statistics in a medium-sized class");"""
+                                                (2, 2, 1, 3, "DFA for one person"), \
+                                                (3, 3, 30, 1, "Statistics in a medium-sized class");"""
         cursor.execute(sql_insert_class_schedules)
 
         # Create scheduled class sessions table
@@ -710,6 +711,50 @@ def update_student_profile_success():
     }
 
     return render_template("update_student_profile_success.html", student=student_data, username="dluo")
+
+
+@app.route('/student_enroll')
+def student_enrollment_form():
+    connection = get_connection()
+    student_dao = StudentProfileDAO(connection)
+    classes_dao = ClassScheduleDAO(connection)
+    courses_dao = CourseProfileDAO(connection)
+
+    students = student_dao.read_student_profiles("profile_status", 1)
+    print(students)
+    classes = classes_dao.read_class_schedules()
+    for c in classes:
+        print(c["schedule_id"])
+        course = classes_dao.get_course_profile_by_schedule_id(c["schedule_id"])
+        print(course.get_code())
+        c["course_name"] = course.get_name()
+        c["course_code"] = course.get_code()
+    print(classes)
+    return render_template("student_enrollment_form.html",
+                           students=students, classes=classes, username="dluo")
+
+
+@app.route("/enroll-student-submit", methods=["POST"])
+def student_enrollment_success():
+    # student_id = request.form["student_id"]
+    # class_id = request.form["class_id"]
+    #
+    # # Check if already enrolled
+    # existing_enrollment = StudentEnrollmentDetail.query.filter_by(
+    #     student_id=student_id,
+    #     class_id=class_id
+    # ).first()
+    #
+    # if existing_enrollment:
+    #     flash("Student is already enrolled in this class.", "warning")
+    # else:
+    #     enrollment = StudentEnrollmentDetail(student_id=student_id, class_id=class_id)
+    #     db.session.add(enrollment)
+    #     db.session.commit()
+    #     flash("Student successfully enrolled.", "success")
+
+    # return redirect(url_for("enroll_student"))
+    return "Success"
 
 
 @app.route('/teacher-management')

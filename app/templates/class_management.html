@@ -44,6 +44,12 @@
             <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Delete Class Sections</a>
             <p style="margin-top: 8px;">Remove a class section that's no longer needed.</p>
         </div>
+
+        <div>
+            <a href=" {{ url_for('student_enrollment_form') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Register Student in Class</a>
+            <p style="margin-top: 8px;">Assign a student to a scheduled class that already exists in the system.</p>
+        </div>
+
         <div>
             <a href=" {{ url_for('generate_sessions_by_class') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Generate Schedule by Class ID</a>
             <p style="margin-top: 8px;">
