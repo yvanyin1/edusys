@@ -25,7 +25,6 @@ from app.enums.flag import Flag
 
 from app.dao.student_enrollment_details_dao import StudentEnrollmentDetailsDAO
 from app.dao.scheduled_class_session_dao import ScheduledClassSessionDAO
-from app.dao import class_schedule_dao
 from app.dao.course_profile_dao import CourseProfileDAO
 from app.dao.student_profile_dao import StudentProfileDAO
 from app.dao.teacher_profile_dao import TeacherProfileDAO
@@ -202,8 +201,8 @@ def load_initial_data():
         sql_insert_semesters = """
             INSERT INTO semester(season, academic_year, start_date, end_date, registration_deadline, withdrawal_deadline)
             VALUES (3, 2025, '2025-05-05', '2025-08-22', '2025-05-03 23:59:59', '2025-06-15 23:59:59'),
-                    (3, 2025, '2025-09-08', '2025-12-19', '2025-09-06 23:59:59', '2025-10-15 23:59:59'),
-                    (3, 2026, '2025-01-05', '2025-04-24', '2025-01-03 23:59:59', '2025-02-15 23:59:59');"""
+                    (1, 2025, '2025-09-08', '2025-12-19', '2025-09-06 23:59:59', '2025-10-15 23:59:59'),
+                    (2, 2026, '2025-01-05', '2025-04-24', '2025-01-03 23:59:59', '2025-02-15 23:59:59');"""
         cursor.execute(sql_insert_semesters)
 
         # Insert classroom location data
@@ -812,6 +811,8 @@ def create_class_schedule():
     active_courses = course_profile_dao.read_course_profiles("profile_status", 1)
     semester_dao = SemesterDAO(connection)
     semesters = semester_dao.read_semester_data()
+    for s in semesters:
+        print(s)
     class_types = list(ClassType)
     return render_template("create_class_schedule.html", active_courses=active_courses,
                            semesters=semesters, class_types=class_types, username="dluo")

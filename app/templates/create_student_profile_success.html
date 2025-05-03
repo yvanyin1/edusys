@@ -5,13 +5,13 @@
     <h2>Student Profile Successfully Added</h2>
     <p><strong>Student ID:</strong> {{ student.student_id }}</p>
     <p><strong>First Name:</strong> {{ student.first_name }}</p>
-    <p><strong>Middle Name:</strong> {{ student.middle_name or 'N/A' }}</p>
+    <p><strong>Middle Name:</strong> {{ student.middle_name or '' }}</p>
     <p><strong>Last Name:</strong> {{ student.last_name }}</p>
-    <p><strong>Birth Date:</strong> {{ student.birth_date or 'N/A' }}</p>
-    <p><strong>Phone Number:</strong> {{ student.phone_number or 'N/A' }}</p>
+    <p><strong>Birth Date:</strong> {{ student.birth_date or '' }}</p>
+    <p><strong>Phone Number:</strong> {{ student.phone_number or '' }}</p>
     <p><strong>Email Address:</strong> {{ student.email_address }}</p>
-    <p><strong>Home Address:</strong> {{ student.home_address or 'N/A' }}</p>
-    <p><strong>Registration Date:</strong> {{ student.registration_date or 'N/A' }}</p>
+    <p><strong>Home Address:</strong> {{ student.home_address or '' }}</p>
+    <p><strong>Registration Date:</strong> {{ student.registration_date or '' }}</p>
     <p><strong>Enrollment Status:</strong> {{ student.enrollment_status }}</p>
     <p><strong>Guardian Status:</strong> {{ student.guardian_status }}</p>
     <p><strong>Profile Status:</strong> {{ student.profile_status }}</p>
