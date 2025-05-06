@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "components/macros/table_display.html" import render_table_page %}
+
+{% block content %}
+    {{ render_table_page(
+        "Student List",
+        url_for('read_student_profiles'),
+        [
+            ('student_id', 'Student ID'),
+            ('first_name', 'First Name'),
+            ('last_name', 'Last Name'),
+            ('profile_status', 'Profile Status')
+        ],
+        [
+            'Student ID', 'First Name', 'Middle Name', 'Last Name', 'Birth Date',
+            'Phone Number', 'Email Address', 'Home Address', 'Registration Date',
+            'Enrollment Status', 'Guardian Status', 'Profile Status'
+        ],
+        [
+            'student_id', 'first_name', 'middle_name', 'last_name', 'birth_date',
+            'phone_number', 'email_address', 'home_address', 'registration_date',
+            'enrollment_status', 'guardian_status', 'profile_status'
+        ],
+        students, filter_column, filter_value
+    ) }}
+{% endblock %}

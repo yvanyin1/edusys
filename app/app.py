@@ -637,7 +637,7 @@ def read_student_profiles():
         students = dao.read_student_profiles(filter_column, filter_value)
 
         return render_template(
-            "read_student_profiles.html",
+            "student/read_student_profiles.html",
             students=students,
             filter_column=filter_column,
             filter_value=filter_value,
