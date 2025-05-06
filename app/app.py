@@ -875,6 +875,11 @@ def read_class_schedules():
         connection = get_connection()
         dao = ClassScheduleDAO(connection)
         schedules = dao.read_class_schedules(filter_column, filter_value)
+        for schedule in schedules:
+            course = CourseProfileDAO(connection).get_course_by_id(schedule["course_id"])
+            schedule["course_id"] = f"{course.get_code()}: {course.get_name()}"
+            semester = SemesterDAO(connection).get_semester_by_id(schedule["semester_id"])
+            schedule["semester_id"] = semester.get_name()
 
         return render_template (
             "class/read_class_schedules.html",
