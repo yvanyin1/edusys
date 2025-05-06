@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "components/macros/table_display.html" import render_table_page %}
+
+{% block content %}
+{{ render_table_page(
+    "Teacher List",
+    url_for('read_teacher_profiles'),
+    [
+        ('teacher_id', 'Teacher ID'),
+        ('first_name', 'First Name'),
+        ('last_name', 'Last Name'),
+        ('employment_status', 'Employment Status'),
+        ('teacher_role', 'Teacher Role'),
+        ('profile_status', 'Profile Status')
+    ],
+    [
+        "Teacher ID", "First Name", "Middle Name", "Last Name", "Birth Date",
+        "Phone Number", "Email Address", "Home Address", "Subject Expertise",
+        "Employment Status", "Teacher Role", "Profile Status"
+    ],
+    [
+        "teacher_id", "first_name", "middle_name", "last_name", "birth_date",
+        "phone_number", "email_address", "home_address", "subject_expertise",
+        "employment_status", "teacher_role", "profile_status"
+    ],
+    teachers, filter_column, filter_value
+) }}
+{% endblock %}

@@ -352,6 +352,8 @@ def enroll_students_in_classes_initial():
     dao.create_enrollment(StudentEnrollmentDetails(0, 2025050001, 2, "2025-05-03", ClassEnrollmentStatus.ACTIVE))
     dao.create_enrollment(StudentEnrollmentDetails(0, 2025050001, 3, "2025-05-03", ClassEnrollmentStatus.ACTIVE))
 
+
+# TODO for testing purposes
 enroll_students_in_classes_initial()
 
 
@@ -788,7 +790,7 @@ def read_teacher_profiles():
         teachers = dao.read_teacher_profiles(filter_column, filter_value)
 
         return render_template(
-            "read_teacher_profiles.html",
+            "teacher/read_teacher_profiles.html",
             teachers=teachers,
             filter_column=filter_column,
             filter_value=filter_value,
