@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "components/macros/table_display.html" import render_table_page %}
+
+{% block content %}
+    {{ render_table_page(
+        "Classes List",
+        url_for('read_class_schedules'),
+        [
+            ('schedule_id', 'Schedule ID'),
+            ('course_id', 'Course ID'),
+            ('semester_id', 'Semester ID'),
+            ('class_type', 'Class Type')
+        ],
+        [
+            "Schedule ID",
+            "Course ID",
+            "Semester ID",
+            "Class Capacity",
+            "Class Type",
+            "Description"
+        ],
+        [
+            "schedule_id",
+            "course_id",
+            "semester_id",
+            "class_capacity",
+            "class_type",
+            "class_desc"
+        ],
+        schedules, filter_column, filter_value
+    ) }}
+{% endblock %}

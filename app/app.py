@@ -863,8 +863,29 @@ def class_schedule_created():
 
 @app.route('/read-class-schedules')
 def read_class_schedules():
-    class_schedules = ClassScheduleDAO(get_connection()).read_class_schedules()
-    return "<br>".join([str(schedule) for schedule in class_schedules])
+    filter_column = request.args.get('filter_column')
+    filter_value = request.args.get('filter_value')
+
+    valid_columns = {'schedule_id', 'course_id', 'semester_id', 'class_type'}
+
+    if filter_column and filter_column not in valid_columns:
+        return "Invalid filter column", 400
+
+    try:
+        connection = get_connection()
+        dao = ClassScheduleDAO(connection)
+        schedules = dao.read_class_schedules(filter_column, filter_value)
+
+        return render_template (
+            "class/read_class_schedules.html",
+            schedules=schedules,
+            filter_column=filter_column,
+            filter_value=filter_value,
+            username = "dluo"
+        )
+
+    except Exception as e:
+        return f"Error fetching class schedules: {e}"
 
 
 @app.route('/create-scheduled-class-session')
