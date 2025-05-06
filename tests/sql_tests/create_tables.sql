@@ -2,6 +2,10 @@ CREATE DATABASE IF NOT EXISTS education_management_test;
 
 USE education_management_test;
 
+DROP TABLE IF EXISTS student_enrollment_details;
+DROP TABLE IF EXISTS scheduled_class_session;
+DROP TABLE IF EXISTS class_schedule;
+
 DROP TABLE IF EXISTS course_profile;
 
 CREATE TABLE course_profile (
