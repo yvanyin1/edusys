@@ -34,6 +34,8 @@ from app.dao.semester_dao import SemesterDAO
 
 from app.utils.student_utils import StudentUtils
 
+USERNAME = "dluo"
+
 audience_type_map = {
     "General Audience": AudienceType.GENERAL_AUDIENCE,
     "Adult": AudienceType.ADULT,
@@ -363,22 +365,22 @@ def index():
 
 @app.route('/home')
 def home():
-    return render_template("home_page.html", username="dluo")
+    return render_template("home_page.html", username=USERNAME)
 
 
 @app.route('/course-management')
 def course_management():
-    return render_template("course_management.html", username="dluo")
+    return render_template("course_management.html", username=USERNAME)
 
 
 @app.route('/student-management')
 def student_management():
-    return render_template("student_management.html", username="dluo")
+    return render_template("student_management.html", username=USERNAME)
 
 
 @app.route('/create-course-profile')
 def create_course_profile():
-    return render_template("create_course_profile_form.html", username="dluo")
+    return render_template("create_course_profile_form.html", username=USERNAME)
 
 
 @app.route('/course-profile-created', methods=['POST'])
@@ -415,11 +417,11 @@ def course_profile_created():
     # Check if course name or code already exists
     if dao.get_course_by_name(course_name):
         flash(f"A course with the name '{course_name}' already exists.", 'warning')
-        return render_template("create_course_profile_form.html", form_data=form_data, username="dluo")
+        return render_template("create_course_profile_form.html", form_data=form_data, username=USERNAME)
 
     if dao.get_course_by_code(course_code):
         flash(f"A course with the code '{course_code}' already exists.", 'warning')
-        return render_template("create_course_profile_form.html", form_data=form_data, username="dluo")
+        return render_template("create_course_profile_form.html", form_data=form_data, username=USERNAME)
 
 
     new_course_profile = CourseProfile(0, course_name, course_code,
@@ -439,7 +441,7 @@ def course_profile_created():
         'profile_status': profile_status_string
     }
 
-    return render_template("create_course_profile_success.html", course=course_data, username="dluo")
+    return render_template("create_course_profile_success.html", course=course_data, username=USERNAME)
 
 
 @app.route('/read_course_profiles')
@@ -461,14 +463,14 @@ def read_course_profiles():
             courses=courses,
             filter_column=filter_column,
             filter_value=filter_value,
-            username="dluo"
+            username=USERNAME
         )
     except Exception as e:
         return f"Error fetching courses: {e}"
 
 @app.route('/update-course-profile/search', methods=["GET"])
 def update_course_profile_search():
-    return render_template("update_course_profile_search.html", username="dluo")
+    return render_template("update_course_profile_search.html", username=USERNAME)
 
 
 @app.route('/update-course-profile/edit-course', methods=['GET'])
@@ -486,7 +488,7 @@ def edit_course_profile():
     }
 
     return render_template("update_course_profile_edit.html",
-                           course=course_profile, enum_to_string=enum_to_string, username="dluo")
+                           course=course_profile, enum_to_string=enum_to_string, username=USERNAME)
 
 
 @app.route('/update-course-profile/success', methods=['POST'])
@@ -523,12 +525,12 @@ def update_course_profile_success():
         'profile_status': profile_status_string
     }
 
-    return render_template("update_course_profile_success.html", course=course_data, username="dluo")
+    return render_template("update_course_profile_success.html", course=course_data, username=USERNAME)
 
 
 @app.route('/delete-course-profile/search', methods=['GET'])
 def delete_course_profile_search():
-    return render_template("delete_course_profile_search.html", username="dluo")
+    return render_template("delete_course_profile_search.html", username=USERNAME)
 
 
 @app.route('/delete-course-profile/success', methods=['POST'])
@@ -544,12 +546,12 @@ def delete_course_profile_success():
         'course_name': course_profile.get_name(),
         'course_code': course_profile.get_code(),
     }
-    return render_template("delete_course_profile_success.html", course=course_data, username="dluo")
+    return render_template("delete_course_profile_success.html", course=course_data, username=USERNAME)
 
 
 @app.route('/create-student-profile')
 def create_student_profile():
-    return render_template("create_student_profile_form.html", username="dluo")
+    return render_template("create_student_profile_form.html", username=USERNAME)
 
 
 @app.route('/student-profile-created', methods=['POST'])
@@ -592,7 +594,7 @@ def student_profile_created():
     # Check for duplicate email
     if dao.get_student_by_email(email_address):
         flash(f"A student with the email '{email_address}' already exists.", 'warning')
-        return render_template("create_student_profile_form.html", form_data=form_data, username="dluo")
+        return render_template("create_student_profile_form.html", form_data=form_data, username=USERNAME)
 
     # Create student profile
     new_student = StudentProfile(
@@ -619,7 +621,7 @@ def student_profile_created():
         'profile_status': profile_status_string
     }
 
-    return render_template("create_student_profile_success.html", student=student_data, username="dluo")
+    return render_template("create_student_profile_success.html", student=student_data, username=USERNAME)
 
 
 @app.route('/read_student_profiles')
@@ -642,7 +644,7 @@ def read_student_profiles():
             students=students,
             filter_column=filter_column,
             filter_value=filter_value,
-            username="dluo"
+            username=USERNAME
         )
     except Exception as e:
         return f"Error fetching courses: {e}"
@@ -650,7 +652,7 @@ def read_student_profiles():
 
 @app.route('/update-student-profile/search', methods=["GET"])
 def update_student_profile_search():
-    return render_template("update_student_profile_search.html", username="dluo")
+    return render_template("update_student_profile_search.html", username=USERNAME)
 
 
 @app.route('/update-student-profile/edit-student', methods=['GET'])
@@ -667,7 +669,7 @@ def edit_student_profile():
     }
 
     return render_template("update_student_profile_edit.html",
-                           student=student_profile, enum_to_string=enum_to_string, username="dluo")
+                           student=student_profile, enum_to_string=enum_to_string, username=USERNAME)
 
 
 @app.route('/update-student-profile/success', methods=['POST'])
@@ -710,7 +712,8 @@ def update_student_profile_success():
         'profile_status': profile_status_string
     }
 
-    return render_template("update_student_profile_success.html", student=student_data, username="dluo")
+    return render_template("update_student_profile_success.html",
+                           student=student_data, username=USERNAME)
 
 
 @app.route('/class-management/student_enroll')
@@ -726,7 +729,7 @@ def student_enrollment_form():
         c["course_name"] = course.get_name()
         c["course_code"] = course.get_code()
     return render_template("student_enrollment_form.html",
-                           students=students, classes=classes, username="dluo")
+                           students=students, classes=classes, username=USERNAME)
 
 
 @app.route("/class-management/enroll-student-success", methods=["POST"])
@@ -766,12 +769,12 @@ def student_enrollment_success():
         enrollments_dao.create_enrollment(new_enrollment)
 
         return render_template("student_enrollment_success.html",
-                           student=student_data, class_schedule=class_data, username="dluo")
+                           student=student_data, class_schedule=class_data, username=USERNAME)
 
 
 @app.route('/teacher-management')
 def teacher_management():
-    return render_template("teacher_management.html", username="dluo")
+    return render_template("teacher_management.html", username=USERNAME)
 
 
 @app.route('/read-teacher-profiles')
@@ -794,7 +797,7 @@ def read_teacher_profiles():
             teachers=teachers,
             filter_column=filter_column,
             filter_value=filter_value,
-            username="dluo"
+            username=USERNAME
         )
     except Exception as e:
         return f"Error fetching teachers: {e}"
@@ -802,7 +805,7 @@ def read_teacher_profiles():
 
 @app.route('/class-management')
 def class_management():
-    return render_template("class_management.html", username="dluo")
+    return render_template("class_management.html", username=USERNAME)
 
 
 @app.route('/class-management/create-class-schedule')
@@ -816,7 +819,7 @@ def create_class_schedule():
         print(s)
     class_types = list(ClassType)
     return render_template("create_class_schedule.html", active_courses=active_courses,
-                           semesters=semesters, class_types=class_types, username="dluo")
+                           semesters=semesters, class_types=class_types, username=USERNAME)
 
 
 @app.route('/class-management/create-class-schedule-success', methods=['POST'])
@@ -845,7 +848,9 @@ def class_schedule_created():
     # (Optional) Any custom validation you want here
     if int(class_capacity) <= 0:
         flash("Class capacity must be a positive number.", 'warning')
-        return render_template("create_class_schedule.html", form_data=form_data, username="dluo", semesters=..., active_courses=..., classroom_locations=...)
+        return render_template("create_class_schedule.html",
+                               form_data=form_data, username=USERNAME,
+                               semesters=..., active_courses=..., classroom_locations=...)
 
     new_schedule = ClassSchedule(
         schedule_id=0,
@@ -858,7 +863,8 @@ def class_schedule_created():
 
     dao.create_class_schedule(new_schedule)
 
-    return render_template("create_class_schedule_success.html", class_schedule=form_data, username="dluo")
+    return render_template("create_class_schedule_success.html",
+                           class_schedule=form_data, username=USERNAME)
 
 
 @app.route('/read-class-schedules')
@@ -886,7 +892,7 @@ def read_class_schedules():
             schedules=schedules,
             filter_column=filter_column,
             filter_value=filter_value,
-            username = "dluo"
+            username=USERNAME
         )
 
     except Exception as e:
@@ -917,7 +923,7 @@ def create_scheduled_class_session():
                            class_schedule_names=class_schedule_names,
                            classroom_locations=classroom_locations,
                            days=days, session_types=session_types, session_change_types=session_change_types,
-                           flags=flags, username="dluo")
+                           flags=flags, username=USERNAME)
 
 
 @app.route('/create-scheduled-class-session-success', methods=["POST"])
@@ -985,7 +991,7 @@ def scheduled_class_session_created():
                                session_change_types=session_change_types,
                                flags=flags,
                                form_data=form_data,
-                               username="dluo")
+                               username=USERNAME)
 
 
 @app.route('/generate-sessions-by-class')
@@ -1013,7 +1019,8 @@ def generate_sessions_by_class():
         elif course_query:
             flash('Please enter a valid numeric Schedule ID.', 'warning')
 
-    return render_template('generate_sessions_by_class.html', class_sessions=class_sessions, search_attempted=search_attempted, username="dluo")
+    return render_template('generate_sessions_by_class.html', class_sessions=class_sessions,
+                           search_attempted=search_attempted, username=USERNAME)
 
 
 @app.route('/generate-schedule-by-student')
@@ -1066,7 +1073,7 @@ def generate_schedule_by_student():
     return render_template('generate_schedule_by_student.html',
                            schedule_by_date=schedule_by_date,
                            search_attempted=search_attempted,
-                           username="dluo")
+                           username=USERNAME)
 
 
 if __name__ == '__main__':
