@@ -417,11 +417,13 @@ def course_profile_created():
     # Check if course name or code already exists
     if dao.get_course_by_name(course_name):
         flash(f"A course with the name '{course_name}' already exists.", 'warning')
-        return render_template("create_course_profile_form.html", form_data=form_data, username=USERNAME)
+        return render_template("create_course_profile_form.html",
+                               form_data=form_data, username=USERNAME)
 
     if dao.get_course_by_code(course_code):
         flash(f"A course with the code '{course_code}' already exists.", 'warning')
-        return render_template("create_course_profile_form.html", form_data=form_data, username=USERNAME)
+        return render_template("create_course_profile_form.html",
+                               form_data=form_data, username=USERNAME)
 
 
     new_course_profile = CourseProfile(0, course_name, course_code,
@@ -441,7 +443,8 @@ def course_profile_created():
         'profile_status': profile_status_string
     }
 
-    return render_template("create_course_profile_success.html", course=course_data, username=USERNAME)
+    return render_template("create_course_profile_success.html",
+                           course=course_data, username=USERNAME)
 
 
 @app.route('/read_course_profiles')
@@ -457,6 +460,9 @@ def read_course_profiles():
         connection = get_connection()
         dao = CourseProfileDAO(connection)
         courses = dao.read_course_profiles(filter_column, filter_value)
+        for course in courses:
+            description = course["course_desc"]
+            course["course_desc"] = "" if description is None else description
 
         return render_template(
             "course/read_course_profiles.html",
