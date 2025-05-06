@@ -173,6 +173,13 @@ input:checked + .slider:before {
     transform: translateX(22px); /* move the circle */
 }
 
+/* Extra crisp borders between cells */
+table.table-bordered,
+table.table-bordered td,
+table.table-bordered th {
+    border: 1px solid #dee2e6 !important;
+}
+
 /* ===== Content Block ===== */
 .content {
     padding: 20px;
