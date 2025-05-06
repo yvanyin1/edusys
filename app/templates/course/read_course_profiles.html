@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% from "components/macros/table_display.html" import render_table_page %}
+
+{% block content %}
+    {{ render_table_page(
+        "Course List",
+        url_for('read_course_profiles'),
+        [
+            ('course_id', 'Course ID'),
+            ('course_code', 'Course Code'),
+            ('course_name', 'Course Name'),
+            ('profile_status', 'Profile Status')
+        ],
+        [
+            "Course Name",
+            "Course Code",
+            "Description",
+            "Target Audience",
+            "Duration (Weeks)",
+            "Credit Hours",
+            "Status"
+        ],
+        [
+            "course_name",
+            "course_code",
+            "course_desc",
+            "target_audience",
+            "duration_in_weeks",
+            "credit_hours",
+            "profile_status"
+        ],
+        courses, filter_column, filter_value
+    ) }}
+{% endblock %}

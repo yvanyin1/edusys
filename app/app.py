@@ -440,13 +440,12 @@ def course_profile_created():
     return render_template("create_course_profile_success.html", course=course_data, username="dluo")
 
 
-@app.route('/read-course-profiles')
+@app.route('/read_course_profiles')
 def read_course_profiles():
     filter_column = request.args.get('filter_column')
     filter_value = request.args.get('filter_value')
 
     valid_columns = {'course_id', 'course_code', 'course_name', 'profile_status'}
-
     if filter_column and filter_column not in valid_columns:
         return "Invalid filter column", 400
 
@@ -456,7 +455,7 @@ def read_course_profiles():
         courses = dao.read_course_profiles(filter_column, filter_value)
 
         return render_template(
-            "read_course_profiles.html",
+            "course/read_course_profiles.html",
             courses=courses,
             filter_column=filter_column,
             filter_value=filter_value,
