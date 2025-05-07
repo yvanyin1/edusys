@@ -51,8 +51,6 @@ class CourseProfileDAO(BaseDAO):
     def read_course_profiles(self, filter_column=None, filter_value=None):
         try:
             query = "SELECT * FROM course_profile"
-            if filter_column and filter_value:
-                query += f" WHERE {filter_column} LIKE '%{filter_value}%'"
             conn = self.get_connection()
             cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
             cursor.execute(query)
@@ -63,6 +61,15 @@ class CourseProfileDAO(BaseDAO):
             for course in courses:
                 course["target_audience"] = AudienceType(course["target_audience"]).name.title().replace("_", " ")
                 course["profile_status"] = ProfileStatus(course["profile_status"]).name.title()
+
+            # Filter in Python if filter_column and filter_value provided
+            if filter_column and filter_value:
+                filter_value_lower = filter_value.lower()
+                courses = [
+                    course for course in courses
+                    if filter_column in course and filter_value_lower in str(course[filter_column]).lower()
+                ]
+
             return courses
 
         except Exception as e:

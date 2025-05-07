@@ -55,19 +55,26 @@ class StudentProfileDAO(BaseDAO):
     def read_student_profiles(self, filter_column=None, filter_value=None):
         try:
             query = "SELECT * FROM student_profile"
-            if filter_column and filter_value:
-                query += f" WHERE {filter_column} LIKE '%{filter_value}%'"
             conn = self.get_connection()
-            cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
+            cursor = conn.cursor(dictionary=True)
             cursor.execute(query)
             students = cursor.fetchall()
             conn.commit()
 
-            # Convert Enum integer values to Enum name
+            # Convert enum integer values to names
             for student in students:
                 student["enrollment_status"] = EnrollmentStatus(student["enrollment_status"]).name.title()
                 student["guardian_status"] = GuardianStatus(student["guardian_status"]).name.title().replace("_", " ")
                 student["profile_status"] = ProfileStatus(student["profile_status"]).name.title()
+
+            # Filter in Python if filter_column and filter_value provided
+            if filter_column and filter_value:
+                filter_value_lower = filter_value.lower()
+                students = [
+                    student for student in students
+                    if filter_column in student and filter_value_lower in str(student[filter_column]).lower()
+                ]
+
             return students
 
         except Exception as e:

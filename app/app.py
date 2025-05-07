@@ -339,7 +339,6 @@ def add_initial_scheduled_class_sessions():
         print(f"✅ Finished inserting sessions for schedule {schedule_id}")
 
     print("🎉 All sessions inserted successfully.")
-    print(session_dao.count_rows())
 
 
 # TODO for testing purposes
