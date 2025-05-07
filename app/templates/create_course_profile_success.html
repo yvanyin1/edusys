@@ -2,7 +2,7 @@
 {% block title %}Course Profile Created{% endblock %}
 
 {% block content %}
-    <h2>Course Profile Successfully Added</h2>
+    <h2>Course Successfully Added</h2>
     <p><strong>Course Name:</strong> {{ course.course_name }}</p>
     <p><strong>Course Code:</strong> {{ course.course_code }}</p>
     <p><strong>Course Description:</strong> {{ course.course_desc }}</p>
@@ -15,7 +15,7 @@
 
      <div style="margin-top: 30px;">
          <button type="button" onclick="location.href='{{ url_for('create_course_profile') }}'">
-             Create Another Course Profile
+             Add Another Course
          </button>
          <button type="button" onclick="location.href='{{ url_for('course_management') }}'">
              Course Management Menu

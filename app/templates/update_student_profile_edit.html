@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Edit Student Profile{% endblock %}
+{% block title %}Edit Student Information{% endblock %}
 
 {% block content %}
 <div style="max-width: 600px; margin: 40px auto; padding: 20px;">
-    <h2 style="text-align: center; color: #007BFF;">Edit Student Profile</h2>
+    <h2 style="text-align: center; color: #007BFF;">Edit Student Information</h2>
 
     <form action="{{ url_for('update_student_profile_success') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
 
@@ -69,7 +69,7 @@
         </div>
 
         <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
-            Update Student
+            Update Student Information
         </button>
     </form>
 </div>
