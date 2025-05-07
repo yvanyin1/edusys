@@ -2,7 +2,6 @@
 <div class="container mt-5">
     <h1>{{ title }}</h1>
 
-    <!-- Filter Links -->
     <div class="mb-3">
         <a href="{{ filter_action }}"
            class="btn {% if not filter_column %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
@@ -16,24 +15,20 @@
         {% endfor %}
     </div>
 
-    <!-- Filter Input Form -->
     <form method="get" action="{{ filter_action }}" id="filterForm"
-      class="mb-5"
-      style="height: auto; visibility: {{ 'visible' if filter_column else 'hidden' }};">
-    <input type="hidden" name="filter_column" id="filterColumn" value="{{ filter_column or '' }}">
-    <div class="input-group mb-4">
-        <input type="text"
-               class="form-control"
-               name="filter_value"
-               placeholder="Enter {{ filter_column.replace('_', ' ') if filter_column else 'value' }}..."
-               id="filterInput"
-               value="{{ filter_value or '' }}">
-        <button type="submit" class="btn btn-secondary">Search</button>
-    </div>
-</form>
-
-    <!-- Spacer -->
-    <div class="mb-5"></div>
+          class="mb-5"
+          style="height: auto; visibility: {{ 'visible' if filter_column else 'hidden' }};">
+        <input type="hidden" name="filter_column" id="filterColumn" value="{{ filter_column or '' }}">
+        <div class="input-group mb-4">
+            <input type="text"
+                   class="form-control"
+                   name="filter_value"
+                   placeholder="Enter {{ filter_column.replace('_', ' ') if filter_column else 'value' }}..."
+                   id="filterInput"
+                   value="{{ filter_value or '' }}">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </div>
+    </form>
 
     <!-- Table -->
     <table class="table table-bordered table-striped table-hover align-middle">
