@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% import "components/macros/create_form_macros.html" as form %}
 {% import "components/macros/flash_macros.html" as flash %}
 {% block title %}Create Student Profile{% endblock %}
 
@@ -10,30 +9,52 @@
     {{ flash.render_flashed_messages() }}
 
     <form action="{{ url_for('student_profile_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
-        {{ form.render_input("First Name", "first_name", form_data.first_name if form_data else '', required=True) }}
-        {{ form.render_input("Middle Name", "middle_name", form_data.middle_name if form_data else '') }}
-        {{ form.render_input("Last Name", "last_name", form_data.last_name if form_data else '', required=True) }}
-        {{ form.render_input("Birth Date", "birth_date", form_data.birth_date if form_data else '', type="date") }}
-        {{ form.render_input("Phone Number", "phone_number", form_data.phone_number if form_data else '') }}
-        {{ form.render_input("Email Address", "email_address", form_data.email_address if form_data else '', type="email", required=True) }}
-        {{ form.render_input("Home Address", "home_address", form_data.home_address if form_data else '') }}
-        {{ form.render_input("Registration Date", "registration_date", form_data.registration_date if form_data else '', type="date") }}
 
-        {{ form.render_select("Enrollment Status", "enrollment_status", [
-            ("Inactive", "Inactive"),
-            ("Enrolled", "Enrolled"),
-            ("Graduated", "Graduated")
-        ], form_data.enrollment_status if form_data else '', required=True) }}
+        <label for="first_name">First Name*:</label>
+        <input type="text" id="first_name" name="first_name" value="{{ form_data.first_name if form_data else '' }}" required style="width: 100%;">
 
-        {{ form.render_select("Guardian Status", "guardian_status", [
-            ("No Guardian", "No Guardian"),
-            ("Has Guardian", "Has Guardian")
-        ], form_data.guardian_status if form_data else '', required=True) }}
+        <label for="middle_name">Middle Name:</label>
+        <input type="text" id="middle_name" name="middle_name" value="{{ form_data.middle_name if form_data else '' }}" style="width: 100%;">
 
-        {{ form.render_select("Profile Status", "profile_status", [
-            ("Inactive", "Inactive"),
-            ("Active", "Active")
-        ], form_data.profile_status if form_data else '', required=True) }}
+        <label for="last_name">Last Name*:</label>
+        <input type="text" id="last_name" name="last_name" value="{{ form_data.last_name if form_data else '' }}" required style="width: 100%;">
+
+        <label for="birth_date">Birth Date:</label>
+        <input type="date" id="birth_date" name="birth_date" value="{{ form_data.birth_date if form_data else '' }}" style="width: 100%;">
+
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" id="phone_number" name="phone_number" value="{{ form_data.phone_number if form_data else '' }}" style="width: 100%;">
+
+        <label for="email_address">Email Address*:</label>
+        <input type="email" id="email_address" name="email_address" value="{{ form_data.email_address if form_data else '' }}" required style="width: 100%;">
+
+        <label for="home_address">Home Address:</label>
+        <input type="text" id="home_address" name="home_address" value="{{ form_data.home_address if form_data else '' }}" style="width: 100%;">
+
+        <label for="registration_date">Registration Date:</label>
+        <input type="date" id="registration_date" name="registration_date" value="{{ form_data.registration_date if form_data else '' }}" style="width: 100%;">
+
+        <label for="enrollment_status">Enrollment Status*:</label>
+        <select id="enrollment_status" name="enrollment_status" required style="width: 100%;">
+            <option value="" disabled {% if not form_data or not form_data.enrollment_status %}selected{% endif %}>Select enrollment status</option>
+            <option value="Inactive" {% if form_data and form_data.enrollment_status == "Inactive" %}selected{% endif %}>Inactive</option>
+            <option value="Enrolled" {% if form_data and form_data.enrollment_status == "Enrolled" %}selected{% endif %}>Enrolled</option>
+            <option value="Graduated" {% if form_data and form_data.enrollment_status == "Graduated" %}selected{% endif %}>Graduated</option>
+        </select>
+
+        <label for="guardian_status">Guardian Status*:</label>
+        <select id="guardian_status" name="guardian_status" required style="width: 100%;">
+            <option value="" disabled {% if not form_data or not form_data.guardian_status %}selected{% endif %}>Select guardian status</option>
+            <option value="No Guardian" {% if form_data and form_data.guardian_status == "No Guardian" %}selected{% endif %}>No Guardian</option>
+            <option value="Has Guardian" {% if form_data and form_data.guardian_status == "Has Guardian" %}selected{% endif %}>Has Guardian</option>
+        </select>
+
+        <label for="profile_status">Profile Status*:</label>
+        <select id="profile_status" name="profile_status" required style="width: 100%;">
+            <option value="" disabled {% if not form_data or not form_data.profile_status %}selected{% endif %}>Select profile status</option>
+            <option value="Inactive" {% if form_data and form_data.profile_status == "Inactive" %}selected{% endif %}>Inactive</option>
+            <option value="Active" {% if form_data and form_data.profile_status == "Active" %}selected{% endif %}>Active</option>
+        </select>
 
         <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
             Add Student

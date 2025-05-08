@@ -108,6 +108,7 @@ def get_connection():
         print(f"Database connection failed: {err}")
         raise
 
+
 # TODO for testing purposes
 def load_initial_data():
     """Function to load initial data from SQL query."""
