@@ -51,7 +51,6 @@ class ScheduledClassSessionDAO(BaseDAO):
             cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
             cursor.execute(query)
             sessions = cursor.fetchall()
-            conn.commit()
 
             # Convert Enum integer values to Enum name
             for session in sessions:

@@ -21,7 +21,6 @@ class ClassroomLocationDAO(BaseDAO):
             cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
             cursor.execute(query)
             classroom_locations = cursor.fetchall()
-            conn.commit()
             return classroom_locations
 
         except Exception as e:

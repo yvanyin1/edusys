@@ -55,7 +55,6 @@ class CourseProfileDAO(BaseDAO):
             cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
             cursor.execute(query)
             courses = cursor.fetchall()
-            conn.commit()
 
             # Convert Enum integer values to Enum name
             for course in courses:

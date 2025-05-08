@@ -36,6 +36,7 @@ from app.utils.student_utils import StudentUtils
 
 USERNAME = "dluo"
 
+# Add Enum string names to Enum type conversions here
 audience_type_map = {
     "General Audience": AudienceType.GENERAL_AUDIENCE,
     "Adult": AudienceType.ADULT,
@@ -377,12 +378,12 @@ def student_management():
     return render_template("student/student_management.html", username=USERNAME)
 
 
-@app.route('/create-course-profile')
+@app.route('/course-management/create-course-profile')
 def create_course_profile():
     return render_template("course/create_course_profile_form.html", username=USERNAME)
 
 
-@app.route('/course-profile-created', methods=['POST'])
+@app.route('/course-management/course-profile-created', methods=['POST'])
 def course_profile_created():
 
     course_name = request.form['course_name']
@@ -446,7 +447,7 @@ def course_profile_created():
                            course=course_data, username=USERNAME)
 
 
-@app.route('/read_course_profiles')
+@app.route('/course-management/read_course_profiles')
 def read_course_profiles():
     filter_column = request.args.get('filter_column')
     filter_value = request.args.get('filter_value')
@@ -473,12 +474,12 @@ def read_course_profiles():
     except Exception as e:
         return f"Error fetching courses: {e}"
 
-@app.route('/update-course-profile/search', methods=["GET"])
+@app.route('/course-management/update-course-profile/search', methods=["GET"])
 def update_course_profile_search():
     return render_template("course/update_course_profile_search.html", username=USERNAME)
 
 
-@app.route('/update-course-profile/edit-course', methods=['GET'])
+@app.route('/course-management/update-course-profile/edit-course', methods=['GET'])
 def edit_course_profile():
     course_name_or_code = request.args.get('course_name_or_code')
 
@@ -496,7 +497,7 @@ def edit_course_profile():
                            course=course_profile, enum_to_string=enum_to_string, username=USERNAME)
 
 
-@app.route('/update-course-profile/success', methods=['POST'])
+@app.route('/course-management/update-course-profile/success', methods=['POST'])
 def update_course_profile_success():
     course_id = request.form['course_id']
     course_name = request.form['course_name']
@@ -533,12 +534,12 @@ def update_course_profile_success():
     return render_template("course/update_course_profile_success.html", course=course_data, username=USERNAME)
 
 
-@app.route('/delete-course-profile/search', methods=['GET'])
+@app.route('/course-management/delete-course-profile/search', methods=['GET'])
 def delete_course_profile_search():
     return render_template("course/delete_course_profile_search.html", username=USERNAME)
 
 
-@app.route('/delete-course-profile/success', methods=['POST'])
+@app.route('/course-management/delete-course-profile/success', methods=['POST'])
 def delete_course_profile_success():
     course_name_or_code = request.form["course_name_or_code"]
 
@@ -554,12 +555,12 @@ def delete_course_profile_success():
     return render_template("course/delete_course_profile_success.html", course=course_data, username=USERNAME)
 
 
-@app.route('/create-student-profile')
+@app.route('/student-management/create-student-profile')
 def create_student_profile():
     return render_template("student/create_student_profile_form.html", username=USERNAME)
 
 
-@app.route('/student-profile-created', methods=['POST'])
+@app.route('/student-management/student-profile-created', methods=['POST'])
 def student_profile_created():
     # Extract form data
     student_id = StudentUtils.generate_unique_student_id()
@@ -631,7 +632,7 @@ def student_profile_created():
                            student=student_data, username=USERNAME)
 
 
-@app.route('/read_student_profiles')
+@app.route('/student-management/read_student_profiles')
 def read_student_profiles():
     filter_column = request.args.get('filter_column')
     filter_value = request.args.get('filter_value')
@@ -657,12 +658,12 @@ def read_student_profiles():
         return f"Error fetching courses: {e}"
 
 
-@app.route('/update-student-profile/search', methods=["GET"])
+@app.route('/student-management/update-student-profile/search', methods=["GET"])
 def update_student_profile_search():
     return render_template("student/update_student_profile_search.html", username=USERNAME)
 
 
-@app.route('/update-student-profile/edit-student', methods=['GET'])
+@app.route('/student-management/update-student-profile/edit-student', methods=['GET'])
 def edit_student_profile():
     student_id = request.args.get('student_id')
 
@@ -689,7 +690,7 @@ def edit_student_profile():
                            student=student_profile, enum_to_string=enum_to_string, username=USERNAME)
 
 
-@app.route('/update-student-profile/success', methods=['POST'])
+@app.route('/student-management/update-student-profile/success', methods=['POST'])
 def update_student_profile_success():
     student_id = request.form['student_id']
     first_name = request.form['first_name']
@@ -794,7 +795,7 @@ def teacher_management():
     return render_template("teacher/teacher_management.html", username=USERNAME)
 
 
-@app.route('/read-teacher-profiles')
+@app.route('/teacher-management/read-teacher-profiles')
 def read_teacher_profiles():
     filter_column = request.args.get('filter_column')
     filter_value = request.args.get('filter_value')
@@ -818,9 +819,6 @@ def read_teacher_profiles():
         )
     except Exception as e:
         return f"Error fetching teachers: {e}"
-
-
-
 
 
 @app.route('/class-management')
@@ -887,7 +885,7 @@ def class_schedule_created():
                            class_schedule=form_data, username=USERNAME)
 
 
-@app.route('/read-class-schedules')
+@app.route('/class-management/read-class-schedules')
 def read_class_schedules():
     filter_column = request.args.get('filter_column')
     filter_value = request.args.get('filter_value')
@@ -919,7 +917,7 @@ def read_class_schedules():
         return f"Error fetching class schedules: {e}"
 
 
-@app.route('/create-scheduled-class-session')
+@app.route('/class-management/create-scheduled-class-session')
 def create_scheduled_class_session():
     connection = get_connection()
     class_schedule_dao = ClassScheduleDAO(connection)
@@ -946,7 +944,7 @@ def create_scheduled_class_session():
                            flags=flags, username=USERNAME)
 
 
-@app.route('/create-scheduled-class-session-success', methods=["POST"])
+@app.route('/class-management/scheduled-class-session-created', methods=["POST"])
 def scheduled_class_session_created():
     try:
         schedule_id = int(request.form["schedule_id"])
@@ -1014,7 +1012,7 @@ def scheduled_class_session_created():
                                username=USERNAME)
 
 
-@app.route('/generate-sessions-by-class')
+@app.route('/class-management/generate-sessions-by-class')
 def generate_sessions_by_class():
     course_query = request.args.get('course_query')
     class_sessions = []
@@ -1043,7 +1041,7 @@ def generate_sessions_by_class():
                            search_attempted=search_attempted, username=USERNAME)
 
 
-@app.route('/generate-schedule-by-student')
+@app.route('/class-management/generate-schedule-by-student')
 def generate_schedule_by_student():
     student_query = request.args.get('student_query')
     schedule_by_date = {}

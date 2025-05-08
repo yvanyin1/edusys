@@ -1,11 +1,8 @@
 from app.dao.base_dao import BaseDAO
 from app.models.class_schedule import ClassSchedule
 from app.enums.class_type import ClassType
-from app.enums.audience_type import AudienceType
-from app.enums.profile_status import ProfileStatus
 
 from app.dao.course_profile_dao import CourseProfileDAO
-from app.models.course_profile import CourseProfile
 
 
 class ClassScheduleDAO(BaseDAO):
@@ -47,7 +44,6 @@ class ClassScheduleDAO(BaseDAO):
             cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
             cursor.execute(query)
             class_schedules = cursor.fetchall()
-            conn.commit()
 
             # Convert Enum integer values to Enum name
             for class_schedule in class_schedules:

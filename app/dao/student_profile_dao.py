@@ -59,7 +59,6 @@ class StudentProfileDAO(BaseDAO):
             cursor = conn.cursor(dictionary=True)
             cursor.execute(query)
             students = cursor.fetchall()
-            conn.commit()
 
             # Convert enum integer values to names
             for student in students:

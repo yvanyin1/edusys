@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 class BaseDAO(object):
 
@@ -44,7 +44,7 @@ class BaseDAO(object):
         else:
             raise ValueError(f"No such column '{column_name}' in table '{self._table_name}' in schema '{schema_name}'")
 
-    def get_rows_by_column_value(self, value, column_name: str) -> object | None:
+    def get_rows_by_column_value(self, value, column_name: str) -> list[dict]:
         query = f"SELECT * FROM {self._table_name} WHERE {column_name} = %s"
         conn = self.get_connection()
         cursor = conn.cursor(dictionary=True)

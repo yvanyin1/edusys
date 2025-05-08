@@ -60,7 +60,6 @@ class TeacherProfileDAO(BaseDAO):
             cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
             cursor.execute(query)
             teachers = cursor.fetchall()
-            conn.commit()
 
             # Convert Enum integer values to Enum name
             for teacher in teachers:

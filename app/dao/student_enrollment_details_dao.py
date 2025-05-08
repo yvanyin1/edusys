@@ -41,7 +41,6 @@ class StudentEnrollmentDetailsDAO(BaseDAO):
             cursor = conn.cursor(dictionary=True)
             cursor.execute(query)
             enrollments = cursor.fetchall()
-            conn.commit()
 
             for enrollment in enrollments:
                 enrollment["enrollment_status"] = ClassEnrollmentStatus(enrollment["enrollment_status"]).name.title()
