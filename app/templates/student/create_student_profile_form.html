@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% import "components/macros/create_form_macros.html" as form %}
+{% block title %}Create Student Profile{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Add a New Student</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="margin-bottom: 15px;">
+          {% for category, message in messages %}
+            <div style="color: {% if category == 'warning' %}red{% else %}green{% endif %};">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('student_profile_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        {{ form.render_input("First Name", "first_name", form_data.first_name if form_data else '', required=True) }}
+        {{ form.render_input("Middle Name", "middle_name", form_data.middle_name if form_data else '') }}
+        {{ form.render_input("Last Name", "last_name", form_data.last_name if form_data else '', required=True) }}
+        {{ form.render_input("Birth Date", "birth_date", form_data.birth_date if form_data else '', type="date") }}
+        {{ form.render_input("Phone Number", "phone_number", form_data.phone_number if form_data else '') }}
+        {{ form.render_input("Email Address", "email_address", form_data.email_address if form_data else '', type="email", required=True) }}
+        {{ form.render_input("Home Address", "home_address", form_data.home_address if form_data else '') }}
+        {{ form.render_input("Registration Date", "registration_date", form_data.registration_date if form_data else '', type="date") }}
+
+        {{ form.render_select("Enrollment Status", "enrollment_status", [
+            ("Inactive", "Inactive"),
+            ("Enrolled", "Enrolled"),
+            ("Graduated", "Graduated")
+        ], form_data.enrollment_status if form_data else '', required=True) }}
+
+        {{ form.render_select("Guardian Status", "guardian_status", [
+            ("No Guardian", "No Guardian"),
+            ("Has Guardian", "Has Guardian")
+        ], form_data.guardian_status if form_data else '', required=True) }}
+
+        {{ form.render_select("Profile Status", "profile_status", [
+            ("Inactive", "Inactive"),
+            ("Active", "Active")
+        ], form_data.profile_status if form_data else '', required=True) }}
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Add Student
+        </button>
+    </form>
+</div>
+{% endblock %}

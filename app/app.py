@@ -374,12 +374,12 @@ def course_management():
 
 @app.route('/student-management')
 def student_management():
-    return render_template("student_management.html", username=USERNAME)
+    return render_template("student/student_management.html", username=USERNAME)
 
 
 @app.route('/create-course-profile')
 def create_course_profile():
-    return render_template("create_course_profile_form.html", username=USERNAME)
+    return render_template("course/create_course_profile_form.html", username=USERNAME)
 
 
 @app.route('/course-profile-created', methods=['POST'])
@@ -416,12 +416,12 @@ def course_profile_created():
     # Check if course name or code already exists
     if dao.get_course_by_name(course_name):
         flash(f"A course with the name '{course_name}' already exists.", 'warning')
-        return render_template("create_course_profile_form.html",
+        return render_template("course/create_course_profile_form.html",
                                form_data=form_data, username=USERNAME)
 
     if dao.get_course_by_code(course_code):
         flash(f"A course with the code '{course_code}' already exists.", 'warning')
-        return render_template("create_course_profile_form.html",
+        return render_template("course/create_course_profile_form.html",
                                form_data=form_data, username=USERNAME)
 
 
@@ -442,7 +442,7 @@ def course_profile_created():
         'profile_status': profile_status_string
     }
 
-    return render_template("create_course_profile_success.html",
+    return render_template("course/create_course_profile_success.html",
                            course=course_data, username=USERNAME)
 
 
@@ -475,7 +475,7 @@ def read_course_profiles():
 
 @app.route('/update-course-profile/search', methods=["GET"])
 def update_course_profile_search():
-    return render_template("update_course_profile_search.html", username=USERNAME)
+    return render_template("course/update_course_profile_search.html", username=USERNAME)
 
 
 @app.route('/update-course-profile/edit-course', methods=['GET'])
@@ -492,7 +492,7 @@ def edit_course_profile():
         course_profile.get_profile_status(): ProfileStatus(course_profile.get_profile_status()).name.title()
     }
 
-    return render_template("update_course_profile_edit.html",
+    return render_template("course/update_course_profile_edit.html",
                            course=course_profile, enum_to_string=enum_to_string, username=USERNAME)
 
 
@@ -530,12 +530,12 @@ def update_course_profile_success():
         'profile_status': profile_status_string
     }
 
-    return render_template("update_course_profile_success.html", course=course_data, username=USERNAME)
+    return render_template("course/update_course_profile_success.html", course=course_data, username=USERNAME)
 
 
 @app.route('/delete-course-profile/search', methods=['GET'])
 def delete_course_profile_search():
-    return render_template("delete_course_profile_search.html", username=USERNAME)
+    return render_template("course/delete_course_profile_search.html", username=USERNAME)
 
 
 @app.route('/delete-course-profile/success', methods=['POST'])
@@ -551,12 +551,12 @@ def delete_course_profile_success():
         'course_name': course_profile.get_name(),
         'course_code': course_profile.get_code(),
     }
-    return render_template("delete_course_profile_success.html", course=course_data, username=USERNAME)
+    return render_template("course/delete_course_profile_success.html", course=course_data, username=USERNAME)
 
 
 @app.route('/create-student-profile')
 def create_student_profile():
-    return render_template("create_student_profile_form.html", username=USERNAME)
+    return render_template("student/create_student_profile_form.html", username=USERNAME)
 
 
 @app.route('/student-profile-created', methods=['POST'])
@@ -599,7 +599,8 @@ def student_profile_created():
     # Check for duplicate email
     if dao.get_student_by_email(email_address):
         flash(f"A student with the email '{email_address}' already exists.", 'warning')
-        return render_template("create_student_profile_form.html", form_data=form_data, username=USERNAME)
+        return render_template("student/create_student_profile_form.html",
+                               form_data=form_data, username=USERNAME)
 
     # Create student profile
     new_student = StudentProfile(
@@ -626,7 +627,8 @@ def student_profile_created():
         'profile_status': profile_status_string
     }
 
-    return render_template("create_student_profile_success.html", student=student_data, username=USERNAME)
+    return render_template("student/create_student_profile_success.html",
+                           student=student_data, username=USERNAME)
 
 
 @app.route('/read_student_profiles')

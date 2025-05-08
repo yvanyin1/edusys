@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% import "components/macros/create_form_macros.html" as form %}
+{% block title %}Add New Course{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Add a New Course</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="margin-bottom: 15px;">
+          {% for category, message in messages %}
+            <div style="color: {% if category == 'warning' %}red{% else %}green{% endif %};">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('course_profile_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        {{ form.render_input("Course Name", "course_name", form_data.course_name if form_data else '', required=True) }}
+        {{ form.render_input("Course Code", "course_code", form_data.course_code if form_data else '', required=True) }}
+        {{ form.render_textarea("Course Description", "course_desc", form_data.course_desc if form_data else '') }}
+
+        {{ form.render_select("Target Audience", "target_audience", [
+            ("General Audience", "General Audience"),
+            ("Youth", "Youth"),
+            ("Adult", "Adult")
+        ], form_data.target_audience if form_data else '', required=True) }}
+
+        {{ form.render_input("Duration in Weeks", "duration_in_weeks", form_data.duration_in_weeks if form_data else '', type='number') }}
+        {{ form.render_input("Prerequisite Course(s)", "prerequisites", form_data.prerequisites if form_data else '') }}
+        {{ form.render_input("Corequisite Course(s)", "corequisites", form_data.corequisites if form_data else '') }}
+        {{ form.render_input("Number of Credits", "credit_hours", form_data.credit_hours if form_data else '', type='number', required=False) }}
+
+        {{ form.render_select("Profile Status", "profile_status", [
+            ("Inactive", "Inactive"),
+            ("Active", "Active")
+        ], form_data.profile_status if form_data else '', required=True) }}
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Add Course
+        </button>
+    </form>
+</div>
+{% endblock %}
