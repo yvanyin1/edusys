@@ -183,6 +183,7 @@ table.table-bordered th {
 /* ===== Inputs ===== */
 input[type="text"],
 input[type="email"],
+input[type="date"],
 input[type="password"],
 textarea,
 select {
