@@ -77,14 +77,24 @@ day_of_week_map = {
     "Sunday": DayOfWeek.SUNDAY
 }
 
+# Load environment variables
 load_dotenv(dotenv_path='.env_test')
 
+# Validate required environment variables early
+required_env_vars = ["DB_HOST", "DB_USER", "DB_PASSWORD"]
+missing = [var for var in required_env_vars if not os.getenv(var)]
+if missing:
+    raise EnvironmentError(f"Missing required environment variables: {', '.join(missing)}")
+
+# Configure paths
 basedir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 template_dir = os.path.join(basedir, 'templates')
 
+# Initialize Flask app
 app = Flask(__name__, template_folder=template_dir)
 app.secret_key = os.getenv("SECRET_KEY", "dev")
 
+DB_NAME = os.getenv("DB_NAME", "education_management_test")
 
 def get_connection():
     try:
@@ -92,7 +102,7 @@ def get_connection():
             host=os.getenv("DB_HOST"),
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD"),
-            database="education_management_test",
+            database=DB_NAME,
         )
     except mysql.connector.Error as err:
         print(f"Database connection failed: {err}")
