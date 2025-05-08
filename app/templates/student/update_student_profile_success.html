@@ -1,27 +1,22 @@
 {% extends "base.html" %}
+{% from "components/macros/success_macros.html" import info_field, success_buttons %}
 {% block title %}Student Information Updated{% endblock %}
 
 {% block content %}
     <h2>Student Information Successfully Updated</h2>
 
-    <p><strong>First Name:</strong> {{ student.first_name }}</p>
-    <p><strong>Middle Name:</strong> {{ student.middle_name }}</p>
-    <p><strong>Last Name:</strong> {{ student.last_name }}</p>
-    <p><strong>Birth Date:</strong> {{ student.birth_date }}</p>
-    <p><strong>Phone Number:</strong> {{ student.phone_number }}</p>
-    <p><strong>Email Address:</strong> {{ student.email_address }}</p>
-    <p><strong>Home Address:</strong> {{ student.home_address }}</p>
-    <p><strong>Registration Date:</strong> {{ student.registration_date }}</p>
-    <p><strong>Enrollment Status:</strong> {{ student.enrollment_status }}</p>
-    <p><strong>Guardian Status:</strong> {{ student.guardian_status }}</p>
-    <p><strong>Profile Status:</strong> {{ student.profile_status }}</p>
+    {{ info_field('First Name', student.first_name) }}
+    {{ info_field('Middle Name', student.middle_name) }}
+    {{ info_field('Last Name', student.last_name) }}
+    {{ info_field('Birth Date', student.birth_date) }}
+    {{ info_field('Phone Number', student.phone_number) }}
+    {{ info_field('Email Address', student.email_address) }}
+    {{ info_field('Home Address', student.home_address) }}
+    {{ info_field('Registration Date', student.registration_date) }}
+    {{ info_field('Enrollment Status', student.enrollment_status) }}
+    {{ info_field('Guardian Status', student.guardian_status) }}
+    {{ info_field('Profile Status', student.profile_status) }}
 
-    <div style="margin-top: 30px;">
-        <button type="button" onclick="location.href='{{ url_for('update_student_profile_search') }}'">
-            Update Another Student Profile
-        </button>
-        <button type="button" onclick="location.href='{{ url_for('student_management') }}'">
-            Student Management Menu
-        </button>
-    </div>
+    {{ success_buttons('update_student_profile_search', 'Update Another Student Profile',
+                       'student_management', 'Student Management Menu') }}
 {% endblock %}

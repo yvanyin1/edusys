@@ -1,0 +1,14 @@
+{% macro info_field(label, value) %}
+    <p><strong>{{ label }}:</strong> {{ value or '' }}</p>
+{% endmacro %}
+
+{% macro success_buttons(create_url, create_text, menu_url, menu_text) %}
+    <div style="margin-top: 30px;">
+        <button type="button" onclick="location.href='{{ url_for(create_url) }}'">
+            {{ create_text }}
+        </button>
+        <button type="button" onclick="location.href='{{ url_for(menu_url) }}'">
+            {{ menu_text }}
+        </button>
+    </div>
+{% endmacro %}

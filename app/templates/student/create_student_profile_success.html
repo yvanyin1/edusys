@@ -1,27 +1,23 @@
 {% extends "base.html" %}
+{% from "components/macros/success_macros.html" import info_field, success_buttons %}
 {% block title %}Student Profile Created{% endblock %}
 
 {% block content %}
     <h2>Student Profile Successfully Added</h2>
-    <p><strong>Student ID:</strong> {{ student.student_id }}</p>
-    <p><strong>First Name:</strong> {{ student.first_name }}</p>
-    <p><strong>Middle Name:</strong> {{ student.middle_name or '' }}</p>
-    <p><strong>Last Name:</strong> {{ student.last_name }}</p>
-    <p><strong>Birth Date:</strong> {{ student.birth_date or '' }}</p>
-    <p><strong>Phone Number:</strong> {{ student.phone_number or '' }}</p>
-    <p><strong>Email Address:</strong> {{ student.email_address }}</p>
-    <p><strong>Home Address:</strong> {{ student.home_address or '' }}</p>
-    <p><strong>Registration Date:</strong> {{ student.registration_date or '' }}</p>
-    <p><strong>Enrollment Status:</strong> {{ student.enrollment_status }}</p>
-    <p><strong>Guardian Status:</strong> {{ student.guardian_status }}</p>
-    <p><strong>Profile Status:</strong> {{ student.profile_status }}</p>
 
-    <div style="margin-top: 30px;">
-        <button type="button" onclick="location.href='{{ url_for('create_student_profile') }}'">
-            Create Another Student Profile
-        </button>
-        <button type="button" onclick="location.href='{{ url_for('student_management') }}'">
-            Student Management Menu
-        </button>
-    </div>
+    {{ info_field('Student ID', student.student_id) }}
+    {{ info_field('First Name', student.first_name) }}
+    {{ info_field('Middle Name', student.middle_name) }}
+    {{ info_field('Last Name', student.last_name) }}
+    {{ info_field('Birth Date', student.birth_date) }}
+    {{ info_field('Phone Number', student.phone_number) }}
+    {{ info_field('Email Address', student.email_address) }}
+    {{ info_field('Home Address', student.home_address) }}
+    {{ info_field('Registration Date', student.registration_date) }}
+    {{ info_field('Enrollment Status', student.enrollment_status) }}
+    {{ info_field('Guardian Status', student.guardian_status) }}
+    {{ info_field('Profile Status', student.profile_status) }}
+
+    {{ success_buttons('create_student_profile', 'Create Another Student Profile',
+                       'student_management', 'Student Management Menu') }}
 {% endblock %}

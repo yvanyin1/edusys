@@ -1,25 +1,20 @@
 {% extends "base.html" %}
+{% from "components/macros/success_macros.html" import info_field, success_buttons %}
 {% block title %}Course Profile Updated{% endblock %}
 
 {% block content %}
     <h2>Course Profile Successfully Updated</h2>
 
-    <p><strong>Course Name:</strong> {{ course.course_name }}</p>
-    <p><strong>Course Code:</strong> {{ course.course_code }}</p>
-    <p><strong>Course Description:</strong> {{ course.course_desc }}</p>
-    <p><strong>Target Audience:</strong> {{ course.target_audience }}</p>
-    <p><strong>Duration in Weeks:</strong> {{ course.duration_in_weeks }}</p>
-    <p><strong>Prerequisites Course(s):</strong> {{ course.prerequisites }}</p>
-    <p><strong>Corequisite Course(s):</strong> {{ course.corequisites }}</p>
-    <p><strong>Number of Credits:</strong> {{ course.credit_hours }}</p>
-    <p><strong>Profile Status:</strong> {{ course.profile_status}}</p>
+    {{ info_field('Course Name', course.course_name) }}
+    {{ info_field('Course Code', course.course_code) }}
+    {{ info_field('Course Description', course.course_desc) }}
+    {{ info_field('Target Audience', course.target_audience) }}
+    {{ info_field('Duration in Weeks', course.duration_in_weeks) }}
+    {{ info_field('Prerequisites Course(s)', course.prerequisites) }}
+    {{ info_field('Corequisite Course(s)', course.corequisites) }}
+    {{ info_field('Number of Credits', course.credit_hours) }}
+    {{ info_field('Profile Status', course.profile_status) }}
 
-    <div style="margin-top: 30px;">
-         <button type="button" onclick="location.href='{{ url_for('update_course_profile_search') }}'">
-             Update Another Course Profile
-         </button>
-         <button type="button" onclick="location.href='{{ url_for('course_management') }}'">
-             Course Management Menu
-         </button>
-     </div>
+    {{ success_buttons('update_course_profile_search', 'Update Another Course Profile',
+                       'course_management', 'Course Management Menu') }}
 {% endblock %}
