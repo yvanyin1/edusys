@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% import "components/macros/create_form_macros.html" as form %}
+{% block title %}Edit Student Information{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Edit Student Information</h2>
+
+    <form action="{{ url_for('update_student_profile_success') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        <input type="hidden" name="student_id" value="{{ student.get_student_id() }}">
+
+        {{ form.render_input("First Name", "first_name", student.get_first_name(), required=True) }}
+        {{ form.render_input("Middle Name", "middle_name", student.get_middle_name()) }}
+        {{ form.render_input("Last Name", "last_name", student.get_last_name(), required=True) }}
+        {{ form.render_input("Birth Date", "birth_date", student.get_birth_date(), type="date") }}
+        {{ form.render_input("Phone Number", "phone_number", student.get_phone_number()) }}
+        {{ form.render_input("Email Address", "email_address", student.get_email_address(), type="email", required=True) }}
+        {{ form.render_input("Home Address", "home_address", student.get_home_address()) }}
+        {{ form.render_input("Registration Date", "registration_date", student.get_registration_date(), type="date") }}
+
+        {{ form.render_select("Enrollment Status", "enrollment_status", [
+            ("Inactive", "Inactive"),
+            ("Enrolled", "Enrolled"),
+            ("Graduated", "Graduated")
+        ], enum_to_string[student.get_enrollment_status()], required=True) }}
+
+        {{ form.render_select("Guardian Status", "guardian_status", [
+            ("No Guardian", "No Guardian"),
+            ("Has Guardian", "Has Guardian")
+        ], enum_to_string[student.get_guardian_status()], required=True) }}
+
+        {{ form.render_radio_group("Profile Status", "profile_status", [
+            ("Active", "Active"),
+            ("Inactive", "Inactive")
+        ], enum_to_string[student.get_profile_status()], required=True) }}
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Update Student Information
+        </button>
+    </form>
+</div>
+{% endblock %}

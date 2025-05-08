@@ -685,7 +685,7 @@ def edit_student_profile():
         student_profile.get_profile_status(): ProfileStatus(student_profile.get_profile_status()).name.title()
     }
 
-    return render_template("update_student_profile_edit.html",
+    return render_template("student/update_student_profile_edit.html",
                            student=student_profile, enum_to_string=enum_to_string, username=USERNAME)
 
 
@@ -729,7 +729,7 @@ def update_student_profile_success():
         'profile_status': profile_status_string
     }
 
-    return render_template("update_student_profile_success.html",
+    return render_template("student/update_student_profile_success.html",
                            student=student_data, username=USERNAME)
 
 

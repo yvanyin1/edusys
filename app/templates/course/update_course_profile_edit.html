@@ -1,62 +1,35 @@
 {% extends "base.html" %}
+{% import "components/macros/create_form_macros.html" as form %}
 {% block title %}Edit Course Information{% endblock %}
 
 {% block content %}
 <div style="max-width: 600px; margin: 40px auto; padding: 20px;">
     <h2 style="text-align: center; color: #007BFF;">Edit Course Information</h2>
 
-    <form action=" {{ url_for('update_course_profile_success') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+    <form action="{{ url_for('update_course_profile_success') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
 
         <input type="hidden" name="course_id" value="{{ course.get_course_id() }}">
 
-        <label>Course Name*:
-            <input type="text" name="course_name" required value="{{ course.get_name() }}" style="width: 100%;">
-        </label>
+        {{ form.render_input("Course Name", "course_name", value=course.get_name(), required=True) }}
+        {{ form.render_input("Course Code", "course_code", value=course.get_code(), required=True) }}
+        {{ form.render_textarea("Course Description", "course_desc", value=course.get_description()) }}
 
-        <label>Course Code*:
-            <input type="text" name="course_code" required value="{{ course.get_code() }}" style="width: 100%;">
-        </label>
+        {{ form.render_select("Target Audience", "target_audience", [
+            ("General Audience", "General Audience"),
+            ("Youth", "Youth"),
+            ("Adult", "Adult")
+        ], selected_value=enum_to_string[course.get_target_audience()], required=True) }}
 
-        <label>Course Description:
-            <textarea name="course_desc" rows="3" style="width: 100%;">{{ course.get_description() }}</textarea>
-        </label>
+        {{ form.render_input("Duration in Weeks", "duration_in_weeks", value=course.get_duration_in_weeks(), type='number') }}
+{#        Prerequisites and corequisites will be handled in the future #}
+        {{ form.render_input("Prerequisite Course(s)", "prerequisites", value="") }}
+        {{ form.render_input("Corequisite Course(s)", "corequisites", value="") }}
+        {{ form.render_input("Number of Credits", "credit_hours", value=course.get_credit_hours(), type='number') }}
 
-        <label>Target Audience:
-            <select name="target_audience" required style="width: 100%;">
-                <option value="General Audience" {% if enum_to_string[course.get_target_audience()] == 'General Audience' %}selected{% endif %}>General Audience</option>
-                <option value="Youth" {% if enum_to_string[course.get_target_audience()] == 'Youth' %}selected{% endif %}>Youth</option>
-                <option value="Adult" {% if enum_to_string[course.get_target_audience()] == 'Adult' %}selected{% endif %}>Adult</option>
-            </select>
-        </label>
-
-        <label>Duration in Weeks:
-            <input type="number" name="duration_in_weeks" value="{{ course.get_duration_in_weeks() }}" style="width: 100%;">
-        </label>
-
-        <label>Prerequisite Course(s):
-            <input type="text" name="prerequisites" style="width: 100%;">
-{#            I'll leave prerequisites blank for now'#}
-        </label>
-
-        <label>Corequisite Course(s):
-            <input type="text" name="corequisites" style="width: 100%;">
-        </label>
-
-        <label>Number of Credits:
-            <input type="number" step="0.1" name="credit_hours" value="{{ course.get_credit_hours() }}" style="width: 100%;">
-        </label>
-
-        <label>Profile Status:</label>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <label>
-                <input type="radio" name="profile_status" value="Active"
-                       {% if enum_to_string[course.get_profile_status()] == "Active" %}checked{% endif %} required> Active
-            </label>
-            <label>
-                <input type="radio" name="profile_status" value="Inactive"
-                       {% if enum_to_string[course.get_profile_status()] == "Inactive" %}checked{% endif %}> Inactive
-            </label>
-        </div>
+        {{ form.render_select("Profile Status", "profile_status", [
+            ("Inactive", "Inactive"),
+            ("Active", "Active")
+        ], selected_value=enum_to_string[course.get_profile_status()], required=True) }}
 
         <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
             Update Course

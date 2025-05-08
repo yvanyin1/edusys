@@ -20,3 +20,16 @@
     </select>
 </label>
 {% endmacro %}
+
+{% macro render_radio_group(label, name, options, selected_value='', required=False) %}
+<label>{{ label }}{% if required %}*{% endif %}:</label>
+<div style="display: flex; align-items: center; gap: 10px;">
+    {% for value, display in options %}
+        <label>
+            <input type="radio" name="{{ name }}" value="{{ value }}"
+                   {% if selected_value == value %}checked{% endif %}
+                   {% if required %}required{% endif %}> {{ display }}
+        </label>
+    {% endfor %}
+</div>
+{% endmacro %}
