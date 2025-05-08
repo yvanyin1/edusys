@@ -1,20 +1,31 @@
 {% extends "base.html" %}
-{% from "components/macros/success_macros.html" import info_field, success_buttons %}
 {% block title %}Course Profile Created{% endblock %}
 
 {% block content %}
-    <h2>Course Successfully Added</h2>
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Course Successfully Added</h2>
 
-    {{ info_field('Course Name', course.course_name) }}
-    {{ info_field('Course Code', course.course_code) }}
-    {{ info_field('Course Description', course.course_desc) }}
-    {{ info_field('Target Audience', course.target_audience) }}
-    {{ info_field('Duration in Weeks', course.duration_in_weeks) }}
-    {{ info_field('Prerequisites Course(s)', course.prerequisites) }}
-    {{ info_field('Corequisite Course(s)', course.corequisites) }}
-    {{ info_field('Number of Credits', course.credit_hours) }}
-    {{ info_field('Profile Status', course.profile_status) }}
+    <div style="margin-top: 20px;">
+        <p><strong>Course Name:</strong> {{ course.course_name or '' }}</p>
+        <p><strong>Course Code:</strong> {{ course.course_code or '' }}</p>
+        <p><strong>Course Description:</strong> {{ course.course_desc or '' }}</p>
+        <p><strong>Target Audience:</strong> {{ course.target_audience or '' }}</p>
+        <p><strong>Duration in Weeks:</strong> {{ course.duration_in_weeks or '' }}</p>
+        <p><strong>Prerequisites Course(s):</strong> {{ course.prerequisites or '' }}</p>
+        <p><strong>Corequisite Course(s):</strong> {{ course.corequisites or '' }}</p>
+        <p><strong>Number of Credits:</strong> {{ course.credit_hours or '' }}</p>
+        <p><strong>Profile Status:</strong> {{ course.profile_status or '' }}</p>
+    </div>
 
-    {{ success_buttons('create_course_profile', 'Add Another Course',
-                       'course_management', 'Course Management Menu') }}
+    <div style="text-align: center; margin-top: 30px;">
+        <button type="button" onclick="location.href='{{ url_for('create_course_profile') }}'"
+                style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px;">
+            Add Another Course
+        </button>
+        <button type="button" onclick="location.href='{{ url_for('course_management') }}'"
+                style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-left: 10px;">
+            Course Management Menu
+        </button>
+    </div>
+</div>
 {% endblock %}
