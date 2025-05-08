@@ -739,7 +739,7 @@ def student_enrollment_form():
     student_dao = StudentProfileDAO(connection)
     classes_dao = ClassScheduleDAO(connection)
 
-    students = student_dao.read_student_profiles("profile_status", 1)
+    students = student_dao.read_student_profiles("profile_status", "Active")
     classes = classes_dao.read_class_schedules()
     for c in classes:
         course = classes_dao.get_course_profile_by_schedule_id(c["schedule_id"])
@@ -832,7 +832,7 @@ def class_management():
 def create_class_schedule():
     connection = get_connection()
     course_profile_dao = CourseProfileDAO(connection)
-    active_courses = course_profile_dao.read_course_profiles("profile_status", 1)
+    active_courses = course_profile_dao.read_course_profiles("profile_status", "Active")
     semester_dao = SemesterDAO(connection)
     semesters = semester_dao.read_semester_data()
     for s in semesters:
