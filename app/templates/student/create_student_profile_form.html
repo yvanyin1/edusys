@@ -1,25 +1,15 @@
 {% extends "base.html" %}
 {% import "components/macros/create_form_macros.html" as form %}
+{% import "components/macros/flash_macros.html" as flash %}
 {% block title %}Create Student Profile{% endblock %}
 
 {% block content %}
 <div style="max-width: 600px; margin: 40px auto; padding: 20px;">
     <h2 style="text-align: center; color: #007BFF;">Add a New Student</h2>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div style="margin-bottom: 15px;">
-          {% for category, message in messages %}
-            <div style="color: {% if category == 'warning' %}red{% else %}green{% endif %};">
-              {{ message }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
+    {{ flash.render_flashed_messages() }}
 
     <form action="{{ url_for('student_profile_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
-
         {{ form.render_input("First Name", "first_name", form_data.first_name if form_data else '', required=True) }}
         {{ form.render_input("Middle Name", "middle_name", form_data.middle_name if form_data else '') }}
         {{ form.render_input("Last Name", "last_name", form_data.last_name if form_data else '', required=True) }}

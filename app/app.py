@@ -664,11 +664,21 @@ def update_student_profile_search():
 
 @app.route('/update-student-profile/edit-student', methods=['GET'])
 def edit_student_profile():
-    student_id = int(request.args.get('student_id'))
+    student_id = request.args.get('student_id')
 
+    if not student_id or not student_id.isdigit():
+        flash("Please enter a valid numeric Student ID.", "warning")
+        return redirect(url_for('update_student_profile_search'))
+
+    student_id = int(student_id)
     connection = get_connection()
     dao = StudentProfileDAO(connection)
     student_profile = dao.get_student_by_id(student_id)
+
+    if student_profile is None:
+        flash(f"Student ID {student_id} does not exist.", "warning")
+        return redirect(url_for('update_student_profile_search'))
+
     enum_to_string = {
         student_profile.get_enrollment_status(): EnrollmentStatus(student_profile.get_enrollment_status()).name.title(),
         student_profile.get_guardian_status(): GuardianStatus(student_profile.get_guardian_status()).name.title().replace("_", " "),
