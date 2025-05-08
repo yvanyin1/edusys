@@ -659,7 +659,7 @@ def read_student_profiles():
 
 @app.route('/update-student-profile/search', methods=["GET"])
 def update_student_profile_search():
-    return render_template("update_student_profile_search.html", username=USERNAME)
+    return render_template("student/update_student_profile_search.html", username=USERNAME)
 
 
 @app.route('/update-student-profile/edit-student', methods=['GET'])
@@ -781,7 +781,7 @@ def student_enrollment_success():
 
 @app.route('/teacher-management')
 def teacher_management():
-    return render_template("teacher_management.html", username=USERNAME)
+    return render_template("teacher/teacher_management.html", username=USERNAME)
 
 
 @app.route('/read-teacher-profiles')
@@ -808,6 +808,9 @@ def read_teacher_profiles():
         )
     except Exception as e:
         return f"Error fetching teachers: {e}"
+
+
+
 
 
 @app.route('/class-management')

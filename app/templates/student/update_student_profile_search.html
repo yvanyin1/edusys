@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% import "components/macros/search_form_macros.html" as search %}
+{% block title %}Find Student Profile to Update{% endblock %}
+
+{% block content %}
+    {{ search.render_search_form("Find Student Information to Update", "Enter Student ID", "student_id", url_for('edit_student_profile'), "Search", method="get") }}
+{% endblock %}
