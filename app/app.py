@@ -85,20 +85,18 @@ template_dir = os.path.join(basedir, 'templates')
 app = Flask(__name__, template_folder=template_dir)
 app.secret_key = os.getenv("SECRET_KEY", "dev")
 
-# Configure SQLAlchemy with MySQL
-app.config['SQLALCHEMY_DATABASE_URI'] = (f"mysql+mysqlconnector://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@"
-                                         + f"{os.getenv('DB_HOST')}/education_management_test")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
 
 def get_connection():
-    return mysql.connector.connect(
+    try:
+        return mysql.connector.connect(
             host=os.getenv("DB_HOST"),
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD"),
             database="education_management_test",
         )
+    except mysql.connector.Error as err:
+        print(f"Database connection failed: {err}")
+        raise
 
 # TODO for testing purposes
 def load_initial_data():

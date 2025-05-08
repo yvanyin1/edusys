@@ -17,7 +17,7 @@ class BaseDAO(object):
 
     def get_all_rows(self):
         conn = self.get_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         cursor.execute(f"SELECT * FROM {self._table_name}")
         return cursor.fetchall()
 
