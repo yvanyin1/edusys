@@ -1,7 +1,6 @@
 from app.dao.base_dao import BaseDAO
 from app.models.class_schedule import ClassSchedule
 from app.enums.class_type import ClassType
-
 from app.dao.course_profile_dao import CourseProfileDAO
 
 
@@ -29,23 +28,35 @@ class ClassScheduleDAO(BaseDAO):
             class_schedule.get_class_type().value,
             class_schedule.get_class_desc(),
         )
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        cursor.execute(query, values)
-        conn.commit()
-        return cursor.lastrowid
+        conn = None
+        cursor = None
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(query, values)
+            conn.commit()
+            return cursor.lastrowid
+        except Exception as e:
+            print(f"Error creating class schedule: {e}")
+            raise
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
 
     def read_class_schedules(self, filter_column=None, filter_value=None):
+        conn = None
+        cursor = None
         try:
             query = "SELECT * FROM class_schedule"
             if filter_column and filter_value:
                 query += f" WHERE {filter_column} LIKE '%{filter_value}%'"
             conn = self.get_connection()
-            cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
+            cursor = conn.cursor(dictionary=True)
             cursor.execute(query)
             class_schedules = cursor.fetchall()
 
-            # Convert Enum integer values to Enum name
             for class_schedule in class_schedules:
                 class_schedule["class_type"] = ClassType(class_schedule["class_type"]).name.title().replace("_", "-")
             return class_schedules
@@ -53,10 +64,24 @@ class ClassScheduleDAO(BaseDAO):
         except Exception as e:
             return f"Error fetching class schedules: {e}"
 
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
     def get_course_profile_by_schedule_id(self, schedule_id):
-        class_schedule = self.get_class_schedule_by_id(schedule_id)
-        course_id = class_schedule.get_course_id()
-        return CourseProfileDAO(self.get_connection()).get_course_by_id(course_id)
+        conn = None
+        try:
+            class_schedule = self.get_class_schedule_by_id(schedule_id)
+            conn = self.get_connection()
+            return CourseProfileDAO(conn).get_course_by_id(class_schedule.get_course_id())
+        except Exception as e:
+            print(f"Error fetching course profile for schedule ID {schedule_id}: {e}")
+            raise
+        finally:
+            if conn:
+                conn.close()
 
     @staticmethod
     def build_entity_object(row: dict) -> ClassSchedule:

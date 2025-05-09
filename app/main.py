@@ -538,8 +538,7 @@ def read_teacher_profiles():
         return "Invalid filter column", 400
 
     try:
-        connection = get_connection()
-        dao = TeacherProfileDAO(connection)
+        dao = TeacherProfileDAO()
         teachers = dao.read_teacher_profiles(filter_column, filter_value)
 
         return render_template(
@@ -560,10 +559,9 @@ def class_management():
 
 @app.route('/class-management/create-class-schedule')
 def create_class_schedule():
-    connection = get_connection()
-    course_profile_dao = CourseProfileDAO(connection)
+    course_profile_dao = CourseProfileDAO()
     active_courses = course_profile_dao.read_course_profiles("profile_status", "Active")
-    semester_dao = SemesterDAO(connection)
+    semester_dao = SemesterDAO()
     semesters = semester_dao.read_semester_data()
     for s in semesters:
         print(s)
@@ -574,9 +572,8 @@ def create_class_schedule():
 
 @app.route('/class-management/create-class-schedule-success', methods=['POST'])
 def class_schedule_created():
-    connection = get_connection()
-    course_profile = CourseProfileDAO(connection).get_course_by_id(int(request.form['course_id']))
-    semester = SemesterDAO(connection).get_semester_by_id(int(request.form['semester_id']))
+    course_profile = CourseProfileDAO().get_course_by_id(int(request.form['course_id']))
+    semester = SemesterDAO().get_semester_by_id(int(request.form['semester_id']))
     class_capacity = request.form['class_capacity']
     class_type_string = request.form['class_type']
     class_desc = request.form['class_desc']
@@ -584,8 +581,7 @@ def class_schedule_created():
     # Convert to correct types
     class_type = class_type_map[class_type_string]  # assuming this map exists like profile_status_map
 
-    connection = get_connection()
-    dao = ClassScheduleDAO(connection)
+    dao = ClassScheduleDAO()
 
     form_data = {
         'course_name': course_profile.get_name(),
@@ -628,13 +624,12 @@ def read_class_schedules():
         return "Invalid filter column", 400
 
     try:
-        connection = get_connection()
-        dao = ClassScheduleDAO(connection)
+        dao = ClassScheduleDAO()
         schedules = dao.read_class_schedules(filter_column, filter_value)
         for schedule in schedules:
-            course = CourseProfileDAO(connection).get_course_by_id(schedule["course_id"])
+            course = CourseProfileDAO().get_course_by_id(schedule["course_id"])
             schedule["course_id"] = f"{course.get_code()}: {course.get_name()}"
-            semester = SemesterDAO(connection).get_semester_by_id(schedule["semester_id"])
+            semester = SemesterDAO().get_semester_by_id(schedule["semester_id"])
             schedule["semester_id"] = semester.get_name()
 
         return render_template (
@@ -651,8 +646,7 @@ def read_class_schedules():
 
 @app.route('/class-management/create-scheduled-class-session')
 def create_scheduled_class_session():
-    connection = get_connection()
-    class_schedule_dao = ClassScheduleDAO(connection)
+    class_schedule_dao = ClassScheduleDAO()
     class_schedules_dict = class_schedule_dao.read_class_schedules()
     course_profiles = [
         class_schedule_dao.get_course_profile_by_schedule_id(schedule["schedule_id"])
@@ -661,7 +655,7 @@ def create_scheduled_class_session():
     class_schedule_names = [{"schedule_id": schedule["schedule_id"], "course_code": course.get_code(), "course_name": course.get_name()}
                             for (schedule, course) in zip(class_schedules_dict, course_profiles)]
 
-    classroom_location_dao = ClassroomLocationDAO(connection)
+    classroom_location_dao = ClassroomLocationDAO()
     classroom_locations = classroom_location_dao.read_classroom_location_data()
 
     days = list(DayOfWeek)
@@ -705,7 +699,7 @@ def scheduled_class_session_created():
             flag=flag,
         )
 
-        ScheduledClassSessionDAO(get_connection()).create_class_session(session)
+        ScheduledClassSessionDAO().create_class_session(session)
         flash("Scheduled session created successfully!", "success")
         return redirect(url_for("create_scheduled_class_session"))
 
@@ -713,8 +707,7 @@ def scheduled_class_session_created():
         flash(f"Failed to create session: {str(e)}", "warning")
 
         # Pull fresh values for re-rendering form
-        connection = get_connection()
-        class_schedule_dao = ClassScheduleDAO(connection)
+        class_schedule_dao = ClassScheduleDAO()
         class_schedules_dict = class_schedule_dao.read_class_schedules()
         course_profiles = [
             class_schedule_dao.get_course_profile_by_schedule_id(schedule["schedule_id"])
@@ -723,7 +716,7 @@ def scheduled_class_session_created():
         class_schedule_names = [{"schedule_id": schedule["schedule_id"], "course_code": course.get_code(), "course_name": course.get_name()}
                                 for (schedule, course) in zip(class_schedules_dict, course_profiles)]
 
-        classroom_location_dao = ClassroomLocationDAO(connection)
+        classroom_location_dao = ClassroomLocationDAO()
         classroom_locations = classroom_location_dao.read_classroom_location_data()
 
         days = list(DayOfWeek)
@@ -756,12 +749,11 @@ def generate_sessions_by_class():
         if course_query.isdigit():
             schedule_id = int(course_query)
 
-            connection = get_connection()
-            session_dao = ScheduledClassSessionDAO(connection)
+            session_dao = ScheduledClassSessionDAO()
 
             class_sessions = session_dao.read_class_sessions("schedule_id", schedule_id)
             for session in class_sessions:
-                session["location_id"] = (ClassroomLocationDAO(connection)
+                session["location_id"] = (ClassroomLocationDAO()
                                           .get_location_by_id(session["location_id"])).get_name()
 
             if not class_sessions:
