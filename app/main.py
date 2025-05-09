@@ -331,8 +331,7 @@ def student_profile_created():
     }
 
     # Connect to DB
-    connection = get_connection()
-    dao = StudentProfileDAO(connection)
+    dao = StudentProfileDAO()
 
     # Check for duplicate email
     if dao.get_student_by_email(email_address):
@@ -380,8 +379,7 @@ def read_student_profiles():
         return "Invalid filter column", 400
 
     try:
-        connection = get_connection()
-        dao = StudentProfileDAO(connection)
+        dao = StudentProfileDAO()
         students = dao.read_student_profiles(filter_column, filter_value)
 
         return render_template(
@@ -409,8 +407,7 @@ def edit_student_profile():
         return redirect(url_for('update_student_profile_search'))
 
     student_id = int(student_id)
-    connection = get_connection()
-    dao = StudentProfileDAO(connection)
+    dao = StudentProfileDAO()
     student_profile = dao.get_student_by_id(student_id)
 
     if student_profile is None:
@@ -446,8 +443,7 @@ def update_student_profile_success():
     guardian_status = guardian_status_map[guardian_status_string]
     profile_status = profile_status_map[profile_status_string]
 
-    connection = get_connection()
-    dao = StudentProfileDAO(connection)
+    dao = StudentProfileDAO()
     dao.update_student_profile(StudentProfile(student_id, first_name, middle_name, last_name, birth_date,
                                               phone_number, email_address, home_address, registration_date,
                                               enrollment_status, guardian_status, profile_status))
@@ -473,9 +469,9 @@ def update_student_profile_success():
 
 @app.route('/class-management/student_enroll')
 def student_enrollment_form():
-    connection = get_connection()
-    student_dao = StudentProfileDAO(connection)
-    classes_dao = ClassScheduleDAO(connection)
+
+    student_dao = StudentProfileDAO()
+    classes_dao = ClassScheduleDAO()
 
     students = student_dao.read_student_profiles("profile_status", "Active")
     classes = classes_dao.read_class_schedules()
@@ -493,10 +489,9 @@ def student_enrollment_success():
     class_id = int(request.form["class_id"])
 
     # Check if already enrolled
-    connection = get_connection()
-    student_dao = StudentProfileDAO(connection)
-    class_dao = ClassScheduleDAO(connection)
-    enrollments_dao = StudentEnrollmentDetailsDAO(connection)
+    student_dao = StudentProfileDAO()
+    class_dao = ClassScheduleDAO()
+    enrollments_dao = StudentEnrollmentDetailsDAO()
 
     enrollments = enrollments_dao.read_enrollments("student_id", student_id)
 
@@ -791,16 +786,15 @@ def generate_schedule_by_student():
         if student_query.isdigit():
             student_id = int(student_query)
 
-            connection = get_connection()
-            student_dao = StudentProfileDAO(connection)
+            student_dao = StudentProfileDAO()
             student = student_dao.get_student_by_id(student_id)
 
             if student:
-                enrollment_dao = StudentEnrollmentDetailsDAO(connection)
+                enrollment_dao = StudentEnrollmentDetailsDAO()
                 enrollments = enrollment_dao.read_enrollments("student_id", student_id)
-                session_dao = ScheduledClassSessionDAO(connection)
-                location_dao = ClassroomLocationDAO(connection)
-                schedule_dao = ClassScheduleDAO(connection)
+                session_dao = ScheduledClassSessionDAO()
+                location_dao = ClassroomLocationDAO()
+                schedule_dao = ClassScheduleDAO()
 
                 for enrollment in enrollments:
                     sessions = session_dao.read_class_sessions('schedule_id', enrollment["class_schedule_id"])
