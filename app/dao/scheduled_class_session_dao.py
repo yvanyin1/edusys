@@ -9,11 +9,11 @@ from app.models.scheduled_class_session import ScheduledClassSession
 
 class ScheduledClassSessionDAO(BaseDAO):
 
-    def __init__(self, connection):
-        super().__init__(connection, "scheduled_class_session")
+    def __init__(self, connection=None):
+        super().__init__("scheduled_class_session", connection)
 
     def get_class_session_by_id(self, session_id: int) -> ScheduledClassSession | None:
-        result = self.get_rows_by_column_value(session_id, "scheduled_class_session")
+        result = self.get_rows_by_column_value(session_id, "session_id")
         if result:
             return self.build_entity_object(result[0])
         return None
@@ -21,7 +21,8 @@ class ScheduledClassSessionDAO(BaseDAO):
     def create_class_session(self, session: ScheduledClassSession):
         query = """
                 INSERT INTO scheduled_class_session
-                (schedule_id, location_id, day_of_week, start_time, end_time, session_type, scheduled_date, seq_no, session_change_type, flag)
+                (schedule_id, location_id, day_of_week, start_time, end_time, session_type,
+                 scheduled_date, seq_no, session_change_type, flag)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
                 """
         values = (
@@ -36,27 +37,41 @@ class ScheduledClassSessionDAO(BaseDAO):
             session.get_session_change_type().value if session.get_session_change_type() else None,
             session.get_flag().value
         )
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        cursor.execute(query, values)
-        conn.commit()
-        return cursor.lastrowid
+
+        conn = None
+        cursor = None
+        try:
+            conn = self.get_connection()
+            print("Connection status:", conn.is_connected())
+            cursor = conn.cursor()
+            cursor.execute(query, values)
+            conn.commit()
+            return cursor.lastrowid
+
+        except Exception as e:
+            conn.rollback()
+            raise RuntimeError(f"Failed to create class session: {e}")
+
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
 
     def read_class_sessions(self, filter_column=None, filter_value=None):
+        cursor = None
+        conn = None
         try:
             query = "SELECT * FROM scheduled_class_session"
-            if filter_column and filter_value:
-                query += f" WHERE {filter_column} LIKE '%{filter_value}%'"
             conn = self.get_connection()
-            cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
+            cursor = conn.cursor(dictionary=True)
             cursor.execute(query)
             sessions = cursor.fetchall()
 
-            # Convert Enum integer values to Enum name
+            # Convert enum integers to readable names
             for session in sessions:
                 session["day_of_week"] = DayOfWeek(session["day_of_week"]).name.title()
                 session["session_type"] = SessionType(session["session_type"]).name.title()
-
                 session_change_type_val = session.get("session_change_type")
                 session["session_change_type"] = (
                     SessionChangeType(session_change_type_val).name.title().replace("_", " ")
@@ -64,10 +79,24 @@ class ScheduledClassSessionDAO(BaseDAO):
                 )
                 session["flag"] = Flag(session["flag"]).name.title()
 
+            # Filter in Python safely
+            if filter_column and filter_value:
+                filter_value_lower = filter_value.lower()
+                sessions = [
+                    session for session in sessions
+                    if filter_column in session and filter_value_lower in str(session[filter_column]).lower()
+                ]
+
             return sessions
 
         except Exception as e:
             return f"Error fetching class schedules: {e}"
+
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
 
     @staticmethod
     def build_entity_object(row: dict) -> ScheduledClassSession:

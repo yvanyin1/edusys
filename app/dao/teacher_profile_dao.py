@@ -6,8 +6,8 @@ from app.enums.profile_status import ProfileStatus
 
 class TeacherProfileDAO(BaseDAO):
 
-    def __init__(self, connection):
-        super().__init__(connection, "teacher_profile")
+    def __init__(self, connection=None):
+        super().__init__("teacher_profile", connection)
 
     def get_teacher_by_id(self, teacher_id: int) -> TeacherProfile | None:
         result = self.get_rows_by_column_value(teacher_id, "teacher_id")

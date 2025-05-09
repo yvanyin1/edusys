@@ -3,8 +3,8 @@ from app.models.classroom_location import ClassroomLocation
 
 class ClassroomLocationDAO(BaseDAO):
 
-    def __init__(self, connection):
-        super().__init__(connection, "classroom_location")
+    def __init__(self, connection=None):
+        super().__init__("classroom_location", connection)
 
     def get_location_by_id(self, location_id: int) -> ClassroomLocation | None:
         result = self.get_rows_by_column_value(location_id, "location_id")

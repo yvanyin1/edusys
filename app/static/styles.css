@@ -184,6 +184,7 @@ table.table-bordered th {
 input[type="text"],
 input[type="email"],
 input[type="date"],
+input[type="number"],
 input[type="password"],
 textarea,
 select {

@@ -5,8 +5,8 @@ from app.enums.class_enrollment_status import ClassEnrollmentStatus
 
 class StudentEnrollmentDetailsDAO(BaseDAO):
 
-    def __init__(self, connection):
-        super().__init__(connection, "student_enrollment_details")
+    def __init__(self, connection=None):
+        super().__init__("student_enrollment_details", connection)
 
     def get_enrollment_by_id(self, enrollment_id: int) -> StudentEnrollmentDetails | None:
         result = self.get_rows_by_column_value(enrollment_id, "enrollment_id")

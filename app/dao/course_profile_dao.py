@@ -2,11 +2,13 @@ from app.dao.base_dao import BaseDAO
 from app.models.course_profile import CourseProfile
 from app.enums.audience_type import AudienceType
 from app.enums.profile_status import ProfileStatus
+from app.utils.db_utils import DBUtils
+
 
 class CourseProfileDAO(BaseDAO):
 
-    def __init__(self, connection):
-        super().__init__(connection, "course_profile")
+    def __init__(self, connection=None):
+        super().__init__("course_profile", connection)
 
     def get_course_by_id(self, course_id: int) -> CourseProfile | None:
         result = self.get_rows_by_column_value(course_id, "course_id")
@@ -27,12 +29,12 @@ class CourseProfileDAO(BaseDAO):
         return None
 
     def create_course_profile(self, course_profile: CourseProfile):
-        # course
         query = """
-        INSERT INTO course_profile 
-        (course_name, course_code, course_desc, target_audience, duration_in_weeks, credit_hours, profile_status)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """
+                INSERT INTO course_profile
+                (course_name, course_code, course_desc, target_audience, duration_in_weeks, credit_hours, \
+                 profile_status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s) \
+                """
         values = (
             course_profile.get_name(),
             course_profile.get_code(),
@@ -46,15 +48,20 @@ class CourseProfileDAO(BaseDAO):
         cursor = conn.cursor()
         cursor.execute(query, values)
         conn.commit()
-        return cursor.lastrowid
+        last_id = cursor.lastrowid
+        cursor.close()
+        conn.close()
+        return last_id
 
     def read_course_profiles(self, filter_column=None, filter_value=None):
+        cursor = None
+        conn = None
         try:
             query = "SELECT * FROM course_profile"
             conn = self.get_connection()
-            cursor = conn.cursor(dictionary=True)  # Enable fetching data as a dictionary
+            cursor = conn.cursor(dictionary=True)
             cursor.execute(query)
-            courses = cursor.fetchall()
+            courses = cursor.fetchall() # "active" in "inactive"
 
             # Convert Enum integer values to Enum name
             for course in courses:
@@ -74,18 +81,24 @@ class CourseProfileDAO(BaseDAO):
         except Exception as e:
             return f"Error fetching courses: {e}"
 
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
     def update_course_profile(self, course_profile: CourseProfile):
         query = """
-        UPDATE course_profile SET
-            course_name = %s,
-            course_code = %s,
-            course_desc = %s,
-            target_audience = %s,
-            duration_in_weeks = %s,
-            credit_hours = %s,
-            profile_status = %s
-        WHERE course_id = %s
-        """
+                UPDATE course_profile
+                SET course_name       = %s,
+                    course_code       = %s,
+                    course_desc       = %s,
+                    target_audience   = %s,
+                    duration_in_weeks = %s,
+                    credit_hours      = %s,
+                    profile_status    = %s
+                WHERE course_id = %s
+                """
         values = (
             course_profile.get_name(),
             course_profile.get_code(),
@@ -96,25 +109,47 @@ class CourseProfileDAO(BaseDAO):
             course_profile.get_profile_status().value,
             course_profile.get_course_id()
         )
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        cursor.execute(query, values)
-        conn.commit()
 
-        # Check if update actually affected a row
-        if cursor.rowcount == 0:
-            raise ValueError(f"Course ID {course_profile.get_course_id()} does not exist in the database.")
+        conn = None
+        cursor = None
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(query, values)
+            conn.commit()
+
+            if cursor.rowcount == 0:
+                raise ValueError(f"Course ID {course_profile.get_course_id()} does not exist in the database.")
+        except Exception as e:
+            print(f"Error updating course profile: {e}")
+            raise  # or return a custom error if needed
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
 
     def delete_course_profile(self, course_id: int):
         query = "DELETE FROM course_profile WHERE course_id = %s"
-        conn = self.get_connection()
-        cursor = conn.cursor()
-        cursor.execute(query, (course_id,))
-        conn.commit()
+        conn = None
+        cursor = None
 
-        # Check if update actually affected a row
-        if cursor.rowcount == 0:
-            raise ValueError(f"Course ID {course_id} does not exist in the database.")
+        try:
+            conn = self.get_connection()
+            cursor = conn.cursor()
+            cursor.execute(query, (course_id,))
+            conn.commit()
+
+            if cursor.rowcount == 0:
+                raise ValueError(f"Course ID {course_id} does not exist in the database.")
+        except Exception as e:
+            print(f"Error deleting course profile: {e}")
+            raise
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
 
     @staticmethod
     def build_entity_object(row: dict) -> CourseProfile:

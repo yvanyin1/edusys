@@ -4,8 +4,8 @@ from app.models.semester import Semester
 
 class SemesterDAO(BaseDAO):
 
-    def __init__(self, connection):
-        super().__init__(connection, "semester")
+    def __init__(self, connection=None):
+        super().__init__("semester", connection)
 
     def get_semester_by_id(self, semester_id: int) -> Semester | None:
         result = self.get_rows_by_column_value(semester_id, "semester_id")

@@ -7,8 +7,8 @@ from app.dao.course_profile_dao import CourseProfileDAO
 
 class ClassScheduleDAO(BaseDAO):
 
-    def __init__(self, connection):
-        super().__init__(connection, "class_schedule")
+    def __init__(self, connection=None):
+        super().__init__("class_schedule", connection)
 
     def get_class_schedule_by_id(self, schedule_id: int) -> ClassSchedule | None:
         result = self.get_rows_by_column_value(schedule_id, "schedule_id")
