@@ -379,7 +379,7 @@ def home():
 
 @app.route('/course-management')
 def course_management():
-    return render_template("course_management.html", username=USERNAME)
+    return render_template("course/course_management.html", username=USERNAME)
 
 
 @app.route('/student-management')
