@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-from dotenv import load_dotenv
-import mysql.connector
 import os
-from datetime import datetime, date, timedelta
+from datetime import datetime
 
 from app.enums.class_enrollment_status import ClassEnrollmentStatus
 from app.enums.session_change_type import SessionChangeType
@@ -563,8 +561,6 @@ def create_class_schedule():
     active_courses = course_profile_dao.read_course_profiles("profile_status", "Active")
     semester_dao = SemesterDAO()
     semesters = semester_dao.read_semester_data()
-    for s in semesters:
-        print(s)
     class_types = list(ClassType)
     return render_template("create_class_schedule.html", active_courses=active_courses,
                            semesters=semesters, class_types=class_types, username=USERNAME)
