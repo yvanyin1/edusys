@@ -51,9 +51,8 @@
 
         <label for="profile_status">Profile Status*:</label>
         <select id="profile_status" name="profile_status" required style="width: 100%;">
-            <option value="" disabled {% if not form_data or not form_data.profile_status %}selected{% endif %}>Select profile status</option>
             <option value="Inactive" {% if form_data and form_data.profile_status == "Inactive" %}selected{% endif %}>Inactive</option>
-            <option value="Active" {% if form_data and form_data.profile_status == "Active" %}selected{% endif %}>Active</option>
+            <option value="Active" {% if not form_data or form_data.profile_status == "Active" %}selected{% endif %}>Active</option>
         </select>
 
         <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
