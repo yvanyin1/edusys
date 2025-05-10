@@ -1,34 +1,82 @@
 {% extends "base.html" %}
-{% from "components/macros/table_display.html" import render_table_page %}
 
 {% block content %}
-    {{ render_table_page(
-        "Course List",
-        url_for('read_course_profiles'),
-        [
-            ('course_id', 'Course ID'),
-            ('course_code', 'Course Code'),
-            ('course_name', 'Course Name'),
-            ('profile_status', 'Profile Status')
-        ],
-        [
-            "Course Name",
-            "Course Code",
-            "Description",
-            "Target Audience",
-            "Duration (Weeks)",
-            "Credit Hours",
-            "Status"
-        ],
-        [
-            "course_name",
-            "course_code",
-            "course_desc",
-            "target_audience",
-            "duration_in_weeks",
-            "credit_hours",
-            "profile_status"
-        ],
-        courses, filter_column, filter_value
-    ) }}
+<div class="container mt-5">
+    <h1>Course List</h1>
+
+    <div class="mb-3">
+        <a href="{{ url_for('read_course_profiles') }}"
+           class="btn {% if not filter_column %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find All
+        </a>
+        <a href="{{ url_for(request.endpoint, filter_column='course_id', filter_value=filter_value) }}"
+           class="btn {% if filter_column == 'course_id' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find by Course ID
+        </a>
+        <a href="{{ url_for(request.endpoint, filter_column='course_code', filter_value=filter_value) }}"
+           class="btn {% if filter_column == 'course_code' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find by Course Code
+        </a>
+        <a href="{{ url_for(request.endpoint, filter_column='course_name', filter_value=filter_value) }}"
+           class="btn {% if filter_column == 'course_name' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find by Course Name
+        </a>
+        <a href="{{ url_for(request.endpoint, filter_column='profile_status', filter_value=filter_value) }}"
+           class="btn {% if filter_column == 'profile_status' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find by Profile Status
+        </a>
+    </div>
+
+    <form method="get" action="{{ url_for('read_course_profiles') }}" id="filterForm"
+          class="mb-5"
+          style="height: auto; visibility: {{ 'visible' if filter_column else 'hidden' }};">
+        <input type="hidden" name="filter_column" id="filterColumn" value="{{ filter_column or '' }}">
+        <div class="input-group mb-4">
+            <input type="text"
+                   class="form-control"
+                   name="filter_value"
+                   placeholder="Enter {{ filter_column.replace('_', ' ') if filter_column else 'value' }}..."
+                   id="filterInput"
+                   value="{{ filter_value or '' }}">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Course Name</th>
+                <th>Course Code</th>
+                <th>Description</th>
+                <th>Target Audience</th>
+                <th>Duration (Weeks)</th>
+                <th>Credit Hours</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in courses %}
+                <tr>
+                    <td>{{ row["course_name"] }}</td>
+                    <td>{{ row["course_code"] }}</td>
+                    <td>{{ row["course_desc"] }}</td>
+                    <td>{{ row["target_audience"] }}</td>
+                    <td>{{ row["duration_in_weeks"] }}</td>
+                    <td>{{ row["credit_hours"] }}</td>
+                    <td>{{ row["profile_status"] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function showFilter(column) {
+        const form = document.getElementById('filterForm');
+        form.style.visibility = 'visible';
+        document.getElementById('filterColumn').value = column;
+        document.getElementById('filterInput').placeholder = 'Enter ' + column.replace('_', ' ') + '...';
+        document.getElementById('filterInput').focus();
+    }
+</script>
 {% endblock %}
