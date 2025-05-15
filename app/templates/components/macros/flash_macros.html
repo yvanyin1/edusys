@@ -1,0 +1,11 @@
+{% macro render_flashed_messages() %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul style="padding: 10px; background-color: #ffdddd; border-left: 6px solid #f44336; list-style: none; margin-bottom: 15px;">
+                {% for category, message in messages %}
+                    <li><strong>{{ message }}</strong></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+{% endmacro %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Edit Student Information{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Edit Student Information</h2>
+
+    <form action="{{ url_for('update_student_profile_success') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        <input type="hidden" name="student_id" value="{{ student.get_student_id() }}">
+
+        <label for="first_name">First Name*:</label>
+        <input type="text" id="first_name" name="first_name" value="{{ student.get_first_name() }}" required>
+
+        <label for="middle_name">Middle Name:</label>
+        <input type="text" id="middle_name" name="middle_name" value="{{ student.get_middle_name() }}">
+
+        <label for="last_name">Last Name*:</label>
+        <input type="text" id="last_name" name="last_name" value="{{ student.get_last_name() }}" required>
+
+        <label for="birth_date">Birth Date:</label>
+        <input type="date" id="birth_date" name="birth_date" value="{{ student.get_birth_date() }}">
+
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" id="phone_number" name="phone_number" value="{{ student.get_phone_number() }}">
+
+        <label for="email_address">Email Address*:</label>
+        <input type="email" id="email_address" name="email_address" value="{{ student.get_email_address() }}" required>
+
+        <label for="home_address">Home Address:</label>
+        <input type="text" id="home_address" name="home_address" value="{{ student.get_home_address() }}">
+
+        <label for="registration_date">Registration Date:</label>
+        <input type="date" id="registration_date" name="registration_date" value="{{ student.get_registration_date() }}">
+
+        <label for="enrollment_status">Enrollment Status*:</label>
+        <select id="enrollment_status" name="enrollment_status" required>
+            <option value="Inactive" {% if enum_to_string[student.get_enrollment_status()] == "Inactive" %}selected{% endif %}>Inactive</option>
+            <option value="Enrolled" {% if enum_to_string[student.get_enrollment_status()] == "Enrolled" %}selected{% endif %}>Enrolled</option>
+            <option value="Graduated" {% if enum_to_string[student.get_enrollment_status()] == "Graduated" %}selected{% endif %}>Graduated</option>
+        </select>
+
+        <label for="guardian_status">Guardian Status*:</label>
+        <select id="guardian_status" name="guardian_status" required>
+            <option value="No Guardian" {% if enum_to_string[student.get_guardian_status()] == "No Guardian" %}selected{% endif %}>No Guardian</option>
+            <option value="Has Guardian" {% if enum_to_string[student.get_guardian_status()] == "Has Guardian" %}selected{% endif %}>Has Guardian</option>
+        </select>
+
+        <label>Profile Status*:</label>
+        <div>
+            <input type="radio" id="profile_status_active" name="profile_status" value="Active" {% if enum_to_string[student.get_profile_status()] == "Active" %}checked{% endif %}>
+            <label for="profile_status_active">Active</label>
+
+            <input type="radio" id="profile_status_inactive" name="profile_status" value="Inactive" {% if enum_to_string[student.get_profile_status()] == "Inactive" %}checked{% endif %}>
+            <label for="profile_status_inactive">Inactive</label>
+        </div>
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Update Student Information
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Create Scheduled Class Session{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Add a Scheduled Class Session</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="margin-bottom: 15px;">
+          {% for category, message in messages %}
+            <div style="color: {% if category == 'warning' %}red{% else %}green{% endif %};">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('scheduled_class_session_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        <label>Class Schedule*:
+            <select name="schedule_id" required style="width: 100%;">
+                <option value="" disabled selected>Select a class schedule</option>
+                {% for schedule_name in class_schedule_names %}
+                    <option value="{{ schedule_name['schedule_id'] }}"
+                        {% if form_data and form_data.schedule_id == schedule_name['schedule_id'] %}selected{% endif %}>
+                        {{ schedule_name['schedule_id'] }}: {{ schedule_name['course_code'] }} - {{ schedule_name['course_name'] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Location*:
+            <select name="location_id" required style="width: 100%;">
+                <option value="" disabled selected>Select location</option>
+                {% for location in classroom_locations %}
+                    <option value="{{ location.location_id }}"
+                        {% if form_data and form_data.location_id == location.location_id %}selected{% endif %}>
+                        {{ location.building_name }} {{ location.room_number }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Day of Week*:
+            <select name="day_of_week" required style="width: 100%;">
+                <option value="" disabled selected>Select day</option>
+                {% for day in days %}
+                    <option value="{{ day.value }}"
+                        {% if form_data and form_data.day_of_week == day.value %}selected{% endif %}>
+                        {{ day.name.title() }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Start Time*:
+            <input type="time" name="start_time" required style="width: 100%;" value="{{ form_data.start_time if form_data else '' }}">
+        </label>
+
+        <label>End Time*:
+            <input type="time" name="end_time" required style="width: 100%;" value="{{ form_data.end_time if form_data else '' }}">
+        </label>
+
+        <label>Session Type*:
+            <select name="session_type" required style="width: 100%;">
+                <option value="" disabled selected>Select session type</option>
+                {% for type in session_types %}
+                    <option value="{{ type.name }}"
+                        {% if form_data and form_data.session_type == type.name %}selected{% endif %}>
+                        {{ type.name.replace('_', ' ').title() }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Scheduled Date*:
+            <input type="date" name="scheduled_date" required style="width: 100%;" value="{{ form_data.scheduled_date if form_data else '' }}">
+        </label>
+
+        <label>Sequence Number*:
+            <input type="number" name="seq_no" min="1" required style="width: 100%;" value="{{ form_data.seq_no if form_data else '' }}">
+        </label>
+
+        <label>Session Change Type:
+            <select name="session_change_type" style="width: 100%;">
+                <option value="" disabled selected>Select change type</option>
+                {% for change_type in session_change_types %}
+                    <option value="{{ change_type.name }}"
+                        {% if form_data and form_data.session_change_type == change_type.name %}selected{% endif %}>
+                        {{ change_type.name.replace('_', ' ').title() }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Session Flag*:
+            <select name="flag" required style="width: 100%;">
+                {% for flag in flags %}
+                    <option value="{{ flag.value }}"
+                        {% if form_data and form_data.flag == flag.value %}selected{% endif %}>
+                        {{ flag.name.title() }}
+                    </option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Add Session
+        </button>
+    </form>
+</div>
+{% endblock %}

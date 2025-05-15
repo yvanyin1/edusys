@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Course Management{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Course Management</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
+        <!-- Read -->
+        <div>
+            <a href="{{ url_for('read_course_profiles') }} " style="color: #007BFF; font-size: 20px; text-decoration: underline;">View Courses</a>
+            <p style="margin-top: 8px;">
+                Browse the complete list of registered courses along with their details.
+                Use this view to search or filter courses.
+            </p>
+        </div>
+        <!-- Create -->
+        <div>
+            <a href="{{ url_for('create_course_profile') }} " style="color: #007BFF; font-size: 20px; text-decoration: underline;">Add New Course</a>
+            <p style="margin-top: 8px;">
+                Register a new course by entering its details such as
+                course name, course code, course description, etc.
+            </p>
+        </div>
+
+        <!-- Update -->
+        <div>
+            <a href="{{ url_for('update_course_profile_search') }} " style="color: #007BFF; font-size: 20px; text-decoration: underline;">Update Course Information</a>
+            <p style="margin-top: 8px;">
+                Modify existing course information such as
+                course name, course code, course description, etc.
+            </p>
+        </div>
+
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Mark Course as Removed</a>
+            <p style="margin-top: 8px;">Flags a course as deleted without permanently removing it, allowing future restoration.</p>
+        </div>
+
+        <!-- Delete -->
+        <div>
+            <a href="{{ url_for('delete_course_profile_search') }} " style="color: #007BFF; font-size: 20px; text-decoration: underline;">Remove Course</a>
+            <p style="margin-top: 8px;">Permanently delete a course from the system.</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

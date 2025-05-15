@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Class Management{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Class Management</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
+        <!-- Read -->
+        <div>
+            <a href="{{ url_for('read_class_schedules') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">View Classes</a>
+            <p style="margin-top: 8px;">
+                Browse the complete list of registered classes along with their details.
+                Use this view to search or filter classes.
+            </p>
+        </div>
+        <!-- Create -->
+        <div>
+            <a href="{{ url_for('create_class_schedule') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Create Class</a>
+            <p style="margin-top: 8px;">
+                Register a new class by entering its details such as
+                associated course, associated teachers, etc.
+            </p>
+        </div>
+
+        <div>
+            <a href="{{ url_for('create_scheduled_class_session') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Create Class Session for a Class</a>
+            <p style="margin-top: 8px;">
+                Add a new class session (lecture, lab, seminar, etc.) to an existing class.
+            </p>
+        </div>
+
+        <!-- Update -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Update Classes</a>
+            <p style="margin-top: 8px;">
+                Modify information of existing classes such as
+                associated course, associated teachers, etc.
+            </p>
+        </div>
+
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Mark Class as Removed</a>
+            <p style="margin-top: 8px;">Flags a class as deleted without permanently removing it, allowing future restoration.</p>
+        </div>
+
+        <!-- Delete -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Delete Classes</a>
+            <p style="margin-top: 8px;">Remove a class that is no longer needed.</p>
+        </div>
+
+        <div>
+            <a href=" {{ url_for('student_enrollment_form') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Enroll Students in Classes</a>
+            <p style="margin-top: 8px;">Assign a student to a scheduled class that already exists in the system.</p>
+        </div>
+
+        <div>
+            <a href=" {{ url_for('generate_sessions_by_class') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Generate Schedule by Class ID</a>
+            <p style="margin-top: 8px;">
+                Generate all class sessions for a given course ID.
+            </p>
+        </div>
+        <div>
+            <a href=" {{ url_for('generate_schedule_by_student') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Generate Schedule for a Student</a>
+            <p style="margin-top: 8px;">
+                Generate all class sessions for a student.
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

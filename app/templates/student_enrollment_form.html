@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Enroll Student in Class{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Enroll Student in Class</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="margin-bottom: 15px;">
+          {% for category, message in messages %}
+            <div style="color: {% if category == 'warning' %}red{% else %}green{% endif %};">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('student_enrollment_success') }}" method="post" style="display: flex; flex-direction: column; gap: 20px;">
+
+        <label>Student*:
+            <select name="student_id" required style="width: 100%;">
+                <option value="" disabled selected>Select student</option>
+                {% for student in students %}
+                    <option value="{{ student.student_id }}">{{ student.student_id }}: {{ student.first_name }} {{ student.last_name }} ({{ student.email_address }})</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Class*:
+            <select name="class_id" required style="width: 100%;">
+                <option value="" disabled selected>Select class</option>
+                {% for class in classes %}
+                    <option value="{{ class.schedule_id }}">{{ class.schedule_id }}: {{ class.course_code }} - {{ class.course_name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Enroll Student
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% macro render_search_form(title, input_label, input_name, action_url, button_label, method="post") %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h3 style="font-weight: bold;">{{ title }}</h3>
+
+    {# Display flashed messages #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul style="padding: 10px; background-color: #ffdddd; border-left: 6px solid #f44336; list-style: none;">
+                {% for category, message in messages %}
+                    <li><strong>{{ message }}</strong></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="{{ action_url }}" method="{{ method }}" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+        <label for="query" style="white-space: nowrap;">{{ input_label }}:</label>
+        <input type="text" id="query" name="{{ input_name }}" style="padding: 5px; width: 250px;">
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 6px 15px; border: none; border-radius: 5px;">
+            {{ button_label }}
+        </button>
+    </form>
+</div>
+{% endmacro %}

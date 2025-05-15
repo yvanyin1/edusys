@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Course Profile Created{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Course Successfully Added</h2>
+
+    <div style="margin-top: 20px;">
+        <p><strong>Course Name:</strong> {{ course.course_name or '' }}</p>
+        <p><strong>Course Code:</strong> {{ course.course_code or '' }}</p>
+        <p><strong>Course Description:</strong> {{ course.course_desc or '' }}</p>
+        <p><strong>Target Audience:</strong> {{ course.target_audience or '' }}</p>
+        <p><strong>Duration in Weeks:</strong> {{ course.duration_in_weeks or '' }}</p>
+        <p><strong>Prerequisites Course(s):</strong> {{ course.prerequisites or '' }}</p>
+        <p><strong>Corequisite Course(s):</strong> {{ course.corequisites or '' }}</p>
+        <p><strong>Number of Credits:</strong> {{ course.credit_hours or '' }}</p>
+        <p><strong>Profile Status:</strong> {{ course.profile_status or '' }}</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button type="button" onclick="location.href='{{ url_for('create_course_profile') }}'"
+                style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px;">
+            Add Another Course
+        </button>
+        <button type="button" onclick="location.href='{{ url_for('course_management') }}'"
+                style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-left: 10px;">
+            Course Management Menu
+        </button>
+    </div>
+</div>
+{% endblock %}

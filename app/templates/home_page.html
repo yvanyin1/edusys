@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EduSys - Home{% endblock %}</title>
+
+    <!-- Link to Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Link to CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <!-- Home Icon -->
+        <a href="{{ url_for("home") }}" class="home-icon"><i class="fas fa-home"></i></a>
+
+        <!-- Dropdown for User Info -->
+        <div class="dropdown">
+            <span>{{ username }}</span> <!-- Displaying username -->
+            <div class="dropdown-content">
+                <a href="#">Profile</a>
+                <a href="#">Settings</a>
+                <a href="#">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Block -->
+    <div class="content">
+        <h1>Welcome to EduSys!</h1>
+            <div class="home-buttons">
+                <a href="{{ url_for("student_management") }}" class="home-button-block">
+                    <div class="title">Student Management</div>
+                    <div class="desc">Register, update, search or delete student profiles</div>
+                </a>
+                <a href="{{ url_for("teacher_management") }}" class="home-button-block">
+                    <div class="title">Teacher Management</div>
+                    <div class="desc">Manage teacher profiles, assignments and teaching schedules</div>
+                </a>
+                <a href="{{ url_for("course_management") }}" class="home-button-block">
+                    <div class="title">Course Management</div>
+                    <div class="desc">Create, view, update or delete course offerings</div>
+                </a>
+                <a href="{{ url_for("class_management") }}" class="home-button-block">
+                    <div class="title">Class Management</div>
+                    <div class="desc">Organize class schedules and groupings</div>
+                </a>
+                <a href="#" class="home-button-block">
+                    <div class="title">Academic Management</div>
+                    <div class="desc">Access grades, attendance, and other essential academic records</div>
+                </a>
+                <a href="#" class="home-button-block">
+                    <div class="title">Financial Management</div>
+                    <div class="desc">View and manage tuition fees, invoices, and scholarships</div>
+                </a>
+            </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Generate Class Sessions{% endblock %}
+
+{% block content %}
+<div style="max-width: 700px; margin: 40px auto; padding: 20px;">
+    <h3 style="font-weight: bold;">Generate Class Sessions</h3>
+
+    <form action="{{ url_for('generate_sessions_by_class') }}" method="get" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+        <label for="query" style="white-space: nowrap;">Enter Class Schedule ID:</label>
+        <input type="text" id="query" name="course_query" style="padding: 5px; width: 250px;">
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 6px 15px; border: none; border-radius: 5px;">Generate</button>
+    </form>
+
+    {% if search_attempted %}
+        {% if class_sessions %}
+            <h4 style="margin-top: 30px;">Scheduled Sessions:</h4>
+            <ul style="margin-top: 10px; padding-left: 20px;">
+                {% for session in class_sessions %}
+                    <li>
+                        <strong>Day of Week:</strong> {{ session.day_of_week }}<br>
+                        <strong>Date:</strong> {{ session.scheduled_date }}<br>
+                        <strong>Start Time:</strong> {{ session.start_time }}<br>
+                        <strong>End Time:</strong> {{ session.end_time }}<br>
+                        <strong>Classroom:</strong> {{ session.location_id }}
+                    </li>
+                    <hr>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="margin-top: 30px; color: #dc3545;">No class sessions found for that course.</p>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

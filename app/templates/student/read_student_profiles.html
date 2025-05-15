@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Student List</h1>
+
+    <div class="mb-3">
+        <a href="{{ url_for('read_student_profiles') }}"
+           class="btn {% if not filter_column %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find All
+        </a>
+        <a href="{{ url_for(request.endpoint, filter_column='student_id', filter_value=filter_value) }}"
+           class="btn {% if filter_column == 'student_id' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find by Student ID
+        </a>
+        <a href="{{ url_for(request.endpoint, filter_column='first_name', filter_value=filter_value) }}"
+           class="btn {% if filter_column == 'first_name' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find by First Name
+        </a>
+        <a href="{{ url_for(request.endpoint, filter_column='last_name', filter_value=filter_value) }}"
+           class="btn {% if filter_column == 'last_name' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find by Last Name
+        </a>
+        <a href="{{ url_for(request.endpoint, filter_column='profile_status', filter_value=filter_value) }}"
+           class="btn {% if filter_column == 'profile_status' %}btn-primary{% else %}btn-outline-secondary{% endif %} me-2">
+            Find by Profile Status
+        </a>
+    </div>
+
+    <form method="get" action="{{ url_for('read_student_profiles') }}" id="filterForm"
+          class="mb-5"
+          style="height: auto; visibility: {{ 'visible' if filter_column else 'hidden' }};">
+        <input type="hidden" name="filter_column" id="filterColumn" value="{{ filter_column or '' }}">
+        <div class="input-group mb-4">
+            <input type="text"
+                   class="form-control"
+                   name="filter_value"
+                   placeholder="Enter {{ filter_column.replace('_', ' ') if filter_column else 'value' }}..."
+                   id="filterInput"
+                   value="{{ filter_value or '' }}">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Student ID</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Birth Date</th>
+                <th>Phone Number</th>
+                <th>Email Address</th>
+                <th>Home Address</th>
+                <th>Registration Date</th>
+                <th>Enrollment Status</th>
+                <th>Guardian Status</th>
+                <th>Profile Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in students %}
+                <tr>
+                    <td>{{ row["student_id"] }}</td>
+                    <td>{{ row["first_name"] }}</td>
+                    <td>{{ row["middle_name"] }}</td>
+                    <td>{{ row["last_name"] }}</td>
+                    <td>{{ row["birth_date"] }}</td>
+                    <td>{{ row["phone_number"] }}</td>
+                    <td>{{ row["email_address"] }}</td>
+                    <td>{{ row["home_address"] }}</td>
+                    <td>{{ row["registration_date"] }}</td>
+                    <td>{{ row["enrollment_status"] }}</td>
+                    <td>{{ row["guardian_status"] }}</td>
+                    <td>{{ row["profile_status"] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-secondary" onclick="location.href='{{ url_for('student_management') }}'">
+        Student Management Menu
+    </button>
+</div>
+
+<script>
+    function showFilter(column) {
+        const form = document.getElementById('filterForm');
+        form.style.visibility = 'visible';
+        document.getElementById('filterColumn').value = column;
+        document.getElementById('filterInput').placeholder = 'Enter ' + column.replace('_', ' ') + '...';
+        document.getElementById('filterInput').focus();
+    }
+</script>
+{% endblock %}

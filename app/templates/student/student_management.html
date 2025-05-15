@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Student Management{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Student Management</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
+        <!-- Read -->
+        <div>
+            <a href=" {{ url_for('read_student_profiles') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">View Student Directory</a>
+            <p style="margin-top: 8px;">
+                Browse all registered students and their profile information.
+                Filter and search by ID, name, or other attributes.
+            </p>
+        </div>
+        <!-- Create -->
+        <div>
+            <a href=" {{ url_for('create_student_profile') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Register New Student</a>
+            <p style="margin-top: 8px;">
+                Add a new student to the system by entering their personal and contact details.
+            </p>
+        </div>
+
+        <!-- Update -->
+        <div>
+            <a href=" {{ url_for('update_student_profile_search') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Update Student Information</a>
+            <p style="margin-top: 8px;">
+                Update existing student records, such as name, birthdate, or contact information.
+            </p>
+        </div>
+
+        <!-- Delete -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Mark Student Profile as Removed</a>
+            <p style="margin-top: 8px;">Flags a student's profile as deleted without permanently removing it, allowing future restoration.</p>
+        </div>
+
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Remove Student Profile</a>
+            <p style="margin-top: 8px;">Permanently delete a student’s profile from the system.</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Teacher Management{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Teacher Management</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 30px;">
+        <!-- Read -->
+        <div>
+            <a href="{{ url_for('read_teacher_profiles') }}" style="color: #007BFF; font-size: 20px; text-decoration: underline;">View Teacher Directory</a>
+            <p style="margin-top: 8px;">
+                Browse all registered teachers along with their profile information.
+                Filter and search by ID, name, or other attributes.
+            </p>
+        </div>
+        <!-- Create -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Register New Teacher</a>
+            <p style="margin-top: 8px;">
+                Add a new teacher to the system by entering their personal and contact details.
+            </p>
+        </div>
+
+        <!-- Update -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Update Teacher Information</a>
+            <p style="margin-top: 8px;">
+                Update existing teacher records, such as name, birthdate, or contact information.
+            </p>
+        </div>
+
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Mark Teacher Profile as Removed</a>
+            <p style="margin-top: 8px;">Flags a teacher's profile as deleted without permanently removing it, allowing future restoration.</p>
+        </div>
+
+        <!-- Delete -->
+        <div>
+            <a href="#" style="color: #007BFF; font-size: 20px; text-decoration: underline;">Remove Teacher Profile</a>
+            <p style="margin-top: 8px;">Permanently delete a teacher’s profile from the system.</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

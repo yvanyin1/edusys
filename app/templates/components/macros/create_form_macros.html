@@ -1,0 +1,35 @@
+{% macro render_input(label, name, value='', type='text', required=False) %}
+<label>{{ label }}{% if required %}*{% endif %}:
+    <input type="{{ type }}" name="{{ name }}" value="{{ value }}" {% if required %}required{% endif %} style="width: 100%;">
+</label>
+{% endmacro %}
+
+{% macro render_textarea(label, name, value='') %}
+<label>{{ label }}:
+    <textarea name="{{ name }}" rows="3" style="width: 100%;">{{ value }}</textarea>
+</label>
+{% endmacro %}
+
+{% macro render_select(label, name, options, selected_value='', required=False) %}
+<label>{{ label }}{% if required %}*{% endif %}:
+    <select name="{{ name }}" {% if required %}required{% endif %} style="width: 100%;">
+        <option value="" disabled {% if not selected_value %}selected{% endif %}>Select {{ label.lower() }}</option>
+        {% for value, label in options %}
+            <option value="{{ value }}" {% if selected_value == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+</label>
+{% endmacro %}
+
+{% macro render_radio_group(label, name, options, selected_value='', required=False) %}
+<label>{{ label }}{% if required %}*{% endif %}:</label>
+<div style="display: flex; align-items: center; gap: 10px;">
+    {% for value, display in options %}
+        <label>
+            <input type="radio" name="{{ name }}" value="{{ value }}"
+                   {% if selected_value == value %}checked{% endif %}
+                   {% if required %}required{% endif %}> {{ display }}
+        </label>
+    {% endfor %}
+</div>
+{% endmacro %}

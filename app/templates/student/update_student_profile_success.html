@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Student Information Updated{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Student Information Successfully Updated</h2>
+
+    <div style="margin-top: 20px;">
+        <p><strong>First Name:</strong> {{ student.first_name or '' }}</p>
+        <p><strong>Middle Name:</strong> {{ student.middle_name or '' }}</p>
+        <p><strong>Last Name:</strong> {{ student.last_name or '' }}</p>
+        <p><strong>Birth Date:</strong> {{ student.birth_date or '' }}</p>
+        <p><strong>Phone Number:</strong> {{ student.phone_number or '' }}</p>
+        <p><strong>Email Address:</strong> {{ student.email_address or '' }}</p>
+        <p><strong>Home Address:</strong> {{ student.home_address or '' }}</p>
+        <p><strong>Registration Date:</strong> {{ student.registration_date or '' }}</p>
+        <p><strong>Enrollment Status:</strong> {{ student.enrollment_status or '' }}</p>
+        <p><strong>Guardian Status:</strong> {{ student.guardian_status or '' }}</p>
+        <p><strong>Profile Status:</strong> {{ student.profile_status or '' }}</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button type="button" onclick="location.href='{{ url_for('update_student_profile_search') }}'"
+                style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px;">
+            Update Another Student Profile
+        </button>
+        <button type="button" onclick="location.href='{{ url_for('student_management') }}'"
+                style="background-color: #007BFF; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin-left: 10px;">
+            Student Management Menu
+        </button>
+    </div>
+</div>
+{% endblock %}

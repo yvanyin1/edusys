@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% import "components/macros/flash_macros.html" as flash %}
+{% block title %}Add New Course{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #007BFF;">Add a New Course</h2>
+
+    {{ flash.render_flashed_messages() }}
+
+    <form action="{{ url_for('course_profile_created') }}" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+
+        <label for="course_name">Course Name*:</label>
+        <input type="text" id="course_name" name="course_name" value="{{ form_data.course_name if form_data else '' }}" required style="width: 100%;">
+
+        <label for="course_code">Course Code*:</label>
+        <input type="text" id="course_code" name="course_code" value="{{ form_data.course_code if form_data else '' }}" required style="width: 100%;">
+
+        <label for="course_desc">Course Description:</label>
+        <textarea id="course_desc" name="course_desc" rows="3" style="width: 100%;">{{ form_data.course_desc if form_data else '' }}</textarea>
+
+        <label for="target_audience">Target Audience*:</label>
+        <select id="target_audience" name="target_audience" required style="width: 100%;">
+            <option value="" disabled {% if not form_data or not form_data.target_audience %}selected{% endif %}>Select target audience</option>
+            <option value="General Audience" {% if form_data and form_data.target_audience == "General Audience" %}selected{% endif %}>General Audience</option>
+            <option value="Youth" {% if form_data and form_data.target_audience == "Youth" %}selected{% endif %}>Youth</option>
+            <option value="Adult" {% if form_data and form_data.target_audience == "Adult" %}selected{% endif %}>Adult</option>
+        </select>
+
+        <label for="duration_in_weeks">Duration in Weeks:</label>
+        <input type="number" id="duration_in_weeks" name="duration_in_weeks" value="{{ form_data.duration_in_weeks if form_data else '' }}" style="width: 100%;">
+
+        <label for="prerequisites">Prerequisite Course(s):</label>
+        <input type="text" id="prerequisites" name="prerequisites" value="{{ form_data.prerequisites if form_data else '' }}" style="width: 100%;">
+
+        <label for="corequisites">Corequisite Course(s):</label>
+        <input type="text" id="corequisites" name="corequisites" value="{{ form_data.corequisites if form_data else '' }}" style="width: 100%;">
+
+        <label for="credit_hours">Number of Credits:</label>
+        <input type="number" id="credit_hours" name="credit_hours" value="{{ form_data.credit_hours if form_data else '' }}" style="width: 100%;">
+
+        <label for="profile_status">Profile Status*:</label>
+        <select id="profile_status" name="profile_status" required style="width: 100%;">
+            <option value="Inactive" {% if form_data and form_data.profile_status == "Inactive" %}selected{% endif %}>Inactive</option>
+            <option value="Active" {% if not form_data or form_data.profile_status == "Active" %}selected{% endif %}>Active</option>
+        </select>
+
+        <button type="submit" style="background-color: #007BFF; color: white; padding: 10px; border: none; border-radius: 5px;">
+            Add Course
+        </button>
+    </form>
+</div>
+{% endblock %}

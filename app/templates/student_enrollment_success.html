@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Student Enrollment Successful{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 40px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #000000;">Student Enrolled Successfully</h2>
+
+    <div style="margin-top: 20px; line-height: 1.6;">
+        <p><strong>Student:</strong> {{ student.student_id }}: {{ student.first_name }} {{ student.last_name }}</p>
+        <p><strong>Class:</strong> {{ class_schedule.class_id }}: {{ class_schedule.course_code }} - {{ class_schedule.course_name }}</p>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('student_enrollment_form') }}"
+           style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">
+            Enroll Another Student
+        </a>
+    </div>
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{{ url_for('class_management') }}"
+           style="background-color: #007BFF; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">
+            Class Management Menu
+        </a>
+    </div>
+
+</div>
+{% endblock %}
